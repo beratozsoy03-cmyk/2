@@ -8,34 +8,50 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="css/style.css">
+<link rel="icon" type="image/png" sizes="32x32" href="assets/img/logo/favicon-32.png">
+<link rel="apple-touch-icon" href="assets/img/logo/apple-touch-icon.png">
+<meta name="theme-color" content="#0a0a0b">
 </head>
 <body>
 
 <header class="site-header">
   <div class="container header-inner">
-    <a href="index.html" class="logo"><span class="logo-mark" aria-hidden="true"></span>YAZIBAŞI</a>
+    <a href="index.html" class="logo"><img class="logo-img" src="assets/img/logo/logo-isaret-beyaz.png" alt="" width="29" height="30"><span>YAZIBAŞI</span></a>
     <a href="#form" class="btn btn-primary">Kayıt Ol</a>
   </div>
 </header>
 
 <main id="top">
 
-  <!-- HERO -->
-  <section class="hero">
-    <div class="container hero-grid">
-      <div class="hero-content">
+  <!-- HERO (video) — assets/video/seminer.mp4 (+ opsiyonel seminer-mobil.mp4) yüklenince otomatik başlar; yoksa poster görünür -->
+  <section class="hero seminar-hero">
+    <div class="container">
+      <div class="stage stage-card" data-stage="seminar">
+        <div class="stage-media" aria-hidden="true">
+          <img class="stage-poster" src="assets/img/egitmen-1000.jpg" alt="" fetchpriority="high">
+        </div>
+        <span class="stage-shade" aria-hidden="true"></span>
+        <div class="stage-inner">
+          <div class="stage-body">
         <span class="date-chip">📅 Tarih &amp; saat: <strong style="color:var(--draft)">yakında duyurulacak</strong></span>
         <p class="eyebrow">ÜCRETSİZ SEMİNER <span class="draft-badge">Ücret: belirlenecek</span></p>
         <h1>Yapay zekâyla video prodüksiyonunda nasıl öne geçilir? <span class="draft-badge" style="vertical-align:middle;">Örnek başlık — taslak</span></h1>
         <p class="section-desc">Muhammed Ali Yazıbaşı ile canlı bir oturumda, AI video üretiminin kurgu sürecine nasıl entegre edildiğini gerçek örnekler üzerinden göreceksin.</p>
+            <a href="#form" class="btn btn-primary">Kayıt Ol <span class="arrow">→</span></a>
+          </div>
+        </div>
+        <button class="stage-toggle" type="button" aria-label="Videoyu duraklat" hidden>❚❚</button>
+      </div>
 
+      <div class="hero-grid seminar-grid">
+        <div class="hero-content">
         <p class="eyebrow" style="margin-top:8px;">BU SEMİNERDE ANLATILACAK KONULAR <span class="draft-badge">Örnek — onaylanmalı</span></p>
         <div class="topic-list">
           <div class="topic-card"><span class="topic-num">01</span><div><h4>AI video üretiminde en çok yapılan hata</h4><p>Neden çoğu kişi yapay zekâyı kurguya yanlış entegre ediyor.</p></div></div>
           <div class="topic-card"><span class="topic-num">02</span><div><h4>Tek bir workflow, onlarca kullanım alanı</h4><p>O gece denemeye başlayabileceğin, uçtan uca bir AI video üretim akışı.</p></div></div>
           <div class="topic-card"><span class="topic-num">03</span><div><h4>Araç değil, sistem</h4><p>Hangi aracı seçtiğin değil, süreci nasıl kurduğun fark yaratır.</p></div></div>
         </div>
-      </div>
+        </div>
 
       <div class="form-card" id="form">
         <div class="form-card-inner">
@@ -56,6 +72,7 @@
           <div class="form-success" id="formSuccess">✓ Demo kayıt alındı. Gerçek bir veri gönderilmedi — bu yalnızca görsel bir demodur.</div>
           <p class="form-note">Bilgilerin üçüncü kişilerle paylaşılmaz. (Form şu an yalnızca demo amaçlıdır.)</p>
         </div>
+      </div>
       </div>
     </div>
   </section>
@@ -163,6 +180,8 @@
   <div class="container"><p>© 2024 Yazıbaşı. Tüm hakları saklıdır.</p></div>
 </footer>
 
+<script src="js/content.js"></script>
 <script src="js/script.js"></script>
+<script src="js/media.js"></script>
 </body>
 </html>
