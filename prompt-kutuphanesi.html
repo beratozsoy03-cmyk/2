@@ -1,0 +1,394 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<title>Prompt Kütüphanesi — Together Yazıbaşı</title>
+<meta name="robots" content="noindex, nofollow">
+<meta name="description" content="Muhammed Ali Yazıbaşı'nın yapay zekâ video promptları: videoyu izle, promptu tek tıkla kopyala ya da kendi promptunu oluştur.">
+<meta property="og:title" content="Prompt Kütüphanesi — Together Yazıbaşı">
+<meta property="og:description" content="Videoyu gördün. Promptu burada. Tek tıkla kopyala, kendi promptunu oluştur.">
+<meta property="og:type" content="website">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="css/style.css">
+<link rel="stylesheet" href="css/prompt-kutuphanesi.css">
+<link rel="icon" type="image/png" sizes="32x32" href="assets/img/logo/favicon-32.png">
+<link rel="apple-touch-icon" href="assets/img/logo/apple-touch-icon.png">
+<meta name="theme-color" content="#0a0a0b">
+</head>
+<body class="pk">
+
+<a class="skip-link" href="#one-cikan">İçeriğe geç</a>
+
+<!-- ============ HEADER ============ -->
+<header class="site-header pk-header">
+  <div class="container header-inner">
+    <a href="index.html" class="logo"><img class="logo-img" src="assets/img/logo/logo-isaret-beyaz.png" alt="" width="29" height="30"><span>YAZIBAŞI</span></a>
+
+    <nav class="main-nav pk-nav" aria-label="Sayfa içi gezinme">
+      <a href="#one-cikan">Öne Çıkan</a>
+      <a href="#kutuphane">Kütüphane</a>
+      <a href="#olusturucu">Prompt Oluşturucu</a>
+      <a href="index.html">Eğitim</a>
+      <a href="seminer.html">Seminer</a>
+    </nav>
+
+    <div class="pk-header-actions">
+      <button class="btn btn-ghost btn-sm" type="button" data-auth-open="login" data-auth-guest>Giriş Yap</button>
+      <div class="user-chip" data-auth-user hidden>
+        <button class="user-chip-btn" type="button" aria-haspopup="menu" aria-expanded="false" id="userMenuBtn">
+          <span class="avatar" aria-hidden="true">DK</span><span class="user-chip-name">Demo Kullanıcı</span>
+        </button>
+        <div class="user-menu" id="userMenu" role="menu" hidden>
+          <p class="user-menu-head"><strong>Demo Kullanıcı</strong><span>Prototip görünümü — gerçek hesap değil</span></p>
+          <a href="#hesabim" role="menuitem">Kaydettiklerim</a>
+          <button type="button" role="menuitem" data-auth-logout>Demo görünümünden çık</button>
+        </div>
+      </div>
+      <button class="menu-toggle" type="button" aria-label="Menüyü aç" aria-expanded="false" aria-controls="mobileMenu">
+        <span></span><span></span><span></span>
+      </button>
+    </div>
+  </div>
+
+  <nav class="mobile-menu" id="mobileMenu" aria-label="Mobil menü" hidden>
+    <a href="#one-cikan">Öne Çıkan Prompt</a>
+    <a href="#kutuphane">Prompt Kütüphanesi</a>
+    <a href="#olusturucu">Prompt Oluşturucu</a>
+    <a href="index.html">Eğitim</a>
+    <a href="seminer.html">Ücretsiz Seminer</a>
+    <button class="btn btn-primary btn-block" type="button" data-auth-open="login" data-auth-guest>Giriş Yap</button>
+  </nav>
+</header>
+
+<main>
+
+  <!-- ============ ÖNE ÇIKAN PROMPT ============ -->
+  <section class="pk-feature" id="one-cikan">
+    <div class="container">
+      <div class="pk-intro">
+        <p class="eyebrow">PROMPT KÜTÜPHANESİ <span class="draft-badge">Prototip</span></p>
+        <h1>Videoyu gördün.<br><span class="grad">Promptu burada.</span></h1>
+        <p class="pk-intro-desc">Paylaştığım AI videolarının promptlarını tek tıkla kopyala, nasıl yapıldığını gör ya da kendi promptunu oluştur.</p>
+      </div>
+
+      <p class="pk-notice" id="notFoundNotice" role="status" hidden></p>
+
+      <article class="feature" id="featured" aria-live="polite"></article>
+    </div>
+  </section>
+
+  <!-- ============ KÜTÜPHANE ============ -->
+  <section class="pk-library" id="kutuphane">
+    <div class="container">
+      <div class="section-head pk-section-head">
+        <div>
+          <p class="eyebrow">ARŞİV</p>
+          <h2>Tüm Promptlar</h2>
+        </div>
+        <p class="pk-count" id="resultCount" role="status"></p>
+      </div>
+
+      <div class="toolbar">
+        <label class="search">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></svg>
+          <span class="sr-only">Promptlarda ara</span>
+          <input type="search" id="searchInput" placeholder="Ara: drone, ürün, neon, orbit…" autocomplete="off" enterkeyhint="search">
+          <button type="button" class="search-clear" id="searchClear" aria-label="Aramayı temizle" hidden>✕</button>
+        </label>
+        <div class="toolbar-selects">
+          <label class="select">
+            <span class="sr-only">Araç</span>
+            <select id="toolSelect"><option value="">Tüm araçlar</option></select>
+          </label>
+          <label class="select">
+            <span class="sr-only">Sırala</span>
+            <select id="sortSelect">
+              <option value="new">En yeni</option>
+              <option value="old">En eski</option>
+              <option value="az">A → Z</option>
+            </select>
+          </label>
+        </div>
+      </div>
+
+      <div class="chips-scroll">
+        <div class="chips" id="categoryChips" role="group" aria-label="Kategori filtresi"></div>
+      </div>
+
+      <div class="card-grid" id="promptGrid"></div>
+
+      <div class="empty" id="emptyState" hidden>
+        <p><strong>Sonuç bulunamadı.</strong> Farklı bir kelime dene ya da filtreleri temizle.</p>
+        <button class="btn btn-ghost btn-sm" type="button" id="resetFilters">Filtreleri temizle</button>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ HESABIM (yalnızca demo görünümünde) ============ -->
+  <section class="pk-account" id="hesabim" hidden>
+    <div class="container">
+      <div class="account-card">
+        <div class="account-head">
+          <span class="avatar avatar-lg" aria-hidden="true">DK</span>
+          <div>
+            <p class="eyebrow">HESABIM <span class="draft-badge">Demo görünüm</span></p>
+            <h2>Kaydettiğin promptlar</h2>
+            <p class="section-desc">Bu alan gerçek üyelik açıldığında kullanıcının kaydettiği ve oluşturduğu promptları gösterecek. Şu an hiçbir veri saklanmıyor; sayfa yenilenince sıfırlanır.</p>
+          </div>
+        </div>
+        <div class="saved-list" id="savedList"></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ PROMPT OLUŞTURUCU ============ -->
+  <section class="pk-builder" id="olusturucu">
+    <div class="container">
+      <div class="section-head pk-section-head">
+        <div>
+          <p class="eyebrow">PROMPT OLUŞTURUCU</p>
+          <h2>Kendi promptunu oluştur</h2>
+          <p class="section-desc">Prompt yazmayı bilmene gerek yok. Seçimlerini yap; prompt anında oluşur. Kamera hareketi, sahne ve görünüm ayrı bölümlerde tutulur, böylece tek bir şeyi değiştirip yeniden deneyebilirsin.</p>
+        </div>
+      </div>
+
+      <div class="builder">
+        <form class="builder-form" id="builderForm" autocomplete="off" novalidate>
+
+          <div class="presets">
+            <span class="presets-label">Hızlı başla:</span>
+            <div class="chips chips-sm" id="presetChips"></div>
+          </div>
+
+          <!-- 1. Kamera hareketi -->
+          <fieldset class="step">
+            <legend><span class="step-num">1</span> Kamera hareketi</legend>
+            <div class="move-tools">
+              <label class="search search-sm">
+                <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></svg>
+                <span class="sr-only">Hareket ara</span>
+                <input type="search" id="moveSearch" placeholder="Hareket ara: orbit, drone, zoom…">
+              </label>
+            </div>
+            <div class="chips-scroll"><div class="chips chips-sm" id="moveGroupChips" role="group" aria-label="Hareket grubu"></div></div>
+            <div class="move-grid" id="moveGrid" role="radiogroup" aria-label="Kamera hareketi"></div>
+            <p class="move-desc" id="moveDesc"></p>
+          </fieldset>
+
+          <!-- 2. Sahne -->
+          <fieldset class="step">
+            <legend><span class="step-num">2</span> Sahne</legend>
+            <p class="step-hint">Kısa ve somut yaz. İngilizce yazarsan video modelleri daha tutarlı sonuç verir; Türkçe de yazabilirsin.</p>
+            <div class="field-grid">
+              <div class="field">
+                <label for="fSubject">Konu / karakter</label>
+                <input id="fSubject" data-field="subject" type="text" placeholder="A woman in a red coat">
+              </div>
+              <div class="field">
+                <label for="fLocation">Mekân</label>
+                <input id="fLocation" data-field="location" type="text" placeholder="a bright hotel lobby">
+              </div>
+              <div class="field field-full">
+                <label for="fAction">Ne oluyor? (aksiyon)</label>
+                <input id="fAction" data-field="action" type="text" placeholder="she waits silently and looks toward the entrance">
+              </div>
+            </div>
+            <label class="switch">
+              <input type="checkbox" id="fRefImage" data-field="refImage">
+              <span class="switch-ui" aria-hidden="true"></span>
+              <span>İlk kare olarak kendi görselimi kullanacağım <small>(görselden videoya)</small></span>
+            </label>
+            <div class="field" id="imageContextField" hidden>
+              <label for="fImageContext">Görselde ne var? <small>(isteğe bağlı)</small></label>
+              <input id="fImageContext" data-field="imageContext" type="text" placeholder="a product photo on a white table">
+            </div>
+          </fieldset>
+
+          <!-- 3-5. Seçenek grupları (JS ile doldurulur) -->
+          <fieldset class="step">
+            <legend><span class="step-num">3</span> Kadraj</legend>
+            <div data-groups="shot,angle,lens"></div>
+          </fieldset>
+
+          <fieldset class="step">
+            <legend><span class="step-num">4</span> Işık ve stil</legend>
+            <div data-groups="light,mood,style"></div>
+          </fieldset>
+
+          <fieldset class="step">
+            <legend><span class="step-num">5</span> Hız ve format</legend>
+            <div data-groups="speed,ratio,duration"></div>
+          </fieldset>
+
+          <!-- 6. Ek -->
+          <fieldset class="step">
+            <legend><span class="step-num">6</span> Ek talimatlar</legend>
+            <div class="field">
+              <label for="fExtra">Eklemek istediğin her şey <small>(isteğe bağlı)</small></label>
+              <textarea id="fExtra" data-field="extra" rows="2" placeholder="e.g. light dust particles in the air"></textarea>
+            </div>
+            <p class="group-label">Kaçınılacaklar</p>
+            <div class="chips chips-sm" id="avoidChips" role="group" aria-label="Kaçınılacaklar"></div>
+          </fieldset>
+        </form>
+
+        <!-- ÇIKTI -->
+        <aside class="output" id="builderOutput" aria-label="Oluşturulan prompt">
+          <div class="output-card">
+            <div class="output-head">
+              <h3>Oluşturulan prompt</h3>
+              <div class="seg" role="group" aria-label="Çıktı dili">
+                <button type="button" class="seg-btn is-active" data-lang="en" aria-pressed="true">EN</button>
+                <button type="button" class="seg-btn" data-lang="tr" aria-pressed="false">TR</button>
+              </div>
+            </div>
+            <div class="output-opts">
+              <div class="seg seg-sm" role="group" aria-label="Biçim">
+                <button type="button" class="seg-btn is-active" data-format="sections" aria-pressed="true">Bölümlü</button>
+                <button type="button" class="seg-btn" data-format="paragraph" aria-pressed="false">Tek paragraf</button>
+              </div>
+              <span class="output-meta" id="outputMeta"></span>
+            </div>
+            <pre class="prompt-box prompt-box-out" id="outputText" tabindex="0"></pre>
+            <p class="output-note" id="outputNote">İngilizce çıktı Kling, Runway, Higgsfield, Luma gibi araçlarda daha tutarlı sonuç verir.</p>
+            <div class="output-actions">
+              <button class="btn btn-primary btn-copy" type="button" id="copyOutput"><span class="copy-ic" aria-hidden="true"></span><span class="label">Promptu Kopyala</span></button>
+              <button class="btn btn-ghost" type="button" id="resetBuilder">Sıfırla</button>
+            </div>
+            <button class="link-btn" type="button" id="saveOutput">☆ Bu promptu kaydet</button>
+          </div>
+        </aside>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ DİĞER İÇERİKLER ============ -->
+  <section class="pk-more">
+    <div class="container">
+      <div class="section-head pk-section-head"><h2>Daha fazlasını öğren</h2></div>
+      <div class="more-grid">
+        <a href="index.html" class="more-card more-card-main">
+          <span class="eyebrow">EĞİTİM</span>
+          <strong>Bu videoları nasıl ürettiğimi adım adım öğren.</strong>
+          <span class="more-desc">AI video prodüksiyonunu gerçek projeler üzerinden anlatan eğitim.</span>
+          <span class="link-arrow">Eğitimi incele <span class="arrow">→</span></span>
+        </a>
+        <a href="seminer.html" class="more-card">
+          <span class="eyebrow">ÜCRETSİZ SEMİNER</span>
+          <strong>Canlı oturumda soru sor.</strong>
+          <span class="link-arrow">Seminer sayfası <span class="arrow">→</span></span>
+        </a>
+        <a href="https://www.instagram.com/togetheryazibasi/" class="more-card" target="_blank" rel="noopener noreferrer">
+          <span class="eyebrow">INSTAGRAM</span>
+          <strong>Yeni promptlar önce burada paylaşılıyor.</strong>
+          <span class="link-arrow">@togetheryazibasi <span class="arrow">→</span></span>
+        </a>
+      </div>
+    </div>
+  </section>
+
+</main>
+
+<footer class="site-footer">
+  <div class="container">
+    <div class="footer-top">
+      <a href="index.html" class="logo"><img class="logo-img" src="assets/img/logo/logo-isaret-beyaz.png" alt="" width="29" height="30"><span>YAZIBAŞI</span></a>
+      <nav class="footer-nav">
+        <a href="index.html">Ana Sayfa</a>
+        <a href="#kutuphane">Prompt Kütüphanesi</a>
+        <a href="#olusturucu">Prompt Oluşturucu</a>
+        <a href="seminer.html">Seminer</a>
+      </nav>
+      <div class="footer-social">
+        <a href="https://www.instagram.com/togetheryazibasi/" aria-label="Instagram" target="_blank" rel="noopener noreferrer"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><rect x="3" y="3" width="18" height="18" rx="5"/><circle cx="12" cy="12" r="4"/><circle cx="17.2" cy="6.8" r="1"/></svg></a>
+        <a href="https://www.youtube.com/@TogetherYazibasi" aria-label="YouTube" target="_blank" rel="noopener noreferrer"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M23 12s0-3.5-.45-5.15a2.9 2.9 0 0 0-2-2.05C18.9 4.3 12 4.3 12 4.3s-6.9 0-8.55.5a2.9 2.9 0 0 0-2 2.05C1 8.5 1 12 1 12s0 3.5.45 5.15a2.9 2.9 0 0 0 2 2.05c1.65.5 8.55.5 8.55.5s6.9 0 8.55-.5a2.9 2.9 0 0 0 2-2.05C23 15.5 23 12 23 12ZM9.75 15.5v-7l6 3.5-6 3.5Z"/></svg></a>
+      </div>
+    </div>
+    <div class="footer-bottom"><p>© 2026 Yazıbaşı. Tüm hakları saklıdır. · Bu sayfa bir prototiptir; örnek içerikler gerçek müşteri çalışması değildir.</p></div>
+  </div>
+</footer>
+
+<!-- ============ PROMPT DETAY MODALI ============ -->
+<div class="sheet" id="promptModal" role="dialog" aria-modal="true" aria-labelledby="modalTitle" hidden>
+  <div class="sheet-backdrop" data-close></div>
+  <div class="sheet-dialog">
+    <button class="sheet-close" type="button" aria-label="Kapat" data-close>✕</button>
+    <div class="sheet-body" id="modalBody"></div>
+  </div>
+</div>
+
+<!-- ============ GİRİŞ / KAYIT PROTOTİPİ ============ -->
+<div class="sheet auth" id="authModal" role="dialog" aria-modal="true" aria-labelledby="authTitle" hidden>
+  <div class="sheet-backdrop" data-close></div>
+  <div class="sheet-dialog auth-dialog">
+    <button class="sheet-close" type="button" aria-label="Kapat" data-close>✕</button>
+
+    <div class="auth-brand">
+      <img src="assets/img/logo/logo-isaret-beyaz.png" alt="" width="29" height="30">
+      <span class="draft-badge">Yalnızca tasarım prototipi</span>
+    </div>
+
+    <!-- Giriş -->
+    <div class="auth-view" data-view="login">
+      <h2 id="authTitle">Tekrar hoş geldin</h2>
+      <p class="auth-sub">Kaydettiğin promptlara ve oluşturduklarına eriş.</p>
+      <form class="auth-form" data-proto-form>
+        <div class="field"><label for="liEmail">E-posta</label><input id="liEmail" type="email" placeholder="ornek@email.com" autocomplete="off" disabled></div>
+        <div class="field">
+          <label for="liPass">Şifre <button type="button" class="link-btn" data-auth-go="forgot">Şifremi unuttum</button></label>
+          <input id="liPass" type="password" placeholder="••••••••" autocomplete="off" disabled>
+        </div>
+        <button class="btn btn-primary btn-block" type="submit" disabled>Giriş Yap</button>
+      </form>
+      <div class="auth-divider"><span>veya</span></div>
+      <button class="btn btn-ghost btn-block" type="button" disabled><span class="g-ic" aria-hidden="true">G</span> Google ile devam et</button>
+      <p class="auth-proto">Bu ekran yalnızca tasarım içindir: alanlar devre dışıdır, hiçbir bilgi alınmaz veya saklanmaz.</p>
+      <button class="btn btn-demo btn-block" type="button" data-auth-demo>Demo görünümünü aç <span class="arrow">→</span></button>
+      <p class="auth-switch">Hesabın yok mu? <button type="button" class="link-btn" data-auth-go="register">Kayıt ol</button></p>
+    </div>
+
+    <!-- Kayıt -->
+    <div class="auth-view" data-view="register" hidden>
+      <h2>Ücretsiz hesap oluştur</h2>
+      <p class="auth-sub">Promptları kaydet, kendi koleksiyonunu oluştur, yeni promptlardan ilk sen haberdar ol.</p>
+      <form class="auth-form" data-proto-form>
+        <div class="field"><label for="rgName">Ad Soyad</label><input id="rgName" type="text" placeholder="Adınız Soyadınız" autocomplete="off" disabled></div>
+        <div class="field"><label for="rgEmail">E-posta</label><input id="rgEmail" type="email" placeholder="ornek@email.com" autocomplete="off" disabled></div>
+        <div class="field"><label for="rgPass">Şifre</label><input id="rgPass" type="password" placeholder="En az 8 karakter" autocomplete="off" disabled></div>
+        <label class="check-row"><input type="checkbox" disabled> <span>Kullanım koşullarını ve KVKK aydınlatma metnini okudum.</span></label>
+        <button class="btn btn-primary btn-block" type="submit" disabled>Hesap Oluştur</button>
+      </form>
+      <p class="auth-proto">Kayıt sistemi henüz kurulmadı. Bu ekran yalnızca görünümü değerlendirmek içindir.</p>
+      <p class="auth-switch">Zaten hesabın var mı? <button type="button" class="link-btn" data-auth-go="login">Giriş yap</button></p>
+    </div>
+
+    <!-- Şifremi unuttum -->
+    <div class="auth-view" data-view="forgot" hidden>
+      <h2>Şifreni sıfırla</h2>
+      <p class="auth-sub">Hesabına bağlı e-posta adresini yaz; sıfırlama bağlantısı gönderelim.</p>
+      <form class="auth-form" data-proto-form>
+        <div class="field"><label for="fgEmail">E-posta</label><input id="fgEmail" type="email" placeholder="ornek@email.com" autocomplete="off" disabled></div>
+        <button class="btn btn-primary btn-block" type="submit" disabled>Sıfırlama Bağlantısı Gönder</button>
+      </form>
+      <p class="auth-proto">Prototip: e-posta gönderilmez.</p>
+      <p class="auth-switch"><button type="button" class="link-btn" data-auth-go="login">← Girişe dön</button></p>
+    </div>
+  </div>
+</div>
+
+<!-- Mobil: hızlı kopyalama çubuğu -->
+<div class="sticky-copy" id="stickyCopy" hidden>
+  <span class="sticky-copy-text" id="stickyCopyText"></span>
+  <button class="btn btn-primary btn-sm btn-copy" type="button" id="stickyCopyBtn"><span class="copy-ic" aria-hidden="true"></span><span class="label">Kopyala</span></button>
+</div>
+
+<div class="toast" id="toast" role="status" aria-live="polite" hidden></div>
+
+<script src="js/prompts-data.js"></script>
+<script src="js/prompt-builder-data.js"></script>
+<script src="js/prompt-kutuphanesi.js"></script>
+</body>
+</html>
