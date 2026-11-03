@@ -18,11 +18,16 @@
   const fmtDate = (iso) => new Date(iso + 'T12:00:00').toLocaleDateString('tr-TR', { day: 'numeric', month: 'long', year: 'numeric' });
   const isMobile = () => window.matchMedia('(max-width: 820px)').matches;
 
-  const catName = Object.fromEntries(LIB.categories.map((c) => [c.id, c.name]));
+  // Prototipsiz sözlükler: URL veya veri üzerinden gelen "__proto__", "constructor" gibi
+  // anahtarlar Object.prototype özelliklerine çözülmesin
+  const dict = (entries) => Object.assign(Object.create(null), Object.fromEntries(entries));
+  const catName = dict(LIB.categories.map((c) => [c.id, c.name]));
   const prompts = [...LIB.prompts].sort((a, b) => b.date.localeCompare(a.date));
-  const byId = Object.fromEntries(prompts.map((p) => [p.id, p]));
-  const latest = prompts[0];
+  const byId = dict(prompts.map((p) => [p.id, p]));
+  // Öne çıkan alan: en yeni gerçek video (yoksa en yeni kayıt)
+  const latest = prompts.find((p) => !p.demo) || prompts[0];
 
+  const toolFamily = (t) => String(t || "").split(" ")[0];
   const pageUrl = () => location.origin + location.pathname;
   const shareUrl = (id) => `${pageUrl()}?prompt=${encodeURIComponent(id)}`;
 
@@ -115,7 +120,11 @@
     const cls = `media ${fit === 'native' ? ratioClass(p.ratio) : 'r-card'}`;
     let inner;
     if (p.video) {
-      inner = `<video class="media-el" src="${esc(p.video)}" ${p.poster ? `poster="${esc(p.poster)}"` : ''} muted loop playsinline preload="metadata" aria-label="${esc(p.title)} video önizlemesi"></video>`;
+      // Video dosyası ancak kart ekrana girince yüklenir (data-src); kapak görseli de ekrana
+      // yaklaşınca atanır (data-poster). Mobilde büyük alanlar da küçük sürümü kullanır.
+      const small = p.videoSmall && (fit !== 'native' || isMobile());
+      const src = small ? p.videoSmall : p.video;
+      inner = `<video class="media-el" data-src="${esc(src)}" ${p.poster ? `data-poster="${esc(p.poster)}"` : ''} muted loop playsinline disablepictureinpicture preload="none" aria-label="${esc(p.title)} video önizlemesi"></video>`;
     } else if (p.poster) {
       inner = `<img class="media-el" src="${esc(p.poster)}" alt="${esc(p.title)} kapak görseli" loading="lazy">`;
     } else {
@@ -125,20 +134,54 @@
         <span class="pv-vignette"></span>
       </div>`;
     }
-    const badges = `<span class="media-badges">${p.demo ? '<span class="m-badge m-badge-demo">Örnek içerik</span>' : ''}<span class="m-badge">${esc(p.ratio)} · ${esc(p.duration)} sn</span></span>`;
+    const badges = `<span class="media-badges">${p.demo ? '<span class="m-badge m-badge-demo">Örnek içerik</span>' : ''}${!p.demo && p.instagram ? '<span class="m-badge m-badge-real">Instagram</span>' : ''}<span class="m-badge">${esc(p.ratio)} · ${esc(p.duration)} sn</span></span>`;
     const demoNote = !p.video && !p.poster ? '<span class="media-note">Demo önizleme · gerçek video eklenecek</span>' : '';
     return `<div class="${cls}">${inner}${badges}${demoNote}</div>`;
   }
 
-  // Görünür olmayan önizlemeleri durdur (performans)
+  // Video oynatma kuralları (mobil performans):
+  // - dosya yalnızca kart ekrana girince indirilir, ekrandan çıkınca durdurulur
+  // - "Veri tasarrufu" açıksa veya kullanıcı hareketi azaltmayı seçtiyse otomatik oynatılmaz; kapak görünür
+  const noAutoplay = (navigator.connection && navigator.connection.saveData)
+    || window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+  function playVideo(v) {
+    setPoster(v);
+    if (!v.getAttribute('src')) { v.src = v.dataset.src; v.preload = 'auto'; }
+    if (noAutoplay) return;
+    const pr = v.play();
+    if (pr) pr.catch(() => v.closest('.media')?.classList.add('needs-tap'));
+  }
+
   const mediaObserver = 'IntersectionObserver' in window ? new IntersectionObserver((entries) => {
     entries.forEach((e) => {
       e.target.classList.toggle('is-visible', e.isIntersecting);
       const v = e.target.querySelector('video');
-      if (v) { if (e.isIntersecting) v.play().catch(() => {}); else v.pause(); }
+      if (!v) return;
+      if (e.isIntersecting) playVideo(v); else v.pause();
     });
-  }, { threshold: 0.15 }) : null;
-  const observeMedia = (root) => $$('.media', root).forEach((m) => (mediaObserver ? mediaObserver.observe(m) : m.classList.add('is-visible')));
+  }, { threshold: 0.25, rootMargin: '120px 0px' }) : null;
+  // Kapak görselleri ekrana yaklaşırken (yaklaşık bir ekran önce) yüklenir
+  const setPoster = (v) => { if (v.dataset.poster && !v.getAttribute('poster')) v.poster = v.dataset.poster; };
+  const posterObserver = 'IntersectionObserver' in window ? new IntersectionObserver((entries, obs) => {
+    entries.forEach((e) => { if (e.isIntersecting) { setPoster(e.target); obs.unobserve(e.target); } });
+  }, { rootMargin: '600px 0px' }) : null;
+  const observeMedia = (root) => $$('.media', root).forEach((m) => {
+    const v = m.querySelector('video');
+    if (v) {
+      v.addEventListener('playing', () => m.classList.add('is-playing'), { once: true });
+      if (posterObserver) posterObserver.observe(v); else setPoster(v);
+    }
+    if (mediaObserver) mediaObserver.observe(m);
+    else { m.classList.add('is-visible'); if (v) playVideo(v); }
+  });
+  // Otomatik oynatmanın engellendiği tarayıcılarda dokununca oynat
+  document.addEventListener('click', (e) => {
+    const m = e.target.closest('.media.needs-tap');
+    if (!m) return;
+    const v = m.querySelector('video');
+    if (v) { v.play().catch(() => {}); m.classList.remove('needs-tap'); }
+  }, true);
 
   // ---------- ortak detay içeriği (öne çıkan + modal) ----------
   const COPY_IC = '<span class="copy-ic" aria-hidden="true"></span>';
@@ -146,7 +189,7 @@
   function metaHTML(p) {
     return `<dl class="meta-list">
       <div><dt>Video aracı</dt><dd>${esc(p.tool)}</dd></div>
-      ${p.imageTool ? `<div><dt>İlk kare</dt><dd>${esc(p.imageTool)}</dd></div>` : ''}
+      ${p.imageTool ? `<div><dt>Görsel aracı</dt><dd>${esc(p.imageTool)}</dd></div>` : ''}
       <div><dt>Format</dt><dd>${esc(p.ratio)} · ${esc(p.duration)} sn</dd></div>
       <div><dt>Eklendi</dt><dd>${fmtDate(p.date)}</dd></div>
     </dl>`;
@@ -155,7 +198,8 @@
   function relatedHTML(p, n = 3) {
     const same = prompts.filter((x) => x.id !== p.id && x.category === p.category);
     const rest = prompts.filter((x) => x.id !== p.id && x.category !== p.category);
-    const list = [...same, ...rest].slice(0, n);
+    const realFirst = (a, b) => (a.demo === b.demo ? 0 : a.demo ? 1 : -1);
+    const list = [...same.sort(realFirst), ...rest.sort(realFirst)].slice(0, n);
     return `<div class="related">
       <p class="group-label">Benzer promptlar</p>
       <div class="related-list">
@@ -165,6 +209,18 @@
         </button>`).join('')}
       </div>
     </div>`;
+  }
+
+  // Videonun gerçekten bu promptla üretilip üretilmediğini açıkça belirt
+  function promptOriginHTML(p) {
+    const defaults = {
+      gercek: '✓ Bu videonun üretiminde kullanılan prompt',
+      aciklama: 'Prompt, videonun Instagram açıklamasında paylaşılan sahne tarifinden alındı.',
+      ornek: 'Örnek prompt — videoya benzer bir sonuç için hazırlandı; videonun orijinal promptu değildir.'
+    };
+    const type = p.promptType || 'ornek';
+    if (type === 'ornek' && !p.video && !p.poster) return '';
+    return `<p class="prompt-origin ${type === 'gercek' ? 'is-real' : ''} ${type === 'aciklama' ? 'is-caption' : ''}">${esc(p.promptNote || defaults[type] || defaults.ornek)}</p>`;
   }
 
   function detailBodyHTML(p, { headingTag = 'h2', headingId = '', label = '' } = {}) {
@@ -183,6 +239,7 @@
           <span class="group-label">Prompt <span class="lang-pill">EN</span></span>
           <button type="button" class="link-btn" data-expand>Tamamını göster</button>
         </div>
+        ${promptOriginHTML(p)}
         <pre class="prompt-box is-clamped" tabindex="0">${esc(p.prompt)}</pre>
         <button class="btn btn-primary btn-block btn-copy btn-copy-lg" type="button" data-copy="${esc(p.id)}">${COPY_IC}<span class="label">Promptu Kopyala</span></button>
       </div>
@@ -242,7 +299,7 @@
     const terms = q.split(/\s+/).filter(Boolean);
     let list = prompts.filter((p) => {
       if (state.cat && p.category !== state.cat) return false;
-      if (state.tool && p.tool !== state.tool) return false;
+      if (state.tool && toolFamily(p.tool) !== state.tool) return false;
       if (!terms.length) return true;
       const hay = norm([p.title, p.summary, p.tool, p.imageTool, catName[p.category], (p.tags || []).join(' '), p.prompt].join(' '));
       return terms.every((t) => hay.includes(t));
@@ -259,19 +316,32 @@
     $('#categoryChips').innerHTML = items.map((c) => `<button type="button" class="chip ${state.cat === c.id ? 'is-active' : ''}" data-cat="${c.id}" aria-pressed="${state.cat === c.id}" ${c.n ? '' : 'disabled'}>${esc(c.name)} <span class="chip-n">${c.n}</span></button>`).join('');
   }
 
+  // Ana ızgarada gerçek videolu içerikler; videosu olmayan konsept (demo) kartlar
+  // aynı filtrelerle alttaki ayrı bölümde listelenir.
   function renderGrid() {
     const list = filtered();
-    grid.innerHTML = list.map(cardHTML).join('');
+    const real = list.filter((p) => !p.demo);
+    const demos = list.filter((p) => p.demo);
+    grid.innerHTML = real.map(cardHTML).join('');
     observeMedia(grid);
+    const demoWrap = $('#demoSection');
+    demoWrap.hidden = demos.length === 0;
+    $('#demoGrid').innerHTML = demos.map(cardHTML).join('');
+    $('#demoCount').textContent = demos.length;
+    observeMedia($('#demoGrid'));
     $('#emptyState').hidden = list.length > 0;
+    $('#realEmpty').hidden = !(real.length === 0 && demos.length > 0);
+    if (real.length === 0 && demos.length > 0) demoWrap.open = true; // yalnız konsept içeren filtrede bölümü aç
     const active = state.q || state.cat || state.tool;
-    $('#resultCount').textContent = active ? `${list.length} sonuç` : `${prompts.length} prompt`;
+    const totalReal = prompts.filter((p) => !p.demo).length;
+    $('#resultCount').textContent = active ? `${real.length} video · ${demos.length} konsept` : `${totalReal} gerçek video · ${prompts.length - totalReal} konsept`;
   }
 
   function renderLibrary() { renderChips(); renderGrid(); }
 
   // araç filtresi
-  const tools = [...new Set(prompts.map((p) => p.tool))].sort((a, b) => a.localeCompare(b, 'tr'));
+  // Araç filtresi aileye göre gruplanır: "Kling 2.5 Turbo", "Kling O1 Edit" → "Kling"
+  const tools = [...new Set(prompts.map((p) => toolFamily(p.tool)))].sort((a, b) => (a === "Belirtilmedi") - (b === "Belirtilmedi") || a.localeCompare(b, "tr"));
   $('#toolSelect').insertAdjacentHTML('beforeend', tools.map((t) => `<option value="${esc(t)}">${esc(t)}</option>`).join(''));
 
   const searchInput = $('#searchInput');
@@ -493,8 +563,8 @@
   // ============================================================
   //  PROMPT OLUŞTURUCU
   // ============================================================
-  const moveById = Object.fromEntries(PB.movements.map((m) => [m.id, m]));
-  const groupById = Object.fromEntries(PB.groups.map((g) => [g.id, g]));
+  const moveById = dict(PB.movements.map((m) => [m.id, m]));
+  const groupById = dict(PB.groups.map((g) => [g.id, g]));
   const opt = (groupId, id) => groupById[groupId]?.options.find((o) => o.id === id);
 
   const DEFAULTS = {

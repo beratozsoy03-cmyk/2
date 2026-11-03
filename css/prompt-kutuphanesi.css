@@ -63,6 +63,15 @@
 .m-badge-demo { margin-left: 0; margin-right: auto; color: var(--draft); background: rgba(20,14,0,.6); border: 1px solid rgba(255,176,32,.35); text-transform: uppercase; }
 .media-note { position: absolute; left: 0; right: 0; bottom: 0; z-index: 3; padding: 26px 12px 10px; font-size: 11px; color: rgba(255,255,255,.65); background: linear-gradient(0deg, rgba(0,0,0,.6), transparent); text-align: center; }
 .r-card .media-note { display: none; }
+video.media-el { background: #0d0d0e; }
+/* Otomatik oynatma engellendiyse (ör. bazı uygulama içi tarayıcılar) dokun-oynat simgesi */
+.media.needs-tap { cursor: pointer; }
+.media.needs-tap::after { content: "▶"; position: absolute; left: 50%; top: 50%; transform: translate(-50%, -50%); z-index: 3; width: 56px; height: 56px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 18px; color: #fff; background: rgba(0,0,0,.45); border: 1px solid rgba(255,255,255,.5); backdrop-filter: blur(6px); }
+
+.prompt-origin { font-size: 12.5px; line-height: 1.5; color: var(--text-dim); padding: 8px 12px; border-radius: 10px; background: rgba(255,255,255,.03); border: 1px dashed var(--border-strong); }
+.prompt-origin.is-real { color: #8ff0b8; border: 1px solid rgba(55,201,120,.35); background: rgba(55,201,120,.08); }
+.prompt-origin.is-caption { color: #9fd0ff; border: 1px solid rgba(90,170,255,.35); background: rgba(90,170,255,.08); }
+.m-badge-real { margin-left: 0; margin-right: auto; text-transform: uppercase; color: #fff; background: linear-gradient(135deg, rgba(255,138,61,.85), rgba(196,23,47,.85)); }
 
 /* --- Demo sahneleri: gerçek video gelene kadar kamera hareketini temsil eder --- */
 .pv { position: absolute; inset: 0; overflow: hidden; }
@@ -255,7 +264,9 @@
 .card-media:hover { transform: translateY(-3px); }
 .card-media:hover .media { border-color: rgba(255,138,61,.45); }
 .card-body { display: flex; flex-direction: column; gap: 8px; }
-.pc-meta { display: flex; gap: 7px; align-items: center; font-size: 12.5px; color: var(--text-dimmer); font-weight: 600; }
+.pc-meta { display: flex; gap: 7px; align-items: center; font-size: 12.5px; color: var(--text-dimmer); font-weight: 600; min-width: 0; white-space: nowrap; }
+.pc-meta span { overflow: hidden; text-overflow: ellipsis; }
+.pc-meta span:first-child { flex-shrink: 0; }
 .pc-meta .dot { opacity: .6; }
 .card-title { font-size: 17px; line-height: 1.3; letter-spacing: -0.01em; }
 .card-title button { text-align: left; font-weight: 700; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
@@ -266,6 +277,15 @@
 .icon-btn:hover { color: var(--text); border-color: rgba(255,255,255,.35); }
 .icon-btn.is-saved { color: var(--draft); border-color: rgba(255,176,32,.45); }
 
+.real-empty { color: var(--text-dim); font-size: 14px; padding: 18px 20px; border: 1px dashed var(--border-strong); border-radius: var(--radius-md); }
+.demo-section { margin-top: 44px; border-top: 1px solid var(--border); padding-top: 22px; }
+.demo-section > summary { cursor: pointer; list-style: none; display: flex; justify-content: space-between; align-items: center; gap: 12px 20px; flex-wrap: wrap; padding: 14px 18px; border: 1px solid var(--border); border-radius: var(--radius-md); background: var(--card-soft); font-size: 15px; }
+.demo-section > summary::-webkit-details-marker { display: none; }
+.demo-section > summary::after { content: "+"; font-size: 20px; color: var(--text-dim); margin-left: auto; }
+.demo-section[open] > summary::after { content: "–"; }
+.demo-section > summary:hover { border-color: var(--border-strong); }
+.demo-sub { font-size: 13px; color: var(--text-dimmer); }
+.card-grid-demo { margin-top: 22px; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); opacity: .9; }
 .empty { text-align: center; padding: 48px 20px; border: 1px dashed var(--border-strong); border-radius: var(--radius-lg); color: var(--text-dim); display: flex; flex-direction: column; gap: 16px; align-items: center; }
 
 /* ============ HESABIM (demo) ============ */
@@ -451,7 +471,8 @@ body.has-sticky .toast { bottom: calc(86px + env(safe-area-inset-bottom)); }
   .step .chips-scroll { margin-inline: -22px; }
   .step .chips-scroll .chips { padding-inline: 22px; }
 
-  .card-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 18px 12px; }
+  .card-grid, .card-grid-demo { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 18px 12px; }
+  .demo-section > summary { padding: 12px 14px; }
   .card { gap: 10px; }
   .card-title { font-size: 14.5px; }
   .pc-meta { font-size: 11.5px; }

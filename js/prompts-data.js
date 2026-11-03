@@ -18,8 +18,15 @@
    ratio     : '9:16' | '16:9' | '1:1' | '4:5'
    duration  : saniye (sayı)
    video     : 'assets/video/promptlar/<id>.mp4'  (yoksa null → demo önizleme)
-   poster    : 'assets/img/promptlar/<id>.jpg'    (yoksa null)
+               Kart ekrana girince yüklenir; sessiz, döngülü ve otomatik oynar.
+   videoSmall: (isteğe bağlı) kartlar için daha küçük sürüm, ör. '<id>-kart.mp4'
+   poster    : 'assets/img/promptlar/<id>.jpg'    (yoksa null) — video yüklenene kadar görünür
    instagram : gönderinin gerçek adresi (yoksa null)
+   promptType: 'gercek'   → bu video gerçekten bu promptla üretildi (yeşil etiket)
+               'aciklama' → prompt, Instagram açıklamasında paylaşılan tariften alındı (mavi etiket)
+               'ornek'    → videoya benzer sonuç için yazılmış örnek prompt (varsayılan)
+               Videonun promptu bilinmiyorsa ASLA 'gercek' yazmayın.
+   promptNote: (isteğe bağlı) etiket metnini özelleştirir
    prompt    : kopyalanacak prompt metni (video modelleri için İngilizce önerilir)
    steps     : "Nasıl yapıldı?" adımları (Türkçe)
    tags      : arama için ek anahtar kelimeler
@@ -31,16 +38,304 @@
 window.PROMPT_LIBRARY = {
 
   categories: [
-    { id: 'kamera',   name: 'Kamera Hareketleri' },
-    { id: 'sinematik', name: 'Sinematik Sahneler' },
-    { id: 'urun',     name: 'Ürün & Reklam' },
-    { id: 'karakter', name: 'Karakter & İnsan' },
-    { id: 'mekan',    name: 'Araç & Mekân' },
-    { id: 'gorsel',   name: 'Görselden Videoya' },
-    { id: 'efekt',    name: 'Efekt & Geçişler' }
+    { id: 'mimari',    name: 'Mimari & Gayrimenkul' },
+    { id: 'otomotiv',  name: 'Otomotiv' },
+    { id: 'efekt',     name: 'AI Efektleri' },
+    { id: 'gorsel',    name: 'Görselden Videoya' },
+    { id: 'karakter',  name: 'Karakter & Animasyon' },
+    { id: 'urun',      name: 'Ürün & Reklam' },
+    { id: 'sinematik', name: 'Sinematik' },
+    { id: 'kamera',    name: 'Kamera Hareketleri' },
+    { id: 'gecis',     name: 'Geçiş Efektleri' }
   ],
 
   prompts: [
+    /* ---------- @togetheryazibasi Instagram videoları ----------
+       Önizlemeler, ilgili Instagram videosundan kesilmiş kısa bölümlerdir
+       (medya-hazirla.sh ile optimize edildi). */
+    {
+      id: 'porsche-bulut-01',
+      title: 'Bulutların Arasından Düşen Porsche 911',
+      summary: 'Bulutların içinde asılı kalan klasik bir Porsche 911 ve arka planda süzülen hayalet bombardıman uçakları. Az hareket, sabit gökyüzü, saf sinematik gerilim.',
+      category: 'otomotiv',
+      tool: 'Kling 2.5 Turbo',
+      date: '2026-11-03',
+      ratio: '9:16',
+      duration: 15,
+      video: 'assets/video/promptlar/porsche-bulut-01.mp4',
+      videoSmall: 'assets/video/promptlar/porsche-bulut-01-kart.mp4',
+      poster: 'assets/img/promptlar/porsche-bulut-01.jpg',
+      instagram: 'https://www.instagram.com/togetheryazibasi/reel/DTqRdmMCLtr/',
+      promptType: 'aciklama',
+      promptNote: 'Prompt, videonun Instagram açıklamasında paylaşılan sahne tarifidir. Sekanstaki üç çekimin (Cloud Fall, Static Hover Zoom, Headlight Flicker Moment) ayrı promptları paylaşılmadı.',
+      prompt: 'A vertical cinematic sequence where a Porsche 911 drops through dense clouds — suspended in mid-air, obeying real-world physics, with ultra-slow spinning wheels.\n\nAs the car enters the scene, B-2 Spirit stealth bombers glide silently across the background. Front headlights stay off… then suddenly flicker on for a brief moment, breaking the calm.\n\nMinimal motion.\nStatic sky.\nPure cinematic tension.\n\nNo driver.\nNo characters.\nNo chaos — just controlled motion.',
+      steps: [
+        'Video, Instagram açıklamasına göre Kling 2.5 Turbo ile üretildi.',
+        'Sekans üç ayrı çekimden kuruldu: Cloud Fall, Static Hover Zoom ve Headlight Flicker Moment.',
+        'Buradaki önizleme, Instagram videosundan alınmış 8 saniyelik bir kesittir.'
+      ],
+      tags: ['porsche', 'araba', 'bulut', 'uçan araba', 'kling', 'sinematik', 'gökyüzü'],
+      builder: { movement: 'static', shot: 'medium', angle: 'eye', lens: '', light: 'daylight', mood: 'tense', style: 'cinematic', speed: 'very-slow', ratio: '9:16', duration: '5',
+        subject: 'A classic Porsche 911 suspended in mid-air with ultra-slow spinning wheels', location: 'dense clouds high in the sky', action: 'stealth bombers glide silently across the background and the headlights briefly flicker on' },
+      demo: false
+    },
+    {
+      id: 'arsa-insaat-01',
+      title: 'Boş Arsadan Yükselen Bina',
+      summary: 'Boş bir arsanın üzerinden FPV kamerayla geçerken temeller, kolonlar ve katlar tek bir kesintisiz çekimde yükselir. Gayrimenkul projeleri için.',
+      category: 'mimari',
+      tool: 'Seedance 2.5',
+      date: '2026-11-02',
+      ratio: '4:5',
+      duration: 6,
+      video: 'assets/video/promptlar/arsa-insaat-01.mp4',
+      videoSmall: 'assets/video/promptlar/arsa-insaat-01-kart.mp4',
+      poster: 'assets/img/promptlar/arsa-insaat-01.jpg',
+      instagram: 'https://www.instagram.com/togetheryazibasi/reel/DewsPm6ovKn/',
+      promptType: 'ornek',
+      promptNote: 'Örnek prompt — videoda yalnızca bir kısmı görünen orijinal prompttan yola çıkılarak hazırlandı; videonun tam promptu değildir.',
+      prompt: 'Camera movement:\nFPV drone flight. Start low over an empty dirt plot and fly forward in one continuous shot while the building rises around the camera: rebar grids, foundations, concrete columns, then floors and facade. Use smooth orbit-style banking, controlled push-in and pull-out moves and gentle spiral elevation changes. Speed: fast but highly controlled.\n\nReference images:\nUse the empty plot photo as the first frame and the completed building photo as the final frame. End on a cinematic hero view where the completed building matches the reference image exactly.\n\nLook:\nLighting: clear natural daylight. Style: photoreal construction time-lapse feel, natural cinematic motion blur, wide-angle FPV lens with restrained fisheye distortion.\n\nAvoid:\ncamera shaking, random vibration, unstable horizon, chaotic freestyle movement, abrupt left-right corrections, hard cuts.',
+      steps: [
+        'Videoda gösterildiği gibi iki referans görsel kullanıldı: boş arsa ve tamamlanmış bina.',
+        'Prompt bir yapay zekâ sohbet aracıyla yazıldı; video Seedance 2.5 ile üretildi.',
+        'Buradaki önizleme, Instagram videosundan alınmış 5,5 saniyelik bir kesittir (altyazı kalmasın diye 4:5 kırpıldı).'
+      ],
+      tags: ['inşaat', 'gayrimenkul', 'arsa', 'bina', 'fpv', 'drone', 'seedance', 'dönüşüm'],
+      builder: { movement: 'fpv', shot: 'wide', angle: 'high', lens: '14', light: 'daylight', mood: 'epic', style: 'documentary', speed: 'fast', ratio: '9:16', duration: '10', refImage: true,
+        imageContext: 'an empty plot as the first frame and the finished building as the last frame', subject: 'A residential building', location: 'an empty dirt plot on the edge of a city', action: 'the building rises from foundations to finished facade in one continuous shot', avoid: ['flicker'] },
+      demo: false
+    },
+    {
+      id: 'bos-daire-01',
+      title: 'Boş Daireyi Döşenmiş Hâle Getirme',
+      summary: 'Boş bir dairenin fotoğrafı, kamera hafifçe dönerken mutfak, tabureler ve dekorla döşenmiş hâline dönüşür. Satılık ve kiralık daire ilanları için.',
+      category: 'gorsel',
+      tool: 'Higgsfield',
+      imageTool: 'ChatGPT / Gemini (bitiş görseli)',
+      date: '2026-11-01',
+      ratio: '9:16',
+      duration: 3,
+      video: 'assets/video/promptlar/bos-daire-01.mp4',
+      videoSmall: 'assets/video/promptlar/bos-daire-01-kart.mp4',
+      poster: 'assets/img/promptlar/bos-daire-01.jpg',
+      instagram: 'https://www.instagram.com/togetheryazibasi/reel/DZKlSKXIdeb/',
+      promptType: 'ornek',
+      promptNote: 'Örnek prompt — videoda Higgsfield Morphskin efekti ve kısa bir hareket talimatı görünüyor; videonun tam promptu değildir.',
+      prompt: 'Camera movement:\nSlow arc right around the room, keeping the kitchen island centered. Speed: slow and smooth.\n\nReference images:\nUse the empty apartment photo as the first frame and the furnished version as the last frame. Transform seamlessly from empty to furnished: kitchen cabinets, island, bar stools and small decor appear naturally in place.\n\nLook:\nLighting: soft natural daylight. Style: photoreal real estate interior.\n\nAvoid:\nchanging the room layout, bending walls, warping floor lines, extra doors or windows, don\'t spoil the details.',
+      steps: [
+        'Boş odanın fotoğrafı ChatGPT veya Gemini ile döşenmiş hâle getirildi (bitiş karesi).',
+        'Higgsfield\'da Morphskin efektiyle iki görsel arasında geçiş üretildi.',
+        'Buradaki önizleme, Instagram videosundan alınmış 3,3 saniyelik bir kesittir.'
+      ],
+      tags: ['iç mekan', 'daire', 'gayrimenkul', 'mobilya', 'higgsfield', 'morphskin', 'dönüşüm', 'emlak'],
+      builder: { movement: 'arc-right', shot: 'wide', angle: 'eye', lens: '24', light: 'window', mood: 'peaceful', style: 'commercial', speed: 'slow', ratio: '9:16', duration: '5', refImage: true,
+        imageContext: 'an empty apartment as the first frame and the furnished version as the last frame', subject: 'An open-plan apartment kitchen', location: 'a bright empty apartment', action: 'furniture, cabinets and bar stools appear naturally in place', avoid: ['morph'] },
+      demo: false
+    },
+    {
+      id: 'transform-porsche-01',
+      title: 'Tekerlekten Porsche\'ye Mekanik Montaj',
+      summary: 'Boş bir avluda tek bir tekerlekten başlayan dönüşüm; şasi, gövde ve detaylar parça parça birleşerek hedef karedeki arabayı oluşturur.',
+      category: 'efekt',
+      tool: 'Seedance 2.0',
+      date: '2026-10-31',
+      ratio: '9:16',
+      duration: 4,
+      video: 'assets/video/promptlar/transform-porsche-01.mp4',
+      videoSmall: 'assets/video/promptlar/transform-porsche-01-kart.mp4',
+      poster: 'assets/img/promptlar/transform-porsche-01.jpg',
+      instagram: 'https://www.instagram.com/togetheryazibasi/reel/DZScZPYo5cm/',
+      promptType: 'ornek',
+      promptNote: 'Örnek prompt — videoda yalnızca son kısmı görünen orijinal prompttan yola çıkılarak hazırlandı; videonun tam promptu değildir.',
+      prompt: 'Camera movement:\nLocked-off static shot. The camera stays in one fixed position for the whole clip with the same angle, height and framing.\n\nScene:\nA single wheel rolls into the empty courtyard and stops. The chassis, suspension and body panels assemble piece by piece around it until a realistic silver Porsche 911 Turbo S is parked standing still in the exact same position and angle as the target reference frame.\n\nReference images:\nUse the empty courtyard as the first frame and the parked car as the last frame.\n\nAvoid:\nabsolutely no camera motion, no environmental changes, no people, no smoke clouds, no random particles obscuring the scene, no melting effects and no cartoon-like morphing. The end result is a clean, high-end mechanical assembly effect.',
+      steps: [
+        'Başlangıç ve hedef olmak üzere iki görsel hazırlandı.',
+        'Video Seedance 2.0\'da "transform" (mekanik montaj) promptuyla üretildi.',
+        'Buradaki önizleme, Instagram videosundan alınmış 4 saniyelik bir kesittir.'
+      ],
+      tags: ['transform', 'dönüşüm', 'araba', 'porsche', 'montaj', 'seedance', 'efekt'],
+      builder: { movement: 'static', shot: 'wide', angle: 'eye', lens: '35', light: 'daylight', mood: 'luxurious', style: 'commercial', speed: 'medium', ratio: '9:16', duration: '5', refImage: true,
+        imageContext: 'an empty courtyard as the first frame and the finished car as the last frame', subject: 'A silver sports car', location: 'a minimal white-walled courtyard', action: 'the car assembles piece by piece from a single wheel', avoid: ['people', 'morph'] },
+      demo: false
+    },
+    {
+      id: 'yukselen-kuleler-01',
+      title: 'Boş Araziden Yükselen Işıklı Kuleler',
+      summary: 'Şehir kenarındaki boş bir arazide, altın rengi ışık çizgileriyle iki konut kulesi yükselir. Proje lansmanları ve gayrimenkul reklamları için.',
+      category: 'mimari',
+      tool: 'Seedance',
+      date: '2026-10-30',
+      ratio: '4:5',
+      duration: 4,
+      video: 'assets/video/promptlar/yukselen-kuleler-01.mp4',
+      videoSmall: 'assets/video/promptlar/yukselen-kuleler-01-kart.mp4',
+      poster: 'assets/img/promptlar/yukselen-kuleler-01.jpg',
+      instagram: 'https://www.instagram.com/togetheryazibasi/reel/DeUjMUKo4Ny/',
+      promptType: 'ornek',
+      prompt: 'Camera movement:\nslow drone push in. The aerial camera glides forward and slightly down toward the empty plot, keeping the horizon level. Speed: slow and smooth.\n\nReference images:\nUse the empty land photo as the first frame and the finished towers render as the last frame.\n\nScene:\nGlowing golden light lines trace the outline of two residential towers on the empty plot. The wireframe fills in floor by floor until the finished, illuminated buildings stand in place.\n\nLook:\nLighting: clear daylight with warm golden light on the structures. Mood: epic, aspirational. Style: high-end real estate commercial, photoreal.\n\nAvoid:\nchanging the surrounding roads and buildings, flickering, text, logos.',
+      steps: [
+        'Prompt bir yapay zekâ sohbet aracıyla (ChatGPT, Gemini veya Claude) hazırlandı.',
+        'Video Seedance ile boş arazi ve bitmiş proje görseli kullanılarak üretildi.',
+        'Buradaki önizleme, Instagram videosundan alınmış 4 saniyelik bir kesittir (altyazı kalmasın diye 4:5 kırpıldı).'
+      ],
+      tags: ['inşaat', 'gayrimenkul', 'kule', 'lansman', 'drone', 'ışık', 'seedance', 'proje'],
+      builder: { movement: 'drone-push', shot: 'extreme-wide', angle: 'high', lens: '24', light: 'golden', mood: 'epic', style: 'commercial', speed: 'slow', ratio: '9:16', duration: '5', refImage: true,
+        imageContext: 'an empty plot as the first frame and the finished towers as the last frame', subject: 'Two residential towers', location: 'an empty plot at the edge of the city', action: 'golden light lines trace the towers and they fill in floor by floor', avoid: ['text', 'flicker'] },
+      demo: false
+    },
+    {
+      id: 'buz-porsche-01',
+      title: 'Buzun İçinde Donmuş Spor Araba',
+      summary: 'Devasa buz duvarlarının arasında, buzun içine hapsolmuş bir spor araba. Otomotiv reklamları için soğuk ve dramatik bir açılış.',
+      category: 'otomotiv',
+      tool: 'Belirtilmedi',
+      date: '2026-10-29',
+      ratio: '4:5',
+      duration: 3,
+      video: 'assets/video/promptlar/buz-porsche-01.mp4',
+      videoSmall: 'assets/video/promptlar/buz-porsche-01-kart.mp4',
+      poster: 'assets/img/promptlar/buz-porsche-01.jpg',
+      instagram: 'https://www.instagram.com/togetheryazibasi/reel/DTYfOfkiDq5/',
+      promptType: 'ornek',
+      prompt: 'Camera movement:\nslow truck right along the ice wall, keeping the car centered. Speed: slow and smooth.\n\nScene:\nA dark sports car is frozen inside a massive block of clear blue glacier ice. Cracks and air bubbles run through the ice, cold light refracts around the car body.\n\nLook:\nLighting: cold blue light filtering through the ice, soft highlights on the car. Mood: tense, luxurious. Style: high-end automotive commercial, photoreal.\n\nAvoid:\nwarping of the car body, melting, text, people.',
+      steps: [
+        'Instagram videosu, markalar için araba reklamı kreatifi üretmeyi anlatıyor; kullanılan araç adı açıklamada belirtilmemiş.',
+        'Buradaki önizleme, videonun AI bölümünden alınmış 3 saniyelik bir kesittir (altyazı kalmasın diye 4:5 kırpıldı).'
+      ],
+      tags: ['araba', 'otomotiv', 'buz', 'reklam', 'porsche', 'soğuk', 'kreatif'],
+      builder: { movement: 'truck-right', shot: 'wide', angle: 'eye', lens: '35', light: 'low-key', mood: 'tense', style: 'commercial', speed: 'slow', ratio: '9:16', duration: '5',
+        subject: 'A dark sports car', location: 'inside a massive block of blue glacier ice', action: 'cold light refracts through cracks in the ice around the car', avoid: ['morph', 'text'] },
+      demo: false
+    },
+    {
+      id: 'venedik-dikey-01',
+      title: 'Yatay Çekimi Dikey Videoya Genişletme',
+      summary: 'Yatay çekilmiş bir Venedik kanalı görüntüsü, yapay zekâyla üstü ve altı tamamlanarak doğal görünen dikey bir videoya dönüşür.',
+      category: 'efekt',
+      tool: 'Kling O1 Edit',
+      date: '2026-10-28',
+      ratio: '9:16',
+      duration: 2,
+      video: 'assets/video/promptlar/venedik-dikey-01.mp4',
+      videoSmall: 'assets/video/promptlar/venedik-dikey-01-kart.mp4',
+      poster: 'assets/img/promptlar/venedik-dikey-01.jpg',
+      instagram: 'https://www.instagram.com/togetheryazibasi/reel/DYHdnhTo7z1/',
+      promptType: 'ornek',
+      prompt: 'Expand the uploaded horizontal video into a vertical 9:16 frame. Generate the missing sky above and the canal water below so they blend seamlessly with the original footage.\n\nPreserve the original framing, camera motion, colors, lighting and every architectural detail exactly. Continue the building facades, windows and reflections naturally.\n\nAvoid:\nvisible seams or borders, warped buildings, new objects, changing the original motion.',
+      steps: [
+        'Kaynak, yatay çekilmiş gerçek bir Venedik kanalı videosu.',
+        'Kling O1 Edit ile videonun üstü ve altı yapay zekâyla tamamlanarak dikey formata genişletildi.',
+        'Buradaki önizleme, sonuçtan alınmış 2 saniyelik bir kesittir.'
+      ],
+      tags: ['yatay', 'dikey', 'genişletme', 'outpaint', 'kling', 'venedik', 'reels', 'format'],
+      builder: { movement: 'static', shot: 'wide', angle: 'eye', lens: '', light: 'overcast', mood: 'peaceful', style: 'documentary', speed: '', ratio: '9:16', duration: '5', refImage: true,
+        imageContext: 'a horizontal video of a Venice canal', subject: '', location: 'a narrow canal in Venice', action: 'the sky and water are extended to fill a vertical frame', avoid: ['morph'] },
+      demo: false
+    },
+    {
+      id: 'keloglan-animasyon-01',
+      title: 'Keloğlan Tarzı 3D Animasyon Sahnesi',
+      summary: 'Masal karakterleriyle, stilize 3D animasyon görünümünde kısa bir sahne. Çocuk içerikleri ve hikâye anlatımı için.',
+      category: 'karakter',
+      tool: 'Higgsfield Genjutsu',
+      date: '2026-10-27',
+      ratio: '16:9',
+      duration: 5,
+      video: 'assets/video/promptlar/keloglan-animasyon-01.mp4',
+      videoSmall: 'assets/video/promptlar/keloglan-animasyon-01-kart.mp4',
+      poster: 'assets/img/promptlar/keloglan-animasyon-01.jpg',
+      instagram: 'https://www.instagram.com/togetheryazibasi/reel/DeXDuXgoJfP/',
+      promptType: 'ornek',
+      prompt: 'Camera movement:\nmedium shot, slow push in. Speed: slow and smooth.\n\nScene:\nInside a cozy village house, a young girl in a green dress and a woman with a yellow headscarf watch in surprise as someone waves excitedly at them. Expressive faces, playful body language.\n\nLook:\nLighting: warm interior light. Mood: playful, warm. Style: stylized 3D animated film, soft materials, Turkish folk tale atmosphere.\n\nAvoid:\nextra fingers, face distortion, text.',
+      steps: [
+        'Karakter ve sahne promptları ChatGPT veya Claude ile detaylandırıldı.',
+        'Video Higgsfield\'in Genjutsu özelliğiyle üretildi.',
+        'Buradaki önizleme, Instagram videosundan alınmış 4,6 saniyelik bir kesittir.'
+      ],
+      tags: ['keloğlan', 'animasyon', '3d', 'masal', 'karakter', 'çocuk', 'higgsfield', 'genjutsu'],
+      builder: { movement: 'push-in', shot: 'medium', angle: 'eye', lens: '', light: 'practical', mood: 'playful', style: '3d', speed: 'slow', ratio: '16:9', duration: '5',
+        subject: 'A young girl in a green dress and a woman in a yellow headscarf', location: 'a cozy village house', action: 'they react with surprise as someone waves excitedly', avoid: ['limbs', 'morph'] },
+      demo: false
+    },
+    {
+      id: 'arsa-m2-01',
+      title: 'Arsa Sınırı ve m² Efekti',
+      summary: 'Drone görüntüsündeki arsanın sınırları parlayan bir çizgiyle çizilir ve üzerinde 3D bir metrekare yazısı belirir. Arsa satış ilanları için.',
+      category: 'mimari',
+      tool: 'Kling AI',
+      imageTool: 'Nano Banana Pro',
+      date: '2026-10-26',
+      ratio: '9:16',
+      duration: 3,
+      video: 'assets/video/promptlar/arsa-m2-01.mp4',
+      videoSmall: 'assets/video/promptlar/arsa-m2-01-kart.mp4',
+      poster: 'assets/img/promptlar/arsa-m2-01.jpg',
+      instagram: 'https://www.instagram.com/togetheryazibasi/reel/DV560w1CKCU/',
+      promptType: 'ornek',
+      prompt: 'Camera movement:\nslow drone orbit around the plot, keeping it centered. Speed: slow and smooth.\n\nReference image:\nUse the drone photo with the highlighted plot as the first frame. Preserve the surrounding streets, buildings and city skyline exactly.\n\nScene:\nA glowing blue outline traces the boundary of the empty plot. Large extruded 3D blue text "45000 m2" stands on the land, casting soft shadows.\n\nLook:\nLighting: soft overcast daylight. Style: real estate marketing, photoreal with clean graphic overlays.\n\nAvoid:\nmisspelled numbers, moving buildings, flickering outline.',
+      steps: [
+        'Drone ekran görüntüsü Nano Banana Pro ile işlendi: arsa sınırı ve metrekare yazısı eklendi.',
+        'Bu görsel Kling AI ile hareketli videoya dönüştürüldü.',
+        'Buradaki önizleme, Instagram videosundan alınmış 2,6 saniyelik bir kesittir.'
+      ],
+      tags: ['arsa', 'metrekare', 'm2', 'gayrimenkul', 'drone', 'kling', 'nano banana', 'ilan'],
+      builder: { movement: 'orbit-cw', shot: 'extreme-wide', angle: 'high', lens: '24', light: 'overcast', mood: 'peaceful', style: 'commercial', speed: 'slow', ratio: '9:16', duration: '5', refImage: true,
+        imageContext: 'a drone photo of an empty plot with its boundary highlighted', subject: 'A glowing blue plot boundary and 3D square-meter text', location: 'an empty plot in a city district', action: 'the boundary line glows and the 3D text stands on the land', avoid: ['text', 'flicker'] },
+      demo: false
+    },
+    {
+      id: 'sehir-morph-01',
+      title: 'Drone Görüntüsünde Morphskin Dönüşümü',
+      summary: 'Gerçek bir şehir drone çekiminde, seçilen bölüm yapay zekâyla akıcı biçimde dönüştürülür. Gayrimenkul projelerinde önce/sonra anlatımı için.',
+      category: 'efekt',
+      tool: 'Higgsfield Morphskin',
+      date: '2026-10-25',
+      ratio: '4:5',
+      duration: 3,
+      video: 'assets/video/promptlar/sehir-morph-01.mp4',
+      videoSmall: 'assets/video/promptlar/sehir-morph-01-kart.mp4',
+      poster: 'assets/img/promptlar/sehir-morph-01.jpg',
+      instagram: 'https://www.instagram.com/togetheryazibasi/reel/DPrEu_SiHaL/',
+      promptType: 'ornek',
+      prompt: 'Camera movement:\ndrone push in over the city. Speed: slow and smooth.\n\nReference images:\nUse the original drone frame as the first frame and the edited frame (construction area cleaned up and replaced) as the last frame.\n\nScene:\nThe selected construction area morphs seamlessly into its new state while the rest of the city stays exactly the same.\n\nLook:\nLighting: clear daylight. Style: photoreal aerial footage.\n\nAvoid:\nchanging the skyline, warping roads, flicker, hard cuts.',
+      steps: [
+        'Drone videosundan ekran görüntüsü alındı ve inşaat bölümü görsel düzenleyiciyle temizlendi.',
+        'İki görsel Higgsfield\'in Morphskin efektiyle akıcı bir geçişe dönüştürüldü.',
+        'Buradaki önizleme, Instagram videosundan alınmış 3,4 saniyelik bir kesittir.'
+      ],
+      tags: ['morphskin', 'drone', 'şehir', 'dönüşüm', 'higgsfield', 'gayrimenkul', 'önce sonra'],
+      builder: { movement: 'drone-push', shot: 'extreme-wide', angle: 'high', lens: '24', light: 'daylight', mood: 'peaceful', style: 'documentary', speed: 'slow', ratio: '9:16', duration: '5', refImage: true,
+        imageContext: 'the original drone frame and an edited version of it', subject: 'A construction area in the city', location: 'a city district seen from a drone', action: 'the selected area morphs seamlessly into its new state', avoid: ['flicker', 'morph'] },
+      demo: false
+    },
+    {
+      id: 'hologram-kamera-01',
+      title: 'Ürün Etrafında Hologram Efekti',
+      summary: 'Elde tutulan bir kameranın etrafında, teknik özellikleri gösteren mavi hologram halkaları ve etiketler belirir. Teknoloji ürünü tanıtımları için.',
+      category: 'urun',
+      tool: 'Kling O1 Edit',
+      imageTool: 'Nano Banana Pro',
+      date: '2026-10-24',
+      ratio: '4:5',
+      duration: 4,
+      video: 'assets/video/promptlar/hologram-kamera-01.mp4',
+      videoSmall: 'assets/video/promptlar/hologram-kamera-01-kart.mp4',
+      poster: 'assets/img/promptlar/hologram-kamera-01.jpg',
+      instagram: 'https://www.instagram.com/togetheryazibasi/reel/DYPtme2I2cY/',
+      promptType: 'ornek',
+      prompt: 'Edit the uploaded video: add futuristic blue holographic graphics around the camera held in the hand.\n\nThin glowing rings orbit the lens, and floating spec labels with thin leader lines appear next to the product. The graphics expand out in 3D space, then settle into their final positions and track the product as it moves.\n\nKeep the room, the hand and the product exactly as filmed. Match the lighting and perspective of the original footage.\n\nAvoid:\nflickering graphics, covering the product, changing the hand or the room.',
+      steps: [
+        'Hologram tasarımı Nano Banana Pro ile bir kare üzerinde oluşturuldu.',
+        'Kling O1 Edit ile hologram, elde çekilmiş gerçek videoya uygulandı ve ürünü takip etti.',
+        'Buradaki önizleme, Instagram videosundan alınmış 3,6 saniyelik bir kesittir.'
+      ],
+      tags: ['hologram', 'ürün', 'kamera', 'teknoloji', 'kling', 'efekt', 'reklam', 'vfx'],
+      builder: { movement: 'handheld', shot: 'medium-close', angle: 'high', lens: '24', light: 'window', mood: 'energetic', style: 'commercial', speed: 'medium', ratio: '9:16', duration: '5', refImage: true,
+        imageContext: 'a handheld video of a camera in a room', subject: 'A camera held in a hand', location: 'a bright empty room', action: 'blue holographic rings and spec labels appear around the camera', avoid: ['flicker'] },
+      demo: false
+    },
+
+    /* ---------- Örnek (demo) içerikler ---------- */
     {
       id: 'parfum-orbit-01',
       title: 'Parfüm Şişesi Etrafında Yörünge',
@@ -89,7 +384,7 @@ window.PROMPT_LIBRARY = {
       id: 'villa-drone-giris-01',
       title: 'Villa Tanıtımı: Drone ile Giriş',
       summary: 'Gayrimenkul videoları için havadan yaklaşan, gün batımında villa açılış planı.',
-      category: 'mekan',
+      category: 'mimari',
       tool: 'Kling',
       imageTool: 'Midjourney',
       date: '2026-10-24',
@@ -111,7 +406,7 @@ window.PROMPT_LIBRARY = {
       id: 'araba-yan-takip-01',
       title: 'Spor Araba: Yandan Takip',
       summary: 'Sahil yolunda ilerleyen arabayla aynı hızda, yandan paralel giden dinamik araç planı.',
-      category: 'mekan',
+      category: 'otomotiv',
       tool: 'Runway',
       date: '2026-10-20',
       ratio: '16:9',
@@ -258,7 +553,7 @@ window.PROMPT_LIBRARY = {
       id: 'whip-pan-gecis-01',
       title: 'Whip Pan ile Sahne Geçişi',
       summary: 'Hızlı savrulan kamerayla iki mekân arasında kesintisiz geçiş hissi.',
-      category: 'efekt',
+      category: 'gecis',
       tool: 'Runway',
       date: '2026-09-18',
       ratio: '9:16',
