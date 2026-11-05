@@ -12,21 +12,27 @@
 <link rel="apple-touch-icon" href="assets/img/logo/apple-touch-icon.png">
 <meta name="theme-color" content="#0a0a0b">
 </head>
-<body>
+<body class="page-home">
 
 <header class="site-header">
   <div class="container header-inner">
     <a href="#hero" class="logo"><img class="logo-img" src="assets/img/logo/logo-isaret-beyaz.png" alt="" width="29" height="30"><span>YAZIBAŞI</span></a>
-    <nav class="main-nav">
+    <nav class="main-nav" id="mainNav" aria-label="Ana menü">
       <a href="#hero">Ana Sayfa</a>
-      <a href="#egitmen">Eğitmen</a>
-      <a href="#mufredat">Müfredat</a>
       <a href="#ornek-projeler">Örnek Projeler</a>
+      <a href="#egitmen">Eğitmen</a>
       <a href="#fiyat">Fiyat</a>
+      <a href="#mufredat">Müfredat</a>
       <a href="#sss">SSS</a>
+      <a href="prompt-kutuphanesi.html">Prompt Kütüphanesi</a>
       <a href="seminer.html">Seminer</a>
     </nav>
-    <a href="#fiyat" class="btn btn-primary btn-sm">Eğitime Katıl <span class="arrow">→</span></a>
+    <div class="header-actions">
+      <a href="#fiyat" class="btn btn-primary btn-sm">Eğitime Katıl <span class="arrow">→</span></a>
+      <button class="menu-toggle" type="button" aria-label="Menüyü aç" aria-expanded="false" aria-controls="mainNav">
+        <span></span><span></span><span></span>
+      </button>
+    </div>
   </div>
 </header>
 
@@ -43,6 +49,7 @@
         <p class="eyebrow">AI <span class="dot">×</span> VIDEO <span class="dot">×</span> STORYTELLING</p>
         <h1>Video Editörlüğünün<br>Yeni Dönemi</h1>
         <p class="hero-promise"><strong>5 yıldır bizzat yürüttüğüm video prodüksiyon sürecimi</strong>, son 1,5 yıldır yapay zekâyla yeniden kurguladım. Bu eğitimde aynı süreci — fikirden post-prodüksiyona — sana da öğretiyorum.</p>
+        <p class="hero-offer"><strong>₺4.800</strong> · Peşin fiyatına 3 taksit · Ömür boyu erişim</p>
         <div class="hero-actions">
           <a href="#fiyat" class="btn btn-primary">Eğitime Katıl <span class="arrow">→</span></a>
           <a href="#tanitim" class="btn btn-ghost"><span class="play-ic">▶</span> Tanıtım Videosunu İzle</a>
@@ -65,11 +72,12 @@
   <section class="promo" id="tanitim">
     <div class="container promo-grid">
       <div class="promo-media">
-        <div class="portrait portrait-promo">
+        <div class="portrait portrait-promo" data-promo-video>
           <img class="portrait-photo promo-cover" data-video-cover alt="Tanıtım videosu kapak görseli">
           <span class="promo-shade" aria-hidden="true"></span>
           <button class="thumb-play thumb-play-lg" aria-label="Tanıtım videosunu oynat" data-video-open>▶</button>
-          <p class="promo-media-caption">Bu görüntülerin<br>hiçbirini çekmedik.</p>
+          <button class="stage-toggle" type="button" aria-label="Videoyu duraklat" data-promo-pause hidden>❚❚</button>
+          <button class="promo-sound" type="button" data-promo-sound hidden>🔇 Sesi Aç</button>
         </div>
       </div>
       <div class="promo-content">
@@ -81,8 +89,19 @@
     </div>
   </section>
 
+  <!-- ÖRNEK PROJELER — içerik js/content.js > projects (dikey/yatay oranlar korunur) -->
+  <section id="ornek-projeler">
+    <div class="container">
+      <div class="section-head"><h2>Gerçek AI Video Üretim Örnekleri</h2><span class="draft-badge" data-empty-badge>Video eklenecek</span></div>
+      <div class="media-filters" data-project-filters role="group" aria-label="Proje filtresi" hidden></div>
+      <div class="masonry" data-projects>
+        <div class="empty-state"><p>Proje videoları paylaşıldığında bu alanda, dikey ve yatay formatlarıyla kırpılmadan gösterilecektir.</p></div>
+      </div>
+    </div>
+  </section>
+
   <!-- BRANDS -->
-  <section class="brands" style="padding-block:40px;">
+  <section class="brands">
     <div class="container brands-inner">
       <p class="brands-label">SEÇİLİ MARKALAR</p>
       <div class="brands-row">
@@ -101,16 +120,12 @@
         <img class="portrait-photo" src="assets/img/egitmen-1000.jpg" alt="Muhammed Ali Yazıbaşı">
       </div>
       <div class="instructor-content">
-        <p class="eyebrow">Eğitmen</p>
-        <h2>Muhammed Ali Yazıbaşı</h2>
-        <h3 class="instructor-lead">5 Yıllık Prodüksiyon Deneyimi, AI ile Yeni Bir Üretim Modeli</h3>
-        <div class="instructor-chips">
-          <span class="chip">5+ yıl video prodüksiyon</span>
-          <span class="chip">1,5+ yıl AI Video Production</span>
-          <span class="chip">10+ farklı sektör</span>
+        <div class="instructor-head">
+          <p class="eyebrow">Eğitmen</p>
+          <h2>Muhammed Ali Yazıbaşı</h2>
+          <h3 class="instructor-lead">5 Yıllık Prodüksiyon Deneyimi, AI ile Yeni Bir Üretim Modeli</h3>
         </div>
         <div class="section-desc instructor-bio">
-          <p>5 yılı aşkın süredir aktif olarak video prodüksiyon alanında çalışıyorum. Bu süreçte yerel ve global ölçekte farklı markalar ve projeler için içerikler ürettim.</p>
           <p>Son 1,5 yıldır ise üretim sürecimin merkezinde AI Video Production yer alıyor. Yapay zekâyı yalnızca içerik üretmek için değil; fikir geliştirmeden pre-prodüksiyona, görsel üretimden video üretimine, VFX'ten post-prodüksiyona kadar gerçek projelerin içerisine entegre ederek kullanıyorum.</p>
           <p>Bugüne kadar 10+ farklı sektörde çok sayıda marka ve projeyle çalıştım, AI destekli prodüksiyon süreçleri geliştirdim ve 50+ kişiye birebir mentörlük sağladım.</p>
         </div>
@@ -132,13 +147,43 @@
     </div>
   </section>
 
+  <!-- FİYAT -->
+  <section id="fiyat">
+    <div class="container">
+      <div class="price-section">
+        <div class="price-grid">
+          <div class="price-left">
+            <span class="eyebrow-pill">TEK ÖDEME</span>
+            <h3>Yatırımını Kariyerine Dönüştür.</h3>
+            <p class="section-desc">Eğitimin tamamına, güncellemelere ve özel topluluğa tek seferlik ödeme ile ömür boyu eriş.</p>
+            <p class="price">₺4.800</p>
+            <p class="price-note">Peşin fiyatına 3 taksit imkânı</p>
+          </div>
+          <div class="price-right">
+            <ul class="checklist">
+              <li><span class="check">✓</span> Tüm Eğitim İçeriklerine ömür boyu erişim</li>
+              <li><span class="check">✓</span> Güncellemeler dahil</li>
+              <li><span class="check">✓</span> Özel topluluk desteği</li>
+            </ul>
+            <!-- Satın alma bağlantısı js/content.js > purchaseUrl alanından gelir; boşken düğme pasif kalır -->
+            <a class="btn btn-block" data-purchase-link aria-disabled="true">Kayıt Bağlantısı Yakında</a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
   <!-- Eski "#egitim-icerigi" anchor'ı için uyumluluk köprüsü -->
   <span id="egitim-icerigi" aria-hidden="true" style="display:block; scroll-margin-top:84px;"></span>
 
   <!-- MÜFREDAT -->
   <section id="mufredat">
     <div class="container">
-      <div class="section-head"><h2>Eğitim Müfredatı</h2></div>
+      <details class="curriculum" data-curriculum>
+      <summary class="curriculum-head">
+        <span class="curriculum-title"><h2>Eğitim Müfredatı</h2><span class="curriculum-count">7 bölüm</span></span>
+        <span class="plus" aria-hidden="true">+</span>
+      </summary>
       <ol class="roadmap">
         <li><span class="num-badge">01</span><span class="rm-title">Bu Derslerden Sonra Neler Yapabileceksin? <span class="badge-free">Ücretsiz</span></span></li>
         <li><span class="num-badge">02</span><span class="rm-title">AI Mantığı</span></li>
@@ -158,22 +203,12 @@
           </div>
         </li>
       </ol>
-    </div>
-  </section>
-
-  <!-- ÖRNEK PROJELER — içerik js/content.js > projects (dikey/yatay oranlar korunur) -->
-  <section id="ornek-projeler">
-    <div class="container">
-      <div class="section-head"><h2>Gerçek AI Video Üretim Örnekleri</h2><span class="draft-badge" data-empty-badge>Video eklenecek</span></div>
-      <div class="media-filters" data-project-filters role="group" aria-label="Proje filtresi" hidden></div>
-      <div class="masonry" data-projects>
-        <div class="empty-state"><p>Proje videoları paylaşıldığında bu alanda, dikey ve yatay formatlarıyla kırpılmadan gösterilecektir.</p></div>
-      </div>
+      </details>
     </div>
   </section>
 
   <!-- ÖĞRENCİLER NE DİYOR? — içerik js/content.js > students (yalnızca izinli gerçek videolar) -->
-  <section id="referanslar">
+  <section id="referanslar" hidden>
     <div class="container">
       <div class="section-head"><h2>Öğrenciler Ne Diyor?</h2><span class="draft-badge" data-empty-badge>Videolar eklenecek</span></div>
       <div class="students" data-students>
@@ -198,31 +233,6 @@
     </div>
   </section>
 
-  <!-- FİYAT -->
-  <section id="fiyat">
-    <div class="container">
-      <div class="price-section">
-        <div class="price-grid">
-          <div class="price-left">
-            <span class="eyebrow-pill">TEK ÖDEME</span>
-            <h3>Yatırımını Kariyerine Dönüştür.</h3>
-            <p class="section-desc">Eğitimin tamamına, güncellemelere ve özel topluluğa tek seferlik ödeme ile ömür boyu eriş.</p>
-            <p class="price">₺4.800</p>
-            <p class="price-note">Peşin fiyatına 3 taksit imkânı</p>
-          </div>
-          <div class="price-right">
-            <ul class="checklist">
-              <li><span class="check">✓</span> Tüm Eğitim İçeriklerine ömür boyu erişim</li>
-              <li><span class="check">✓</span> Güncellemeler dahil</li>
-              <li><span class="check">✓</span> Özel topluluk desteği</li>
-            </ul>
-            <a href="#" class="btn btn-primary btn-block">Eğitime Katıl <span class="arrow">→</span></a>
-          </div>
-        </div>
-      </div>
-    </div>
-  </section>
-
   <!-- YAKINDA GELECEK İÇERİKLER -->
   <section>
     <div class="container">
@@ -232,14 +242,14 @@
       </div>
       <div class="upcoming-grid">
         <a href="#" class="upcoming-card">
-          <span class="upcoming-media upcoming-media-1"><img src="assets/img/yakinda/ai-influencer-ugc-480.webp" srcset="assets/img/yakinda/ai-influencer-ugc-480.webp 480w, assets/img/yakinda/ai-influencer-ugc-960.webp 960w" sizes="(max-width: 640px) 100vw, 240px" width="960" height="724" alt="Telefonuyla selfie videosu çeken, elinde serum şişesi tutan genç kadın" loading="lazy"></span>
+          <span class="upcoming-media upcoming-media-1"><img src="assets/img/yakinda/ai-influencer-ugc-480.webp" srcset="assets/img/yakinda/ai-influencer-ugc-480.webp 480w, assets/img/yakinda/ai-influencer-ugc-960.webp 960w" sizes="(max-width: 640px) 96px, (max-width: 1024px) 45vw, 170px" width="960" height="724" alt="Telefonuyla selfie videosu çeken, elinde serum şişesi tutan genç kadın" loading="lazy"></span>
           <span class="upcoming-text">
             <strong>AI Influencer Marketing</strong>
             <span>UGC Video Oluşturma</span>
           </span>
         </a>
         <a href="#" class="upcoming-card">
-          <span class="upcoming-media upcoming-media-2"><img src="assets/img/yakinda/kendi-avatarin-480.webp" srcset="assets/img/yakinda/kendi-avatarin-480.webp 480w, assets/img/yakinda/kendi-avatarin-960.webp 960w" sizes="(max-width: 640px) 100vw, 240px" width="960" height="724" alt="Yan profilden görünen bir adam ve arkasında kırmızı holografik dijital ikizi" loading="lazy"></span>
+          <span class="upcoming-media upcoming-media-2"><img src="assets/img/yakinda/kendi-avatarin-480.webp" srcset="assets/img/yakinda/kendi-avatarin-480.webp 480w, assets/img/yakinda/kendi-avatarin-960.webp 960w" sizes="(max-width: 640px) 96px, (max-width: 1024px) 45vw, 170px" width="960" height="724" alt="Yan profilden görünen bir adam ve arkasında kırmızı holografik dijital ikizi" loading="lazy"></span>
           <span class="upcoming-text">
             <strong>Kendi Avatarını Oluşturma</strong>
             <span>Bir Daha Kamera Karşısına Geçme</span>
@@ -286,11 +296,6 @@
           <h2>Sıradaki proje senin ellerinde.</h2>
           <p>Video editörlüğünün geleceğine bugün katıl.</p>
           <a href="#fiyat" class="btn btn-primary">Eğitime Katıl <span class="arrow">→</span></a>
-          <div class="cta-stats">
-            <div class="stat"><strong>5+ Yıl</strong><span>Prodüksiyon Deneyimi</span></div>
-            <div class="stat"><strong>50+</strong><span>Birebir Mentorluk</span></div>
-            <div class="stat"><strong>10+</strong><span>Farklı Sektörde Proje</span></div>
-          </div>
         </div>
       </div>
     </div>

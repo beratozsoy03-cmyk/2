@@ -131,7 +131,13 @@ section { padding-block: 88px; }
 .promo-shade { position: absolute; inset: 0; background: linear-gradient(0deg, rgba(0,0,0,0.7) 0%, rgba(0,0,0,0.15) 55%, rgba(0,0,0,0.25) 100%); }
 .promo-cover { opacity: 0; transition: opacity .4s ease; }
 .promo-cover.is-loaded { opacity: 1; }
-.promo-media-caption { position: absolute; left: 26px; bottom: 24px; color: #fff; font-weight: 700; font-size: 20px; line-height: 1.3; text-shadow: 0 2px 14px rgba(0,0,0,0.5); z-index: 2; }
+.promo-live { position: absolute; inset: 0; width: 100%; height: 100%; border: 0; pointer-events: none; }
+.portrait-promo.is-playing .promo-cover { opacity: 0; }
+.portrait-promo.is-playing .promo-shade { background: linear-gradient(0deg, rgba(0,0,0,0.6) 0%, transparent 42%); }
+.portrait-promo.is-started .thumb-play-lg { display: none; }
+.promo-sound { position: absolute; right: 18px; bottom: 18px; z-index: 3; font-size: 13px; font-weight: 600; color: #fff; padding: 8px 14px; border-radius: 999px; border: 1px solid var(--border-strong); background: rgba(10,10,11,0.6); backdrop-filter: blur(6px); transition: background .2s ease; }
+.promo-sound:hover { background: rgba(255,255,255,0.14); }
+.promo-sound[hidden] { display: none; }
 .promo-content h2 { margin-bottom: 18px; }
 .promo-content .btn { margin-top: 28px; }
 
@@ -358,7 +364,8 @@ body.modal-open { overflow: hidden; }
 .ig-stage.has-items { position: relative; }
 .ig-track { position: relative; display: flex; gap: 16px; overflow-x: auto; scroll-snap-type: x mandatory; scrollbar-width: none; padding: 28px max(24px, calc(50% - 130px)); }
 .ig-track::-webkit-scrollbar { display: none; }
-.ig-card { --w: clamp(200px, 22vw, 260px); position: relative; flex: 0 0 var(--w); width: var(--w); aspect-ratio: 9 / 16; overflow: hidden; border-radius: var(--radius-md); border: 1px solid var(--border-strong); background: var(--card); scroll-snap-align: center; transition: transform .15s linear, opacity .15s linear; will-change: transform; }
+.ig-card { --w: clamp(200px, 22vw, 260px); position: relative; flex: 0 0 var(--w); width: var(--w); aspect-ratio: 9 / 16; overflow: hidden; border-radius: var(--radius-md); border: 1px solid var(--border-strong); background: var(--card); scroll-snap-align: center; transition: transform .2s ease, border-color .2s ease; }
+@media (hover: hover) { .ig-card:hover { transform: translateY(-4px); border-color: rgba(255,255,255,0.4); } }
 .ig-card img, .ig-card video { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; }
 .ig-badge { position: absolute; z-index: 2; top: 12px; left: 12px; font-size: 11px; font-weight: 700; letter-spacing: 0.04em; color: #fff; background: rgba(10,10,11,0.6); backdrop-filter: blur(6px); border: 1px solid var(--border-strong); border-radius: 999px; padding: 4px 10px; }
 .ig-stage .sc-controls { justify-content: center; margin-top: 8px; }
@@ -436,4 +443,168 @@ body.modal-open { overflow: hidden; }
 
   /* seminer */
   .audience-grid { grid-template-columns: 1fr 1fr; }
+}
+
+/* ============ ANA SAYFA: DÖNÜŞÜM ODAKLI DÜZEN (yalnızca index.html, body.page-home) ============ */
+.page-home section { padding-block: 64px; }
+.page-home .stage { padding: 0; }
+.page-home .section-head { margin-bottom: 28px; }
+
+/* Üst menü */
+.page-home .main-nav a { white-space: nowrap; }
+.header-actions { display: flex; align-items: center; gap: 10px; flex-shrink: 0; }
+.page-home .menu-toggle { display: none; width: 42px; height: 42px; border-radius: 12px; border: 1px solid var(--border-strong); flex-direction: column; align-items: center; justify-content: center; gap: 4px; }
+.page-home .menu-toggle span { width: 16px; height: 1.6px; background: #fff; border-radius: 2px; transition: transform .2s ease, opacity .2s ease; }
+.page-home .menu-toggle[aria-expanded="true"] span:nth-child(1) { transform: translateY(5.6px) rotate(45deg); }
+.page-home .menu-toggle[aria-expanded="true"] span:nth-child(2) { opacity: 0; }
+.page-home .menu-toggle[aria-expanded="true"] span:nth-child(3) { transform: translateY(-5.6px) rotate(-45deg); }
+
+/* Hero teklif satırı */
+.hero-offer { font-size: 15px; font-weight: 600; color: var(--text); margin-bottom: 18px; }
+.hero-offer strong { font-size: 20px; font-weight: 800; letter-spacing: -0.01em; }
+
+/* Tanıtım */
+.page-home .promo { padding-block: 56px 32px; }
+
+/* Gerçek AI örnekleri */
+.page-home .masonry.has-items { column-count: 4; }
+.page-home .m-item:nth-child(3n+2) { margin-top: 0; }
+.page-home .media-filters { margin-bottom: 18px; }
+.project-more { display: flex; justify-content: center; margin-top: 20px; }
+
+/* Seçili markalar */
+.page-home .brands { padding-block: 22px; }
+.page-home .brands-inner { flex-direction: row; align-items: center; gap: 48px; }
+.page-home .brands-label { flex-shrink: 0; }
+.page-home .brands-row { flex: 1; flex-wrap: nowrap; gap: 24px; }
+.page-home .brand-logo-eti, .page-home .brand-logo-migros { height: 38px; }
+.page-home .brand-logo-lcw { height: 17px; }
+.page-home .brand-logo-tecno { height: 18px; }
+
+/* Eğitmen */
+.page-home .instructor-grid { grid-template-columns: 280px 1fr; gap: 44px; }
+.page-home .portrait-instructor { aspect-ratio: 1 / 1.1; max-width: none; }
+.page-home .instructor-lead { margin: 10px 0 14px; }
+.page-home .instructor-head .eyebrow { margin-bottom: 8px; }
+.page-home .instructor-bio { font-size: 15px; margin-bottom: 22px; }
+
+/* Neler öğreneceksin */
+.page-home .feature-card { gap: 10px; }
+
+/* Fiyat: bağlantı gelene kadar pasif düğme (js/content.js > purchaseUrl) */
+.btn[aria-disabled="true"] { background: rgba(255,255,255,0.08); color: var(--text-dim); border: 1px solid var(--border-strong); cursor: not-allowed; }
+.btn[aria-disabled="true"]:hover { opacity: 1; }
+.page-home .price-left, .page-home .price-right { padding: 36px 40px; }
+.page-home .price { margin-top: 12px; }
+
+/* Müfredat: açılır kapanır */
+.curriculum { background: var(--card-soft); border: 1px solid var(--border); border-radius: var(--radius-lg); }
+.curriculum-head { display: flex; align-items: center; justify-content: space-between; gap: 16px; padding: 22px 26px; cursor: pointer; list-style: none; }
+.curriculum-head::-webkit-details-marker { display: none; }
+.curriculum-title { display: flex; align-items: baseline; gap: 14px; flex-wrap: wrap; }
+.curriculum-title h2 { font-size: clamp(22px, 2.4vw, 28px); }
+.curriculum-count { font-size: 14px; color: var(--text-dim); }
+.curriculum-head .plus { font-size: 24px; line-height: 1; color: var(--text-dim); transition: transform .2s ease; flex-shrink: 0; }
+.curriculum[open] .curriculum-head .plus { transform: rotate(45deg); color: var(--accent-1); }
+.curriculum .roadmap { padding: 4px 26px 8px; }
+.curriculum .roadmap > li:last-child { border-bottom: 0; }
+.curriculum .roadmap > li { padding-block: 16px; }
+
+/* Instagram ve Yakında */
+.page-home .ig-head { margin-bottom: 8px; }
+.page-home .ig-track { padding-block: 16px; }
+.page-home .ig-cta { margin-top: 12px; }
+.page-home .upcoming-media { width: 170px; }
+
+/* Son çağrı */
+.page-home .cta-banner { min-height: 0; padding: 44px 32px; }
+.page-home .cta-banner-text p { margin-bottom: 22px; }
+.page-home .faq-list { max-width: none; }
+
+@media (max-width: 1180px) {
+  .page-home .main-nav { gap: 18px; }
+}
+@media (max-width: 1024px) {
+  .page-home .header-inner { position: static; padding-block: 12px; flex-wrap: nowrap; gap: 12px; }
+  .page-home .menu-toggle { display: inline-flex; }
+  .page-home .main-nav { display: none; position: absolute; top: 100%; left: 0; right: 0; order: 0; width: auto; flex-direction: column; flex-wrap: nowrap; gap: 0; padding: 4px 24px 16px; border-top: 1px solid var(--border); border-bottom: 1px solid var(--border); background: rgba(10,10,11,0.98); font-size: 16px; font-weight: 600; color: var(--text); max-height: calc(100svh - 70px); overflow-y: auto; }
+  .page-home .main-nav.is-open { display: flex; }
+  .page-home .main-nav a { padding-block: 13px; border-bottom: 1px solid var(--border); }
+  .page-home .main-nav a:last-child { border-bottom: 0; }
+  .page-home .masonry.has-items { column-count: 3; }
+  .page-home .instructor-grid { grid-template-columns: 220px 1fr; gap: 28px; }
+  .page-home .portrait-instructor { aspect-ratio: 1 / 1.1; max-width: none; }
+  .page-home .promo-grid { grid-template-columns: 1.15fr 1fr; gap: 28px; }
+  .page-home .portrait-promo { aspect-ratio: 16 / 9; }
+  .page-home .upcoming-grid { grid-template-columns: 1fr 1fr; }
+  .page-home .upcoming-card { flex-direction: column; align-items: flex-start; gap: 12px; }
+  .page-home .upcoming-media { width: 100%; }
+}
+@media (max-width: 860px) {
+  .page-home .promo-grid { grid-template-columns: 1fr; gap: 20px; }
+}
+@media (max-width: 640px) {
+  .page-home section { padding-block: 44px; }
+  .page-home .stage { padding: 0; }
+  .page-home .promo { padding-block: 40px 20px; }
+  .page-home .header-inner { padding-block: 10px; }
+  .page-home .btn-sm { padding: 10px 16px; }
+  .page-home .stage-hero { min-height: 0; }
+  .page-home .stage-hero .stage-inner { padding-block: 72px 24px; }
+  .page-home .hero-promise { padding: 12px 14px; font-size: 14px; margin-bottom: 14px; }
+  .page-home .hero-actions { margin-bottom: 20px; gap: 10px; }
+  .page-home .hero-stats { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; }
+  .page-home .hero-stats .stat strong { font-size: 18px; }
+  .page-home .hero-stats .stat span { font-size: 11.5px; line-height: 1.3; }
+  .hero-offer { font-size: 13.5px; margin-bottom: 14px; }
+  .hero-offer strong { font-size: 17px; }
+
+  .page-home .promo-content h2 { margin-bottom: 10px; }
+  .page-home .promo-content .btn { margin-top: 16px; }
+  .page-home .promo-sound { right: 10px; bottom: 10px; font-size: 12px; padding: 6px 10px; }
+  .page-home .stage-toggle { top: 10px; right: 10px; width: 34px; height: 34px; }
+  .page-home .thumb-play-lg { width: 54px; height: 54px; font-size: 15px; }
+
+  .page-home .masonry.has-items { column-count: 2; }
+  .page-home .brands { padding-block: 16px; }
+  .page-home .brands-inner { flex-direction: column; align-items: stretch; gap: 12px; }
+  .page-home .brands-row { gap: 14px; }
+  .page-home .brand-logo-eti, .page-home .brand-logo-migros { height: 30px; }
+  .page-home .brand-logo-lcw { height: 13px; }
+  .page-home .brand-logo-tecno { height: 14px; }
+
+  .page-home .instructor-grid { grid-template-columns: 92px 1fr; gap: 14px 16px; align-items: center; }
+  .page-home .portrait-instructor { aspect-ratio: 1 / 1.15; border-radius: var(--radius-md); }
+  .page-home .instructor-content { display: contents; }
+  .page-home .instructor-head h2 { font-size: 22px; }
+  .page-home .instructor-lead { font-size: 14.5px; margin: 6px 0 0; }
+  .page-home .instructor-head .eyebrow { margin-bottom: 4px; font-size: 11px; }
+  .page-home .instructor-bio { grid-column: 1 / -1; margin-bottom: 4px; font-size: 14.5px; line-height: 1.55; }
+  .page-home .instructor-grid > .instructor-content > .btn { grid-column: 1 / -1; }
+
+  .page-home .feature-card { padding: 14px; gap: 6px; }
+  .page-home .feature-card h4 { font-size: 15px; }
+  .page-home .feature-card p { font-size: 13px; }
+  .page-home .price-left, .page-home .price-right { padding: 24px 20px; }
+  .page-home .price { font-size: 42px; }
+
+  .curriculum-head { padding: 16px 18px; }
+  .curriculum .roadmap { padding: 0 18px 4px; }
+  .curriculum .roadmap > li { grid-template-columns: 40px 1fr; gap: 12px; padding-block: 12px; }
+  .curriculum .roadmap .num-badge { width: 32px; height: 32px; font-size: 12px; }
+  .curriculum .roadmap .rm-title { font-size: 14.5px; }
+
+  .page-home .upcoming-grid { grid-template-columns: 1fr; gap: 10px; }
+  .page-home .upcoming-card { flex-direction: row; align-items: center; gap: 12px; padding: 10px; }
+  .page-home .upcoming-media { width: 96px; }
+  .page-home .upcoming-text strong { font-size: 14.5px; }
+  .page-home .upcoming-text span { font-size: 12.5px; }
+  .page-home .faq-q { padding: 15px 16px; font-size: 14.5px; }
+  .page-home .faq-a p { padding: 0 16px 15px; font-size: 14px; }
+  .page-home .cta-banner { padding: 30px 18px; }
+}
+@media (max-width: 400px) {
+  .page-home .header-actions .btn .arrow { display: none; }
+  .page-home .header-actions .btn { padding: 9px 13px; font-size: 13.5px; }
+  .page-home .logo { font-size: 16px; gap: 8px; }
 }

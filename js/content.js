@@ -7,6 +7,10 @@
    ============================================================ */
 window.SITE_MEDIA = {
 
+  // Eğitim satın alma bağlantısı: gerçek https adresi gelince buraya yazılır (ör. https://...).
+  // Boş kaldığı sürece fiyat bölümündeki düğme pasif görünür.
+  purchaseUrl: '',
+
   // Hero ve seminer videosu: dosyayı aşağıdaki yola yüklemek yeterli.
   // Dosya yoksa poster görseli görünür. (srcMobile isteğe bağlıdır.)
   heroVideo:    { src: 'assets/video/hero.mp4',    srcMobile: 'assets/video/hero-mobil.mp4' },
@@ -23,10 +27,10 @@ window.SITE_MEDIA = {
       video: 'assets/video/projeler/solinved-tanitim-filmi.mp4', poster: 'assets/img/projeler/solinved-tanitim-filmi.jpg' },
     { title: 'Gündüzden Geceye Konut Tanıtımı', category: 'Gayrimenkul', ratio: '9:16',
       video: 'assets/video/projeler/gunduzden-geceye-konut.mp4', poster: 'assets/img/projeler/gunduzden-geceye-konut.jpg' },
-    { title: 'Uzaydan Konut Projesine', category: 'Gayrimenkul', ratio: '9:16',
-      video: 'assets/video/projeler/uzaydan-konut-projesi.mp4', poster: 'assets/img/projeler/uzaydan-konut-projesi.jpg' },
     { title: 'Çizo Süpermarket Reklamı', category: 'Reklam Filmi', ratio: '16:9',
       video: 'assets/video/projeler/cizo-supermarket-tanitim.mp4', poster: 'assets/img/projeler/cizo-supermarket-tanitim.jpg' },
+    { title: 'Uzaydan Konut Projesine', category: 'Gayrimenkul', ratio: '9:16',
+      video: 'assets/video/projeler/uzaydan-konut-projesi.mp4', poster: 'assets/img/projeler/uzaydan-konut-projesi.jpg' },
     { title: 'Yontu Ahşap Blok Reklamı', category: 'Ürün Reklamı', ratio: '9:16',
       video: 'assets/video/projeler/ahsap-urun-reklami.mp4', poster: 'assets/img/projeler/ahsap-urun-reklami.jpg' },
     { title: 'Çaycuma Süt Labne Reklamı', category: 'Ürün Reklamı', ratio: '9:16',

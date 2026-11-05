@@ -182,8 +182,39 @@
     const badge = document.querySelector('#ornek-projeler [data-empty-badge]');
     if (badge) badge.remove();
 
+    // İlk 6 video görünür; kalanı "Tümünü Gör" ile açılır. Filtre seçiliyken eşleşenlerin tamamı görünür.
+    const PREVIEW_COUNT = 6;
+    const cells = [...wrap.children];
+    let activeFilter = 'hepsi';
+    let expanded = false;
+    let moreWrap = null;
+    let moreBtn = null;
+    const applyVisibility = () => {
+      cells.forEach((c, i) => {
+        const matches = activeFilter === 'hepsi' || c.dataset.orient === activeFilter;
+        c.hidden = !matches || (activeFilter === 'hepsi' && !expanded && i >= PREVIEW_COUNT);
+      });
+      if (moreWrap) {
+        moreWrap.hidden = activeFilter !== 'hepsi';
+        moreBtn.textContent = expanded ? 'Daha Az Göster' : `Tümünü Gör (${cells.length})`;
+        moreBtn.setAttribute('aria-expanded', String(expanded));
+      }
+    };
+    if (cells.length > PREVIEW_COUNT) {
+      moreWrap = el('div', 'project-more');
+      moreBtn = el('button', 'btn btn-ghost');
+      moreBtn.type = 'button';
+      moreBtn.addEventListener('click', () => {
+        expanded = !expanded;
+        applyVisibility();
+        if (!expanded) wrap.scrollIntoView({ block: 'start', behavior: reduceMotion ? 'auto' : 'smooth' });
+      });
+      moreWrap.appendChild(moreBtn);
+      wrap.after(moreWrap);
+    }
+
     const filters = document.querySelector('[data-project-filters]');
-    const kinds = new Set([...wrap.children].map((c) => c.dataset.orient));
+    const kinds = new Set(cells.map((c) => c.dataset.orient));
     if (filters && kinds.size > 1) {
       filters.hidden = false;
       [['hepsi', 'Tümü'], ['dikey', 'Dikey'], ['yatay', 'Yatay']].forEach(([key, text]) => {
@@ -192,11 +223,13 @@
         f.setAttribute('aria-pressed', key === 'hepsi' ? 'true' : 'false');
         f.addEventListener('click', () => {
           filters.querySelectorAll('.filter-chip').forEach((c) => c.setAttribute('aria-pressed', c === f ? 'true' : 'false'));
-          wrap.querySelectorAll('.m-item').forEach((c) => { c.hidden = key !== 'hepsi' && c.dataset.orient !== key; });
+          activeFilter = key;
+          applyVisibility();
         });
         filters.appendChild(f);
       });
     }
+    applyVisibility();
   }
 
   // Yatay kaydırmalı alanlar için ok düğmeleri
@@ -218,6 +251,9 @@
     const wrap = document.querySelector('[data-students]');
     const list = (items || []).filter(playable);
     if (!wrap || !list.length) return;
+    // Bölüm, gerçek öğrenci videosu eklenene kadar HTML'de gizli durur
+    const section = document.getElementById('referanslar');
+    if (section) section.hidden = false;
     wrap.replaceChildren();
     wrap.classList.add('has-items');
     const track = el('div', 'sc-track');
@@ -236,7 +272,7 @@
     if (note) note.remove();
   }
 
-  // --- Instagram: kaydırmalı, kenarları eğimli galeri ---
+  // --- Instagram: kaydırmalı, sabit kartlı galeri (ortadaki kartın önizlemesi oynar) ---
   function renderInstagram(items) {
     const wrap = document.querySelector('[data-instagram]');
     const list = (items || []).filter((i) => i && /^https:\/\/www\.instagram\.com\//.test(i.url || '') && (i.poster || safeVideoSrc(i.video)));
@@ -264,6 +300,8 @@
     wrap.appendChild(track);
     if (cards.length > 1) addScrollButtons(wrap, track, () => (cards[0].a.offsetWidth + 16) * 2);
 
+    // Önizleme yalnızca bölüm ekrana yaklaşınca iner ve oynar
+    let inView = !('IntersectionObserver' in window);
     let raf = 0;
     const update = () => {
       raf = 0;
@@ -273,14 +311,10 @@
         const d = (c.a.offsetLeft + c.a.offsetWidth / 2 - mid) / c.a.offsetWidth;
         const abs = Math.abs(d);
         if (abs < best) { best = abs; nearest = c; }
-        if (!reduceMotion) {
-          c.a.style.transform = `perspective(900px) rotateY(${Math.max(-1, Math.min(1, d)) * -16}deg) scale(${1 - Math.min(abs, 2.5) * 0.06})`;
-          c.a.style.opacity = String(1 - Math.min(abs, 2.5) * 0.14);
-        }
       });
       cards.forEach((c) => {
         if (!c.v) return;
-        if (c === nearest && !reduceMotion) tryPlay(c.v); else c.v.pause();
+        if (inView && c === nearest && !reduceMotion) tryPlay(c.v); else c.v.pause();
       });
     };
     track.addEventListener('scroll', () => { if (!raf) raf = requestAnimationFrame(update); }, { passive: true });
@@ -289,8 +323,28 @@
     const mid = cards[Math.floor(cards.length / 2)].a;
     track.scrollLeft = Math.max(0, mid.offsetLeft - (track.clientWidth - mid.offsetWidth) / 2);
     update();
+    if (!inView) {
+      new IntersectionObserver(([entry]) => {
+        inView = entry.isIntersecting;
+        update();
+      }, { rootMargin: '200px 0px' }).observe(track);
+    }
   }
 
+  // --- Satın alma düğmesi: yalnızca gerçek bir https bağlantısı girildiyse etkinleşir ---
+  function applyPurchaseLink(url) {
+    const link = document.querySelector('[data-purchase-link]');
+    if (!link || !/^https:\/\/\S+$/.test(url || '')) return;
+    link.href = url;
+    link.target = '_blank';
+    link.rel = 'noopener noreferrer';
+    link.removeAttribute('aria-disabled');
+    link.classList.add('btn-primary');
+    link.textContent = 'Eğitime Katıl ';
+    link.appendChild(el('span', 'arrow', '→'));
+  }
+
+  applyPurchaseLink(MEDIA.purchaseUrl);
   renderProjects(MEDIA.projects);
   renderStudents(MEDIA.students);
   renderInstagram(MEDIA.instagram);
