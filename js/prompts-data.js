@@ -27,6 +27,11 @@
                'ornek'    → videoya benzer sonuç için yazılmış örnek prompt (varsayılan)
                Videonun promptu bilinmiyorsa ASLA 'gercek' yazmayın.
    promptNote: (isteğe bağlı) etiket metnini özelleştirir
+   outputFormat: (isteğe bağlı) promptun hedeflediği video, ör. '9:16 · 10 sn'.
+               Verilirse ratio/duration yalnızca önizleme kesitini anlatır.
+   referenceImages: (isteğe bağlı) promptun istediği görseller [{ id, role, desc }]
+               Gerçek promptlarda builder alanı yazmayın: "Oluşturucuda düzenle"
+               düğmesi ancak builder varsa görünür.
    prompt    : kopyalanacak prompt metni (video modelleri için İngilizce önerilir)
    steps     : "Nasıl yapıldı?" adımları (Türkçe)
    tags      : arama için ek anahtar kelimeler
@@ -82,7 +87,7 @@ window.PROMPT_LIBRARY = {
     {
       id: 'arsa-insaat-01',
       title: 'Boş Arsadan Yükselen Bina',
-      summary: 'Boş bir arsanın üzerinden FPV kamerayla geçerken temeller, kolonlar ve katlar tek bir kesintisiz çekimde yükselir. Gayrimenkul projeleri için.',
+      summary: 'Boş bir arazide temeller, kolonlar ve katlar yükselir; hızlı drone geçişleri ve yakın planlarla inşaat, bitiş karesindeki aşamaya kadar hızlandırılmış anlatılır. Gayrimenkul projeleri için.',
       category: 'mimari',
       tool: 'Seedance 2.5',
       date: '2026-11-02',
@@ -92,17 +97,182 @@ window.PROMPT_LIBRARY = {
       videoSmall: 'assets/video/promptlar/arsa-insaat-01-kart.mp4',
       poster: 'assets/img/promptlar/arsa-insaat-01.jpg',
       instagram: 'https://www.instagram.com/togetheryazibasi/reel/DewsPm6ovKn/',
-      promptType: 'ornek',
-      promptNote: 'Örnek prompt — videoda yalnızca bir kısmı görünen orijinal prompttan yola çıkılarak hazırlandı; videonun tam promptu değildir.',
-      prompt: 'Camera movement:\nFPV drone flight. Start low over an empty dirt plot and fly forward in one continuous shot while the building rises around the camera: rebar grids, foundations, concrete columns, then floors and facade. Use smooth orbit-style banking, controlled push-in and pull-out moves and gentle spiral elevation changes. Speed: fast but highly controlled.\n\nReference images:\nUse the empty plot photo as the first frame and the completed building photo as the final frame. End on a cinematic hero view where the completed building matches the reference image exactly.\n\nLook:\nLighting: clear natural daylight. Style: photoreal construction time-lapse feel, natural cinematic motion blur, wide-angle FPV lens with restrained fisheye distortion.\n\nAvoid:\ncamera shaking, random vibration, unstable horizon, chaotic freestyle movement, abrupt left-right corrections, hard cuts.',
+      promptType: 'gercek',
+      outputFormat: '9:16 · 10 sn',
+      referenceImages: [
+        { id: 'IMAGE 1', role: 'Başlangıç karesi', desc: 'Arsanın boş hâli: yollar, kavşak, evler, ağaçlar, spor sahası ve uzak silüet.' },
+        { id: 'IMAGE 2', role: 'Bitiş karesi', desc: 'Aynı yerde inşaatı süren iki kule: vinç, ortak podyum ve şantiye tam bu aşamada.' }
+      ],
+      prompt: `Create a hyper-dynamic photorealistic cinematic construction time-lapse using the two provided reference images.
+
+FORMAT:
+Vertical 9:16, 10 seconds, high-end architectural VFX, realistic construction physics, sharp detail, natural daylight, energetic action-trailer pacing.
+
+REFERENCE FRAME RULES:
+IMAGE 1 = EXACT START FRAME.
+IMAGE 2 = EXACT END FRAME.
+
+The first frame must match Image 1 exactly: the undeveloped site with the existing roads, intersection, houses, trees, sports field, hills, distant apartment towers and clear blue sky.
+
+The final frame must match Image 2 exactly: the two partially constructed high-rise towers, their exact height, shape, facade condition, crane, shared construction podium, surrounding construction site and all visible architectural details.
+
+DO NOT complete the buildings beyond Image 2.
+Image 2 represents the exact construction stage where the animation must stop.
+
+0.0–1.3s — RAPID DESCENT TO THE SITE
+Begin from the exact aerial composition of Image 1.
+The camera performs a powerful but controlled forward-and-downward dive toward the empty construction parcel located in the center of the frame.
+Maintain the real geography and surrounding environment.
+The streets, houses, trees, sports field and distant skyline remain fixed and undistorted.
+
+As the camera approaches the site, dust begins to lift naturally from the ground.
+
+1.3–2.7s — FOUNDATION CONSTRUCTION
+Cut to a much closer low aerial angle over the site.
+
+Excavated ground, reinforced concrete foundations, rebar grids, structural columns and concrete slabs rapidly assemble from the ground upward.
+
+Construction elements must behave like real heavy materials:
+steel reinforcement rises into position,
+concrete slabs slide and lock into place,
+columns form vertically,
+foundation sections connect precisely.
+
+No magical particle transformation.
+
+2.7–6.7s — TWO TOWERS RISE
+The camera enters a fast ascending orbital drone movement around the construction.
+
+Both towers progressively rise FLOOR BY FLOOR from their foundations toward the exact structures visible in Image 2.
+
+LEFT TOWER:
+Build the exposed reinforced-concrete structure exactly as seen in the final reference, including open floor plates, unfinished exterior walls and the tower crane.
+
+RIGHT TOWER:
+Construct the more advanced tower with its exact yellow/olive exterior facade, dark window openings, rooftop structure and podium connection.
+
+The two towers must remain correctly positioned relative to each other throughout the sequence.
+
+Each floor assembles mechanically:
+concrete floor slabs lock horizontally,
+vertical columns rise,
+walls and facade sections attach,
+windows and exterior panels install only where they exist in Image 2.
+
+Alternate dynamically between:
+wide orbital views showing both towers,
+close facade passes,
+low-angle upward shots,
+tight passes near structural elements.
+
+Use fast speed ramps and whip transitions between camera angles.
+
+6.7–8.4s — INDUSTRIAL CLOSE PASSES
+Several rapid cinematic inserts:
+
+Camera flies past reinforced concrete columns.
+Pass closely beside the tower crane.
+Move between unfinished floor slabs.
+Concrete wall sections and facade panels lock into position nearby.
+Fine construction dust falls through sunlight.
+Small realistic debris reacts to structural impacts.
+
+All materials must remain solid, physically weighted and attached to the structure after installation.
+
+No floating construction pieces.
+
+8.4–9.2s — FINAL CONSTRUCTION STAGE LOCK
+Return to a wider aerial angle.
+
+The last visible floors, rooftop sections, crane and shared podium assemble into the precise construction condition shown in Image 2.
+
+A subtle cloud of construction dust settles.
+
+IMPORTANT:
+Do not add extra floors.
+Do not remove the crane.
+Do not finish the exposed concrete tower.
+Do not convert either tower into a completed building.
+
+The construction must stop EXACTLY at Image 2.
+
+9.2–10.0s — MATCH TO END FRAME
+The camera performs a fast cinematic pull-back and upward movement toward the original aerial perspective.
+
+During the final movement, perfectly align:
+camera altitude,
+lens perspective,
+road geometry,
+intersection,
+sports field,
+houses,
+terrain,
+distant skyline,
+building placement
+with Image 2.
+
+The camera settles smoothly.
+
+The FINAL FRAME MUST MATCH IMAGE 2 AS CLOSELY AS POSSIBLE.
+
+CAMERA LANGUAGE:
+Fast FPV/drone-style push-ins,
+aggressive but controlled orbital rises,
+hard speed ramps,
+whip-pan transitions,
+close structural fly-bys,
+brief rack-focus,
+cinematic motion blur only during fast movement.
+
+Do not make the entire video one static zoom.
+
+ENVIRONMENT LOCK:
+Preserve the surrounding city exactly.
+Do not reconstruct or alter unrelated houses.
+Do not change the intersection.
+Do not change the roads.
+Do not remove or add distant buildings.
+Do not alter the sports field.
+Do not change terrain geometry.
+Do not change the clear daytime sky into sunset or golden hour.
+
+CONSTRUCTION PHYSICS:
+Concrete, steel, rebar, facade panels and construction machinery must appear heavy, rigid and realistic.
+Elements may move rapidly into position but must never melt, morph, stretch or float.
+
+NEGATIVE PROMPT:
+No Dubai skyline.
+No ST REGIS building.
+No invented skyscrapers.
+No completed luxury towers.
+No additional floors.
+No altered building proportions.
+No warped architecture.
+No melting geometry.
+No morphing buildings.
+No floating materials after assembly.
+No random cranes.
+No disappearing surroundings.
+No changing roads.
+No changing houses.
+No terrain deformation.
+No flickering facade.
+No duplicated floors.
+No distorted windows.
+No fake miniature effect.
+No cartoon construction physics.
+No sunset.
+No golden-hour color shift.
+No excessive dust hiding the architecture.
+No static single-shot zoom.
+No generated text or logos.
+No audio.`,
       steps: [
-        'Videoda gösterildiği gibi iki referans görsel kullanıldı: boş arsa ve tamamlanmış bina.',
+        'İki referans görsel kullanıldı: boş arsa (başlangıç karesi) ve inşaatı süren kuleler (bitiş karesi).',
         'Prompt bir yapay zekâ sohbet aracıyla yazıldı; video Seedance 2.5 ile üretildi.',
         'Buradaki önizleme, Instagram videosundan alınmış 5,5 saniyelik bir kesittir (altyazı kalmasın diye 4:5 kırpıldı).'
       ],
       tags: ['inşaat', 'gayrimenkul', 'arsa', 'bina', 'fpv', 'drone', 'seedance', 'dönüşüm'],
-      builder: { movement: 'fpv', shot: 'wide', angle: 'high', lens: '14', light: 'daylight', mood: 'epic', style: 'documentary', speed: 'fast', ratio: '9:16', duration: '10', refImage: true,
-        imageContext: 'an empty plot as the first frame and the finished building as the last frame', subject: 'A residential building', location: 'an empty dirt plot on the edge of a city', action: 'the building rises from foundations to finished facade in one continuous shot', avoid: ['flicker'] },
       demo: false
     },
     {
@@ -128,8 +298,8 @@ window.PROMPT_LIBRARY = {
         'Buradaki önizleme, Instagram videosundan alınmış 3,3 saniyelik bir kesittir.'
       ],
       tags: ['iç mekan', 'daire', 'gayrimenkul', 'mobilya', 'higgsfield', 'morphskin', 'dönüşüm', 'emlak'],
-      builder: { movement: 'arc-right', shot: 'wide', angle: 'eye', lens: '24', light: 'window', mood: 'peaceful', style: 'commercial', speed: 'slow', ratio: '9:16', duration: '5', refImage: true,
-        imageContext: 'an empty apartment as the first frame and the furnished version as the last frame', subject: 'An open-plan apartment kitchen', location: 'a bright empty apartment', action: 'furniture, cabinets and bar stools appear naturally in place', avoid: ['morph'] },
+      builder: { movement: 'arc-right', shot: 'wide', angle: 'eye', lens: '24', light: 'window', mood: 'peaceful', style: 'commercial', speed: 'slow', ratio: '9:16', duration: '5', refMode: 'both',
+        imageContext: 'an empty apartment', imageContext2: 'the same apartment, furnished', subject: 'An open-plan apartment kitchen', location: 'a bright empty apartment', action: 'furniture, cabinets and bar stools appear naturally in place', avoid: ['morph'] },
       demo: false
     },
     {
@@ -154,8 +324,8 @@ window.PROMPT_LIBRARY = {
         'Buradaki önizleme, Instagram videosundan alınmış 4 saniyelik bir kesittir.'
       ],
       tags: ['transform', 'dönüşüm', 'araba', 'porsche', 'montaj', 'seedance', 'efekt'],
-      builder: { movement: 'static', shot: 'wide', angle: 'eye', lens: '35', light: 'daylight', mood: 'luxurious', style: 'commercial', speed: 'medium', ratio: '9:16', duration: '5', refImage: true,
-        imageContext: 'an empty courtyard as the first frame and the finished car as the last frame', subject: 'A silver sports car', location: 'a minimal white-walled courtyard', action: 'the car assembles piece by piece from a single wheel', avoid: ['people', 'morph'] },
+      builder: { movement: 'static', shot: 'wide', angle: 'eye', lens: '35', light: 'daylight', mood: 'luxurious', style: 'commercial', speed: 'medium', ratio: '9:16', duration: '5', refMode: 'both',
+        imageContext: 'an empty courtyard', imageContext2: 'the same courtyard with the finished car', subject: 'A silver sports car', location: 'a minimal white-walled courtyard', action: 'the car assembles piece by piece from a single wheel', avoid: ['people', 'morph'] },
       demo: false
     },
     {
@@ -171,16 +341,104 @@ window.PROMPT_LIBRARY = {
       videoSmall: 'assets/video/promptlar/yukselen-kuleler-01-kart.mp4',
       poster: 'assets/img/promptlar/yukselen-kuleler-01.jpg',
       instagram: 'https://www.instagram.com/togetheryazibasi/reel/DeUjMUKo4Ny/',
-      promptType: 'ornek',
-      prompt: 'Camera movement:\nslow drone push in. The aerial camera glides forward and slightly down toward the empty plot, keeping the horizon level. Speed: slow and smooth.\n\nReference images:\nUse the empty land photo as the first frame and the finished towers render as the last frame.\n\nScene:\nGlowing golden light lines trace the outline of two residential towers on the empty plot. The wireframe fills in floor by floor until the finished, illuminated buildings stand in place.\n\nLook:\nLighting: clear daylight with warm golden light on the structures. Mood: epic, aspirational. Style: high-end real estate commercial, photoreal.\n\nAvoid:\nchanging the surrounding roads and buildings, flickering, text, logos.',
+      promptType: 'gercek',
+      outputFormat: '9:16 · 8 sn',
+      referenceImages: [
+        { id: 'IMAGE 1', role: 'Başlangıç karesi', desc: 'Boş arsa ve çevresi: yollar, kavşak, evler, spor sahası, tepeler, gökyüzü.' },
+        { id: 'IMAGE 2', role: 'Bitiş karesi', desc: 'Aynı konumda bitmiş iki kule ve bağlantı podyumu.' }
+      ],
+      prompt: `Create a seamless 8-second photorealistic vertical 9:16 architectural construction reveal in one continuous stabilized FPV/drone shot.
+
+IMAGE 1 = exact START FRAME.
+IMAGE 2 = exact END FRAME.
+
+The empty plot in Image 1 and the building complex in Image 2 are the exact same physical location.
+
+Preserve the entire surrounding environment exactly: roads, intersection, lane markings, sidewalks, streetlights, trees, sports field, playground, nearby houses, distant hills, skyline, blue sky, daylight, shadows and color grading. These existing elements must remain stable and must not move, deform, disappear or regenerate.
+
+The buildings must appear only inside the exact footprint shown in Image 2. Do not redesign, relocate, enlarge, rotate or reinterpret the architecture.
+
+0–2s:
+Start exactly from Image 1. The camera performs a smooth controlled FPV-style forward glide and slight vertical rise. Thin golden energy lines rapidly travel across only the empty construction plot, tracing the exact footprint, podium boundaries and structural grid of the buildings in Image 2.
+
+2–5.5s:
+Immediately begin construction from the ground upward. Golden wireframe foundations, columns, beams and floor slabs rise vertically from their exact final positions.
+
+Build the exact two main towers and connecting podium visible in Image 2.
+
+Construction progresses rapidly but clearly, floor by floor:
+foundation → columns → slabs → upper floors → balconies → facade grid → rooftop volumes.
+
+All elements must grow directly from the structure itself. Nothing flies in from outside the frame. No floating pieces.
+
+The camera continues a gentle upward and forward motion with very subtle lateral movement, maximum 5–10 degrees. Never orbit around the site.
+
+5.5–7s:
+A warm golden energy wave travels upward through the completed wireframe.
+
+The golden wireframe smoothly converts into the real materials visible in Image 2:
+concrete structure, neutral facade surfaces, darker sections, balconies, windows, rooftop details and podium surfaces.
+
+Materialization must follow the same bottom-to-top direction.
+
+Do not morph the building shape. Geometry remains locked while only the materials transform.
+
+7–8s:
+The camera smoothly decelerates and settles into the exact framing, perspective and composition of Image 2.
+
+The completed buildings must match Image 2 as closely as possible in:
+position,
+scale,
+height,
+spacing,
+architectural massing,
+facade layout.
+
+The remaining golden glow fades naturally.
+
+Single continuous take.
+Photorealistic high-end architectural VFX.
+Realistic FPV inertia.
+Smooth stabilization.
+Moderate wide-angle lens.
+Strong but natural depth parallax.
+Stable straight architectural lines.
+
+STRICT:
+no cuts,
+no teleportation,
+no full orbit,
+no aggressive camera banking,
+no digital zoom,
+no fisheye,
+no building drift,
+no sliding buildings,
+no duplicate structures,
+no extra floors,
+no redesign,
+no floating construction parts,
+no cranes,
+no workers,
+no machinery,
+no smoke,
+no explosion,
+no debris,
+no added buildings,
+no flicker,
+no melting geometry,
+no changing roads,
+no changing surrounding houses,
+no changing sky or weather,
+no text overlays,
+no added logos.
+
+FINAL FRAME MUST MATCH IMAGE 2.`,
       steps: [
         'Prompt bir yapay zekâ sohbet aracıyla (ChatGPT, Gemini veya Claude) hazırlandı.',
         'Video Seedance ile boş arazi ve bitmiş proje görseli kullanılarak üretildi.',
         'Buradaki önizleme, Instagram videosundan alınmış 4 saniyelik bir kesittir (altyazı kalmasın diye 4:5 kırpıldı).'
       ],
       tags: ['inşaat', 'gayrimenkul', 'kule', 'lansman', 'drone', 'ışık', 'seedance', 'proje'],
-      builder: { movement: 'drone-push', shot: 'extreme-wide', angle: 'high', lens: '24', light: 'golden', mood: 'epic', style: 'commercial', speed: 'slow', ratio: '9:16', duration: '5', refImage: true,
-        imageContext: 'an empty plot as the first frame and the finished towers as the last frame', subject: 'Two residential towers', location: 'an empty plot at the edge of the city', action: 'golden light lines trace the towers and they fill in floor by floor', avoid: ['text', 'flicker'] },
       demo: false
     },
     {
@@ -228,7 +486,7 @@ window.PROMPT_LIBRARY = {
         'Buradaki önizleme, sonuçtan alınmış 2 saniyelik bir kesittir.'
       ],
       tags: ['yatay', 'dikey', 'genişletme', 'outpaint', 'kling', 'venedik', 'reels', 'format'],
-      builder: { movement: 'static', shot: 'wide', angle: 'eye', lens: '', light: 'overcast', mood: 'peaceful', style: 'documentary', speed: '', ratio: '9:16', duration: '5', refImage: true,
+      builder: { movement: 'static', shot: 'wide', angle: 'eye', lens: '', light: 'overcast', mood: 'peaceful', style: 'documentary', speed: '', ratio: '9:16', duration: '5', refMode: 'first',
         imageContext: 'a horizontal video of a Venice canal', subject: '', location: 'a narrow canal in Venice', action: 'the sky and water are extended to fill a vertical frame', avoid: ['morph'] },
       demo: false
     },
@@ -246,7 +504,7 @@ window.PROMPT_LIBRARY = {
       poster: 'assets/img/promptlar/keloglan-animasyon-01.jpg',
       instagram: 'https://www.instagram.com/togetheryazibasi/reel/DeXDuXgoJfP/',
       promptType: 'ornek',
-      prompt: 'Camera movement:\nmedium shot, slow push in. Speed: slow and smooth.\n\nScene:\nInside a cozy village house, a young girl in a green dress and a woman with a yellow headscarf watch in surprise as someone waves excitedly at them. Expressive faces, playful body language.\n\nLook:\nLighting: warm interior light. Mood: playful, warm. Style: stylized 3D animated film, soft materials, Turkish folk tale atmosphere.\n\nAvoid:\nextra fingers, face distortion, text.',
+      prompt: 'Camera movement:\nmedium shot, slow push in. Speed: slow and smooth.\n\nScene:\nInside a cozy village house, a young blonde girl in a blue cardigan and a woman in a yellow headscarf, green dress and red vest watch in surprise as a gray-haired man with a mustache, wearing a brown shirt and gray vest, raises his hand and gestures excitedly. Expressive faces, playful body language.\n\nLook:\nLighting: warm interior light. Mood: playful, warm. Style: stylized 3D animated film, soft materials, Turkish folk tale atmosphere.\n\nAvoid:\nextra fingers, face distortion, text.',
       steps: [
         'Karakter ve sahne promptları ChatGPT veya Claude ile detaylandırıldı.',
         'Video Higgsfield\'in Genjutsu özelliğiyle üretildi.',
@@ -254,7 +512,7 @@ window.PROMPT_LIBRARY = {
       ],
       tags: ['keloğlan', 'animasyon', '3d', 'masal', 'karakter', 'çocuk', 'higgsfield', 'genjutsu'],
       builder: { movement: 'push-in', shot: 'medium', angle: 'eye', lens: '', light: 'practical', mood: 'playful', style: '3d', speed: 'slow', ratio: '16:9', duration: '5',
-        subject: 'A young girl in a green dress and a woman in a yellow headscarf', location: 'a cozy village house', action: 'they react with surprise as someone waves excitedly', avoid: ['limbs', 'morph'] },
+        subject: 'A young blonde girl in a blue cardigan and a woman in a yellow headscarf, green dress and red vest', location: 'a cozy village house', action: 'they react with surprise as a gray-haired man with a mustache, wearing a brown shirt and gray vest, gestures excitedly', avoid: ['limbs', 'morph'] },
       demo: false
     },
     {
@@ -279,7 +537,7 @@ window.PROMPT_LIBRARY = {
         'Buradaki önizleme, Instagram videosundan alınmış 2,6 saniyelik bir kesittir.'
       ],
       tags: ['arsa', 'metrekare', 'm2', 'gayrimenkul', 'drone', 'kling', 'nano banana', 'ilan'],
-      builder: { movement: 'orbit-cw', shot: 'extreme-wide', angle: 'high', lens: '24', light: 'overcast', mood: 'peaceful', style: 'commercial', speed: 'slow', ratio: '9:16', duration: '5', refImage: true,
+      builder: { movement: 'orbit-cw', shot: 'extreme-wide', angle: 'high', lens: '24', light: 'overcast', mood: 'peaceful', style: 'commercial', speed: 'slow', ratio: '9:16', duration: '5', refMode: 'first',
         imageContext: 'a drone photo of an empty plot with its boundary highlighted', subject: 'A glowing blue plot boundary and 3D square-meter text', location: 'an empty plot in a city district', action: 'the boundary line glows and the 3D text stands on the land', avoid: ['text', 'flicker'] },
       demo: false
     },
@@ -304,8 +562,8 @@ window.PROMPT_LIBRARY = {
         'Buradaki önizleme, Instagram videosundan alınmış 3,4 saniyelik bir kesittir.'
       ],
       tags: ['morphskin', 'drone', 'şehir', 'dönüşüm', 'higgsfield', 'gayrimenkul', 'önce sonra'],
-      builder: { movement: 'drone-push', shot: 'extreme-wide', angle: 'high', lens: '24', light: 'daylight', mood: 'peaceful', style: 'documentary', speed: 'slow', ratio: '9:16', duration: '5', refImage: true,
-        imageContext: 'the original drone frame and an edited version of it', subject: 'A construction area in the city', location: 'a city district seen from a drone', action: 'the selected area morphs seamlessly into its new state', avoid: ['flicker', 'morph'] },
+      builder: { movement: 'drone-push', shot: 'extreme-wide', angle: 'high', lens: '24', light: 'daylight', mood: 'peaceful', style: 'documentary', speed: 'slow', ratio: '9:16', duration: '5', refMode: 'both',
+        imageContext: 'the original drone frame', imageContext2: 'an edited version of the same frame', subject: 'A construction area in the city', location: 'a city district seen from a drone', action: 'the selected area morphs seamlessly into its new state', avoid: ['flicker', 'morph'] },
       demo: false
     },
     {
@@ -330,7 +588,7 @@ window.PROMPT_LIBRARY = {
         'Buradaki önizleme, Instagram videosundan alınmış 3,6 saniyelik bir kesittir.'
       ],
       tags: ['hologram', 'ürün', 'kamera', 'teknoloji', 'kling', 'efekt', 'reklam', 'vfx'],
-      builder: { movement: 'handheld', shot: 'medium-close', angle: 'high', lens: '24', light: 'window', mood: 'energetic', style: 'commercial', speed: 'medium', ratio: '9:16', duration: '5', refImage: true,
+      builder: { movement: 'handheld', shot: 'medium-close', angle: 'high', lens: '24', light: 'window', mood: 'energetic', style: 'commercial', speed: 'medium', ratio: '9:16', duration: '5', refMode: 'first',
         imageContext: 'a handheld video of a camera in a room', subject: 'A camera held in a hand', location: 'a bright empty room', action: 'blue holographic rings and spec labels appear around the camera', avoid: ['flicker'] },
       demo: false
     },
@@ -460,7 +718,7 @@ window.PROMPT_LIBRARY = {
         'Kling\'de ilk kare olarak yüklendi, hareketler bilerek küçük tutuldu.'
       ],
       tags: ['fotoğraf', 'canlandırma', 'nostalji', 'image to video', 'aile'],
-      builder: { movement: 'push-in', shot: '', angle: '', lens: '', light: '', mood: 'nostalgic', style: 'vintage', speed: 'very-slow', ratio: '4:5', duration: '5', refImage: true,
+      builder: { movement: 'push-in', shot: '', angle: '', lens: '', light: '', mood: 'nostalgic', style: 'vintage', speed: 'very-slow', ratio: '4:5', duration: '5', refMode: 'first',
         imageContext: 'an old family photo', subject: 'The people in the photo', location: '', action: 'they come to life with a soft smile, a blink and a slight head turn' },
       demo: true,
       preview: { scene: 'interior', motion: 'push-in' }

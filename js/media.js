@@ -90,6 +90,9 @@
     document.body.appendChild(root);
     mm = { root, frame, close, lastFocus: null };
     const shut = () => {
+      // Kapanınca indirmeyi de durdur; yoksa video arka planda inmeye devam eder ve sonraki videoyu bekletir
+      const playing = mm.frame.querySelector('video');
+      if (playing) { playing.pause(); playing.removeAttribute('src'); playing.load(); }
       mm.frame.replaceChildren();
       root.hidden = true;
       document.body.classList.remove('modal-open');
@@ -259,7 +262,7 @@
       return { a, v };
     });
     wrap.appendChild(track);
-    addScrollButtons(wrap, track, () => (cards[0].a.offsetWidth + 16) * 2);
+    if (cards.length > 1) addScrollButtons(wrap, track, () => (cards[0].a.offsetWidth + 16) * 2);
 
     let raf = 0;
     const update = () => {

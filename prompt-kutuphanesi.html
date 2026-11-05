@@ -183,6 +183,7 @@
               </label>
             </div>
             <div class="chips-scroll"><div class="chips chips-sm" id="moveGroupChips" role="group" aria-label="Hareket grubu"></div></div>
+            <p class="move-count" id="moveCount" role="status"></p>
             <div class="move-grid" id="moveGrid" role="radiogroup" aria-label="Kamera hareketi"></div>
             <p class="move-desc" id="moveDesc"></p>
           </fieldset>
@@ -190,29 +191,37 @@
           <!-- 2. Sahne -->
           <fieldset class="step">
             <legend><span class="step-num">2</span> Sahne</legend>
-            <p class="step-hint">Kısa ve somut yaz. İngilizce yazarsan video modelleri daha tutarlı sonuç verir; Türkçe de yazabilirsin.</p>
+            <p class="step-hint">Türkçe yazabilirsin. Hazır seçenekler İngilizce prompta otomatik dönüşür; serbest yazılan metin çevrilmez, olduğu gibi kalır.</p>
             <div class="field-grid">
               <div class="field">
                 <label for="fSubject">Konu / karakter</label>
-                <input id="fSubject" data-field="subject" type="text" placeholder="A woman in a red coat">
+                <select class="phrase-select" data-phrase="subject" aria-label="Hazır konu seçenekleri"></select>
+                <input id="fSubject" data-field="subject" type="text" placeholder="Hazır seç veya kendin yaz">
+                <p class="phrase-hint" data-phrase-hint="subject" hidden></p>
               </div>
               <div class="field">
                 <label for="fLocation">Mekân</label>
-                <input id="fLocation" data-field="location" type="text" placeholder="a bright hotel lobby">
+                <select class="phrase-select" data-phrase="location" aria-label="Hazır mekân seçenekleri"></select>
+                <input id="fLocation" data-field="location" type="text" placeholder="Hazır seç veya kendin yaz">
+                <p class="phrase-hint" data-phrase-hint="location" hidden></p>
               </div>
               <div class="field field-full">
                 <label for="fAction">Ne oluyor? (aksiyon)</label>
-                <input id="fAction" data-field="action" type="text" placeholder="she waits silently and looks toward the entrance">
+                <select class="phrase-select" data-phrase="action" aria-label="Hazır aksiyon seçenekleri"></select>
+                <input id="fAction" data-field="action" type="text" placeholder="Hazır seç veya kendin yaz">
+                <p class="phrase-hint" data-phrase-hint="action" hidden></p>
               </div>
             </div>
-            <label class="switch">
-              <input type="checkbox" id="fRefImage" data-field="refImage">
-              <span class="switch-ui" aria-hidden="true"></span>
-              <span>İlk kare olarak kendi görselimi kullanacağım <small>(görselden videoya)</small></span>
-            </label>
-            <div class="field" id="imageContextField" hidden>
-              <label for="fImageContext">Görselde ne var? <small>(isteğe bağlı)</small></label>
-              <input id="fImageContext" data-field="imageContext" type="text" placeholder="a product photo on a white table">
+
+            <div class="ref-block">
+              <p class="group-label" id="lblRefMode">Referans görsel <span class="hint">Kendi görselinden video üretmek için</span></p>
+              <div class="seg seg-sm" role="group" aria-labelledby="lblRefMode">
+                <button type="button" class="seg-btn is-active" data-ref-mode="none" aria-pressed="true">Yok</button>
+                <button type="button" class="seg-btn" data-ref-mode="first" aria-pressed="false">Yalnız ilk kare</button>
+                <button type="button" class="seg-btn" data-ref-mode="both" aria-pressed="false">İlk ve son kare</button>
+              </div>
+              <div class="ref-slots" id="refSlots" hidden></div>
+              <p class="ref-note" id="refNote" hidden>Görseller yalnızca bu tarayıcıda önizlenir: hiçbir yere gönderilmez, kaydedilmez ve prompta eklenmez. Promptu kopyaladıktan sonra görselleri aynı sırayla kullandığın video aracına ayrıca yüklemelisin.</p>
             </div>
           </fieldset>
 
@@ -267,6 +276,7 @@
               <button class="btn btn-primary btn-copy" type="button" id="copyOutput"><span class="copy-ic" aria-hidden="true"></span><span class="label">Promptu Kopyala</span></button>
               <button class="btn btn-ghost" type="button" id="resetBuilder">Sıfırla</button>
             </div>
+            <button class="btn btn-ghost btn-block btn-sm" type="button" id="copyTranslate" title="Otomatik çeviri değildir; yalnızca çeviri talimatını panoya kopyalar." hidden>AI ile çevirmek için kopyala</button>
             <button class="link-btn" type="button" id="saveOutput">☆ Bu promptu kaydet</button>
           </div>
         </aside>

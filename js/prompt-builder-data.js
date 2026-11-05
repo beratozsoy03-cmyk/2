@@ -59,6 +59,16 @@ window.PROMPT_BUILDER = {
       tr: { name: 'Odak kaydırma', desc: 'Kamera sabit kalır; netlik ön plandaki nesneden arka plandaki konuya kayar.' },
       en: { name: 'rack focus', desc: 'The camera stays still while focus shifts smoothly from the foreground object to the subject in the background.' } },
 
+    { id: 'fast-zoom-in', group: 'zoom', speed: 'fast',
+      tr: { name: 'Hızlı zoom in', desc: 'Objektif hızlı ama kontrollü biçimde konuya yaklaşır; kamera yerinde kalır.' },
+      en: { name: 'fast zoom in', desc: 'The lens quickly closes on the subject while the camera body stays in place.' } },
+    { id: 'fast-zoom-out', group: 'zoom', speed: 'fast',
+      tr: { name: 'Hızlı zoom out', desc: 'Objektif hızlıca geniş açıya açılır ve çevre kadraja girer; kamera yerinde kalır.' },
+      en: { name: 'fast zoom out', desc: 'The lens quickly widens to reveal the surroundings while the camera body stays in place.' } },
+    { id: 'crash-zoom-out', group: 'zoom', speed: 'snap',
+      tr: { name: 'Crash zoom out', desc: 'Objektif ani ve sert biçimde konudan uzaklaşır; şaşırtıcı bir açılış verir.' },
+      en: { name: 'crash zoom out', desc: 'A sudden, aggressive zoom away from the subject.' } },
+
     // Dolly & Takip
     { id: 'push-in', group: 'dolly', speed: 'very-slow',
       tr: { name: 'Yavaş yaklaşma (push in)', desc: 'Kamera konuya doğru çok yumuşak biçimde ileri kayar; kompozisyon korunur.' },
@@ -91,6 +101,22 @@ window.PROMPT_BUILDER = {
       tr: { name: 'Yere yakın takip', desc: 'Kamera zemine çok yakın, alçaktan konuyu takip eder; ayak ve zemin dokusu ön plandadır.' },
       en: { name: 'low tracking shot', desc: 'The camera tracks the subject from just above the ground, with the ground texture in the foreground.' } },
 
+    { id: 'slider-right', group: 'dolly', speed: 'slow',
+      tr: { name: 'Sağa slider', desc: 'Kamera kısa bir ray üzerinde sağa, küçük ve hassas biçimde kayar; hafif paralaks oluşur.' },
+      en: { name: 'short slider move right', desc: 'A small, precise lateral glide to the right with subtle parallax.' } },
+    { id: 'slider-left', group: 'dolly', speed: 'slow',
+      tr: { name: 'Sola slider', desc: 'Kamera kısa bir ray üzerinde sola, küçük ve hassas biçimde kayar; hafif paralaks oluşur.' },
+      en: { name: 'short slider move left', desc: 'A small, precise lateral glide to the left with subtle parallax.' } },
+    { id: 'pass-by', group: 'dolly', speed: 'medium',
+      tr: { name: 'Yanından geçiş', desc: 'Kamera konunun hemen yanından geçer ve yoluna devam eder.' },
+      en: { name: 'pass-by shot', desc: 'The camera moves past the subject in close proximity and continues forward.' } },
+    { id: 'chase', group: 'dolly', speed: 'fast',
+      tr: { name: 'Kovalama', desc: 'Kamera hareket eden konuyu yüksek hızda, gergin bir enerjiyle kovalar.' },
+      en: { name: 'chase shot', desc: 'The camera pursues the moving subject at high speed with urgent energy.' } },
+    { id: 'foreground-reveal', group: 'dolly', speed: 'slow',
+      tr: { name: 'Ön plandan açılış', desc: 'Kamera ön plandaki bir nesnenin arkasından çıkarak sahneyi ortaya çıkarır.' },
+      en: { name: 'foreground reveal', desc: 'The camera moves out from behind a foreground object to unveil the scene.' } },
+
     // Yörünge
     { id: 'arc-right', group: 'yorunge', speed: 'slow',
       tr: { name: 'Sağa yay (arc)', desc: 'Kamera konunun etrafında sağa doğru yarım bir yay çizer; konu kadrajın ortasında kalır.' },
@@ -104,6 +130,10 @@ window.PROMPT_BUILDER = {
     { id: 'orbit-ccw', group: 'yorunge', speed: 'slow',
       tr: { name: 'Saat yönü tersine yörünge', desc: 'Kamera konunun etrafında sabit yarıçaplı bir çember üzerinde saat yönünün tersine döner.' },
       en: { name: 'orbit counterclockwise', desc: 'The camera circles the subject counterclockwise on a constant radius, keeping it centered.' } },
+
+    { id: 'ascending-orbit', group: 'yorunge', speed: 'medium',
+      tr: { name: 'Spiral yükseliş', desc: 'Kamera konunun etrafında dönerek spiral biçimde yükselir.' },
+      en: { name: 'ascending orbit', desc: 'The camera spirals upward around the subject.' } },
 
     // Vinç & Drone
     { id: 'pedestal-up', group: 'vinc', speed: 'slow',
@@ -125,6 +155,19 @@ window.PROMPT_BUILDER = {
       tr: { name: 'Üzerinden uçuş', desc: 'Hava kamerası konunun üzerinden geçerek ilerler; yüksek ve geniş bir bakış sunar.' },
       en: { name: 'aerial flyover', desc: 'The aerial camera flies over the subject, giving a high, wide view as it passes.' } },
 
+    { id: 'pedestal-down', group: 'vinc', speed: 'slow',
+      tr: { name: 'Dikey alçalma (pedestal)', desc: 'Kamera açısını değiştirmeden dikey olarak alçalır.' },
+      en: { name: 'pedestal down', desc: 'The camera lowers straight down without changing its angle.' } },
+    { id: 'helicopter', group: 'vinc', speed: 'medium',
+      tr: { name: 'Helikopter çekimi', desc: 'Kamera yüksek irtifadan, sabit ve geniş bir havadan hareket yapar.' },
+      en: { name: 'helicopter shot', desc: 'A stable, high-altitude aerial move over a wide landscape.' } },
+    { id: 'aerial-orbit', group: 'vinc', speed: 'slow',
+      tr: { name: 'Havadan yörünge', desc: 'Drone yapının etrafında sabit yükseklik ve yarıçapta döner.' },
+      en: { name: 'aerial orbit', desc: 'The drone circles the structure at a constant altitude and radius.' } },
+    { id: 'top-down-drift', group: 'vinc', speed: 'slow',
+      tr: { name: 'Tepeden süzülme', desc: 'Kamera tam tepeden bakarken yana doğru yavaşça kayar.' },
+      en: { name: 'top-down drift', desc: 'A slow lateral move from directly overhead.' } },
+
     // İnsan kamerası
     { id: 'handheld', group: 'insan', speed: 'medium',
       tr: { name: 'Elde kamera', desc: 'Kamera bir operatör tarafından taşınır; doğal, hafif salınımlar olur ama konu kadrajda kalır.' },
@@ -138,6 +181,10 @@ window.PROMPT_BUILDER = {
     { id: 'fpv', group: 'insan', speed: 'fast',
       tr: { name: 'FPV drone', desc: 'Kamera nesnelerin arasından hızlı ve yakın uçar, dönüşlerde yumuşakça yatar ve dalış yapar.' },
       en: { name: 'FPV drone flight', desc: 'The camera flies fast and close between objects, banking smoothly through turns and diving.' } },
+
+    { id: 'steadicam', group: 'insan', speed: 'slow',
+      tr: { name: 'Steadicam yürüyüş', desc: 'Kamera göz hizasında mekânın içinden akıcı biçimde süzülerek ilerler.' },
+      en: { name: 'steadicam walkthrough', desc: 'A smooth gliding walk through the space at eye level.' } },
 
     // Özel efektler
     { id: 'pass-through', group: 'ozel', speed: 'medium',
@@ -154,8 +201,79 @@ window.PROMPT_BUILDER = {
       en: { name: 'time-lapse', desc: 'The camera stays fixed while time speeds up; light, clouds and crowds change rapidly.' } },
     { id: 'tilt-shift', group: 'ozel', speed: 'slow',
       tr: { name: 'Tilt-shift (minyatür)', desc: 'Yüksekten bakan kamera, dar netlik alanıyla sahneyi minyatür maket gibi gösterir.' },
-      en: { name: 'tilt-shift miniature look', desc: 'A high viewpoint with a narrow band of focus makes the scene look like a miniature model.' } }
+      en: { name: 'tilt-shift miniature look', desc: 'A high viewpoint with a narrow band of focus makes the scene look like a miniature model.' } },
+    { id: 'barrel-roll', group: 'ozel', speed: 'medium',
+      tr: { name: 'Kamera döndürme', desc: 'Kamera ilerlerken kendi lens ekseni etrafında döner.' },
+      en: { name: 'barrel roll', desc: 'The camera rotates around its lens axis while moving forward.' } },
+    { id: 'bullet-time', group: 'ozel', speed: 'slow',
+      tr: { name: 'Zaman dondurma', desc: 'Aksiyon donarken kamera konunun etrafında yay çizer.' },
+      en: { name: 'bullet time', desc: 'The action freezes while the camera arcs around the subject.' } },
+    { id: 'macro-sweep', group: 'ozel', speed: 'very-slow',
+      tr: { name: 'Makro gezinme', desc: 'Kamera yüzey detaylarının üzerinde çok sığ alan derinliğiyle yavaşça süzülür.' },
+      en: { name: 'macro sweep', desc: 'A slow glide across surface details with very shallow depth of field.' } }
   ],
+
+  // Aramada Türkçe/İngilizce eş anlamlılar ve "Popüler" filtresi
+  moveAliases: {
+    'static': 'sabit tripod locked', 'dolly-zoom': 'vertigo hitchcock', 'orbit-cw': 'yörünge dönme etrafında 360', 'orbit-ccw': 'yörünge dönme etrafında 360',
+    'follow-behind': 'omuz üstü over the shoulder ots takip', 'lead-front': 'walk and talk yürüyüş', 'side-tracking': 'tracking takip', 'vehicle-tracking': 'araba otomobil tracking',
+    'fpv': 'drone dalış', 'pov': 'first person gözünden', 'crane-up': 'jib', 'crane-down': 'jib', 'flyover': 'havadan', 'rack-focus': 'netlik odak', 'timelapse': 'hızlandırılmış zaman',
+    'chase': 'kovalamaca takip araba', 'pass-by': 'push past', 'helicopter': 'havadan aerial', 'aerial-orbit': 'drone yörünge', 'ascending-orbit': 'spiral dönerek yükselme',
+    'top-down-drift': 'kuş bakışı overhead', 'bullet-time': 'matrix dondurma', 'barrel-roll': 'dönüş roll', 'macro-sweep': 'ürün detay yakın', 'steadicam': 'gimbal iç mekan yürüyerek gezinti',
+    'slider-right': 'ray kayma', 'slider-left': 'ray kayma', 'foreground-reveal': 'açılış reveal perde'
+  },
+  popularMoves: ['push-in', 'dolly-in', 'orbit-cw', 'drone-push', 'fpv', 'crane-up', 'whip-right', 'handheld', 'dolly-zoom', 'ascending-orbit', 'side-tracking', 'static'],
+
+  // ---------- TÜRKÇE HAZIR SAHNE SEÇENEKLERİ ----------
+  // Kullanıcı Türkçesini seçer; İngilizce çıktıda "en" karşılığı yazılır.
+  phrases: {
+    subject: [
+      { tr: 'Kırmızı paltolu bir kadın', en: 'A woman in a red coat' },
+      { tr: 'Takım elbiseli bir adam', en: 'A man in a tailored suit' },
+      { tr: 'Genç bir kadın', en: 'A young woman' },
+      { tr: 'Yaşlı bir adam', en: 'An elderly man' },
+      { tr: 'Küçük bir çocuk', en: 'A small child' },
+      { tr: 'Lüks bir spor araba', en: 'A luxury sports car' },
+      { tr: 'Klasik bir araba', en: 'A classic car' },
+      { tr: 'Modern bir konut binası', en: 'A modern residential building' },
+      { tr: 'Lüks bir villa', en: 'A luxury villa' },
+      { tr: 'Parfüm şişesi', en: 'A glass perfume bottle' },
+      { tr: 'Cilt bakım serumu', en: 'A skincare serum bottle' },
+      { tr: 'Bir fincan kahve', en: 'A cup of coffee' },
+      { tr: 'Spor ayakkabı', en: 'A pair of sneakers' },
+      { tr: 'Akıllı telefon', en: 'A smartphone' }
+    ],
+    location: [
+      { tr: 'Aydınlık bir otel lobisi', en: 'a bright hotel lobby' },
+      { tr: 'Gece vakti yağmurlu bir şehir sokağı', en: 'a rainy city street at night' },
+      { tr: 'Boş bir inşaat arsası', en: 'an empty construction plot' },
+      { tr: 'Şehir manzaralı bir çatı katı', en: 'a rooftop overlooking the city' },
+      { tr: 'Modern bir daire', en: 'a modern apartment' },
+      { tr: 'Minimal siyah bir stüdyo', en: 'a minimal black studio' },
+      { tr: 'Beyaz bir fotoğraf stüdyosu', en: 'a white photo studio' },
+      { tr: 'Sisli bir çam ormanı', en: 'a misty pine forest' },
+      { tr: 'Gün batımında bir sahil', en: 'a beach at sunset' },
+      { tr: 'Virajlı bir dağ yolu', en: 'a winding mountain road' },
+      { tr: 'Tarihî bir sokak', en: 'a historic old-town street' },
+      { tr: 'Sıcak bir kafe', en: 'a cozy café' },
+      { tr: 'Lüks bir restoran', en: 'an upscale restaurant' },
+      { tr: 'Büyük bir fabrika', en: 'a large industrial factory' }
+    ],
+    action: [
+      { tr: 'Kameraya doğru yürüyor', en: 'the subject walks slowly toward the camera' },
+      { tr: 'Yavaşça başını çevirip kameraya bakıyor', en: 'the subject slowly turns and looks into the camera' },
+      { tr: 'Sessizce bekliyor ve etrafına bakıyor', en: 'the subject waits silently and looks around' },
+      { tr: 'Gülümsüyor', en: 'the subject smiles naturally' },
+      { tr: 'Ürünü kameraya gösteriyor', en: 'the subject presents the product to the camera' },
+      { tr: 'Ürün yavaşça kendi etrafında dönüyor', en: 'the product rotates slowly on its axis' },
+      { tr: 'Üzerinde ışık yavaşça geziniyor', en: 'soft light sweeps slowly across the surface' },
+      { tr: 'Araba yüksek hızla ilerliyor', en: 'the car speeds forward along the road' },
+      { tr: 'Bina kat kat yükseliyor', en: 'the building rises floor by floor' },
+      { tr: 'Işıklar tek tek yanıyor', en: 'the lights turn on one by one' },
+      { tr: 'Rüzgâr saçlarını ve kıyafetini dalgalandırıyor', en: 'the wind gently moves the hair and clothing' },
+      { tr: 'İnsanlar arka planda akıp gidiyor', en: 'people flow past in the background' }
+    ]
+  },
 
   // ---------- DİĞER PARAMETRELER ----------
   // Her grup: id, label (arayüz), hint (yardım metni), options [{ id, tr, en }]

@@ -23,6 +23,8 @@
   const dict = (entries) => Object.assign(Object.create(null), Object.fromEntries(entries));
   const catName = dict(LIB.categories.map((c) => [c.id, c.name]));
   const prompts = [...LIB.prompts].sort((a, b) => b.date.localeCompare(a.date));
+  // Kayıtlar salt okunur: gerçek prompt metinleri sayfa içinde yanlışlıkla değişemez
+  prompts.forEach((p) => Object.freeze(p));
   const byId = dict(prompts.map((p) => [p.id, p]));
   // Öne çıkan alan: en yeni gerçek video (yoksa en yeni kayıt)
   const latest = prompts.find((p) => !p.demo) || prompts[0];
@@ -134,7 +136,7 @@
         <span class="pv-vignette"></span>
       </div>`;
     }
-    const badges = `<span class="media-badges">${p.demo ? '<span class="m-badge m-badge-demo">Örnek içerik</span>' : ''}${!p.demo && p.instagram ? '<span class="m-badge m-badge-real">Instagram</span>' : ''}<span class="m-badge">${esc(p.ratio)} · ${esc(p.duration)} sn</span></span>`;
+    const badges = `<span class="media-badges">${p.demo ? '<span class="m-badge m-badge-demo">Örnek içerik</span>' : ''}${!p.demo && p.instagram ? '<span class="m-badge m-badge-real">Instagram</span>' : ''}<span class="m-badge">${p.outputFormat ? 'Önizleme' : esc(p.ratio)} · ${esc(p.duration)} sn</span></span>`;
     const demoNote = !p.video && !p.poster ? '<span class="media-note">Demo önizleme · gerçek video eklenecek</span>' : '';
     return `<div class="${cls}">${inner}${badges}${demoNote}</div>`;
   }
@@ -190,7 +192,9 @@
     return `<dl class="meta-list">
       <div><dt>Video aracı</dt><dd>${esc(p.tool)}</dd></div>
       ${p.imageTool ? `<div><dt>Görsel aracı</dt><dd>${esc(p.imageTool)}</dd></div>` : ''}
-      <div><dt>Format</dt><dd>${esc(p.ratio)} · ${esc(p.duration)} sn</dd></div>
+      ${p.outputFormat
+        ? `<div><dt>Promptun hedefi</dt><dd>${esc(p.outputFormat)}</dd></div><div><dt>Buradaki önizleme</dt><dd>Kısa kesit, ${esc(p.duration)} sn</dd></div>`
+        : `<div><dt>Format</dt><dd>${esc(p.ratio)} · ${esc(p.duration)} sn</dd></div>`}
       <div><dt>Eklendi</dt><dd>${fmtDate(p.date)}</dd></div>
     </dl>`;
   }
@@ -214,13 +218,23 @@
   // Videonun gerçekten bu promptla üretilip üretilmediğini açıkça belirt
   function promptOriginHTML(p) {
     const defaults = {
-      gercek: '✓ Bu videonun üretiminde kullanılan prompt',
+      gercek: '✓ Gerçek üretim promptu: bu video bu metinle üretildi.',
       aciklama: 'Prompt, videonun Instagram açıklamasında paylaşılan sahne tarifinden alındı.',
       ornek: 'Örnek prompt — videoya benzer bir sonuç için hazırlandı; videonun orijinal promptu değildir.'
     };
     const type = p.promptType || 'ornek';
     if (type === 'ornek' && !p.video && !p.poster) return '';
     return `<p class="prompt-origin ${type === 'gercek' ? 'is-real' : ''} ${type === 'aciklama' ? 'is-caption' : ''}">${esc(p.promptNote || defaults[type] || defaults.ornek)}</p>`;
+  }
+
+  // Promptun metinde andığı referans görseller (görseller bu sayfada sunulmaz)
+  function referenceBoxHTML(p) {
+    if (!p.referenceImages || !p.referenceImages.length) return '';
+    return `<div class="ref-required">
+      <p class="ref-required-title">Bu prompt ${p.referenceImages.length} referans görsel ister</p>
+      <ul>${p.referenceImages.map((r) => `<li><strong>${esc(r.id)}</strong> <span>${esc(r.role)}: ${esc(r.desc)}</span></li>`).join('')}</ul>
+      <p class="ref-required-note">Görseller burada verilmez. Kendi projenin görsellerini hazırlayıp video aracına bu sırayla yüklemelisin.</p>
+    </div>`;
   }
 
   function detailBodyHTML(p, { headingTag = 'h2', headingId = '', label = '' } = {}) {
@@ -240,12 +254,13 @@
           <button type="button" class="link-btn" data-expand>Tamamını göster</button>
         </div>
         ${promptOriginHTML(p)}
+        ${referenceBoxHTML(p)}
         <pre class="prompt-box is-clamped" tabindex="0">${esc(p.prompt)}</pre>
         <button class="btn btn-primary btn-block btn-copy btn-copy-lg" type="button" data-copy="${esc(p.id)}">${COPY_IC}<span class="label">Promptu Kopyala</span></button>
       </div>
       <div class="detail-actions">
         <button class="btn btn-ghost btn-sm" type="button" data-share="${esc(p.id)}"><span class="label">Bağlantıyı paylaş</span></button>
-        <button class="btn btn-ghost btn-sm" type="button" data-edit="${esc(p.id)}">Oluşturucuda düzenle</button>
+        ${p.builder ? `<button class="btn btn-ghost btn-sm" type="button" data-edit="${esc(p.id)}">Oluşturucuda düzenle</button>` : ''}
         <button class="btn btn-ghost btn-sm btn-save ${saved ? 'is-saved' : ''}" type="button" data-save="${esc(p.id)}" aria-pressed="${saved}">${saved ? '★ Kaydedildi' : '☆ Kaydet'}</button>
       </div>
       ${p.steps && p.steps.length ? `<details class="howto" ${isMobile() ? '' : 'open'}>
@@ -569,7 +584,7 @@
 
   const DEFAULTS = {
     movement: 'push-in', shot: '', angle: '', lens: '', light: '', mood: '', style: '', speed: '', ratio: '9:16', duration: '5',
-    subject: '', location: '', action: '', refImage: false, imageContext: '', extra: '', avoid: []
+    subject: '', location: '', action: '', refMode: 'none', imageContext: '', imageContext2: '', extra: '', avoid: []
   };
   const bs = { ...DEFAULTS, avoid: [] };
   const view = { lang: 'en', format: 'sections', moveGroup: '', moveQuery: '' };
@@ -577,13 +592,19 @@
   // --- kontrolleri oluştur ---
   $('#presetChips').innerHTML = PB.presets.map((p) => `<button type="button" class="chip" data-preset="${p.id}">${esc(p.label)}</button>`).join('');
 
-  $('#moveGroupChips').innerHTML = [{ id: '', name: 'Tümü' }, ...PB.movementGroups]
-    .map((g) => `<button type="button" class="chip ${g.id === '' ? 'is-active' : ''}" data-move-group="${g.id}" aria-pressed="${g.id === ''}">${esc(g.name)}</button>`).join('');
+  const moveCountOf = (gid) => PB.movements.filter((m) => m.group === gid).length;
+  $('#moveGroupChips').innerHTML = [
+    { id: '', name: 'Tümü', n: PB.movements.length },
+    { id: '__pop', name: 'Popüler', n: PB.popularMoves.length },
+    ...PB.movementGroups.map((g) => ({ ...g, n: moveCountOf(g.id) }))
+  ].map((g) => `<button type="button" class="chip ${g.id === '' ? 'is-active' : ''}" data-move-group="${g.id}" aria-pressed="${g.id === ''}">${esc(g.name)} <span class="chip-n">${g.n}</span></button>`).join('');
 
   function renderMoves() {
     const q = norm(view.moveQuery.trim());
-    const list = PB.movements.filter((m) => (!view.moveGroup || m.group === view.moveGroup)
-      && (!q || norm(`${m.tr.name} ${m.en.name}`).includes(q)));
+    const inGroup = (m) => !view.moveGroup || (view.moveGroup === '__pop' ? PB.popularMoves.includes(m.id) : m.group === view.moveGroup);
+    const list = PB.movements.filter((m) => inGroup(m)
+      && (!q || norm(`${m.tr.name} ${m.en.name} ${PB.moveAliases[m.id] || ''}`).includes(q)));
+    $('#moveCount').textContent = `${list.length} kamera hareketi`;
     $('#moveGrid').innerHTML = list.length ? list.map((m) => `<button type="button" class="move ${bs.movement === m.id ? 'is-active' : ''}" role="radio" aria-checked="${bs.movement === m.id}" data-move="${m.id}">
         <span class="move-tr">${esc(m.tr.name)}</span><span class="move-en">${esc(m.en.name)}</span></button>`).join('')
       : '<p class="saved-empty">Bu aramayla eşleşen hareket yok.</p>';
@@ -605,6 +626,114 @@
 
   $('#avoidChips').innerHTML = PB.avoid.map((a) => `<button type="button" class="chip chip-check" data-avoid="${a.id}" aria-pressed="false">${esc(a.tr)}</button>`).join('');
 
+  // --- Türkçe hazır sahne seçenekleri ---
+  $$('[data-phrase]').forEach((sel) => {
+    sel.innerHTML = '<option value="">Hazır seçenekten seç…</option>'
+      + PB.phrases[sel.dataset.phrase].map((p) => `<option value="${esc(p.tr)}">${esc(p.tr)}</option>`).join('');
+  });
+  // Yazılan metin hazır bir ifadeyle birebir eşleşiyorsa karşılığı bulunur; serbest metin çevrilmez
+  const phraseFor = (field, value) => {
+    const q = norm(String(value || '').trim());
+    return q ? PB.phrases[field].find((p) => norm(p.tr) === q) : undefined;
+  };
+  const localized = (field, value, L) => { const p = phraseFor(field, value); return (p ? p[L] : String(value || '')).trim(); };
+
+  // --- Referans görsel yuvaları: dosya yalnızca tarayıcıda önizlenir, hiçbir yere gönderilmez ---
+  const REF_TYPES = ['image/jpeg', 'image/png', 'image/webp'];
+  const REF_EXT = /\.(jpe?g|png|webp)$/i;
+  const REF_MAX = 20 * 1024 * 1024;
+  const refFiles = { 1: null, 2: null };
+  $('#refSlots').innerHTML = [
+    { n: 1, title: 'IMAGE 1', role: 'İlk kare', field: 'imageContext', inputId: 'fImageContext', ph: 'ör. boş bir arsanın havadan görünümü' },
+    { n: 2, title: 'IMAGE 2', role: 'Son kare', field: 'imageContext2', inputId: 'fImageContext2', ph: 'ör. aynı yerde bitmiş bina' }
+  ].map((s) => `<div class="ref-slot" data-slot="${s.n}">
+      <p class="ref-slot-title"><strong>${s.title}</strong> ${s.role}</p>
+      <input class="sr-only ref-input" type="file" id="refFile${s.n}" data-ref-input="${s.n}" accept=".jpg,.jpeg,.png,.webp,image/jpeg,image/png,image/webp">
+      <label class="ref-drop" for="refFile${s.n}">
+        <span class="ref-drop-title">Görsel seç veya buraya sürükle</span>
+        <span class="ref-drop-sub">JPG, PNG veya WebP · en fazla 20 MB</span>
+      </label>
+      <div class="ref-preview" hidden>
+        <img alt="${s.role} önizlemesi">
+        <div class="ref-info">
+          <span class="ref-name"></span>
+          <span class="ref-actions">
+            <label class="link-btn" for="refFile${s.n}">Değiştir</label>
+            <button type="button" class="link-btn ref-remove" data-ref-remove="${s.n}">Kaldır</button>
+          </span>
+        </div>
+      </div>
+      <p class="ref-error" role="alert" hidden></p>
+      <div class="field">
+        <label for="${s.inputId}">Görselde ne var? <small>(isteğe bağlı)</small></label>
+        <input id="${s.inputId}" data-field="${s.field}" type="text" placeholder="${s.ph}">
+      </div>
+    </div>`).join('');
+
+  const refSlot = (n) => $(`.ref-slot[data-slot="${n}"]`);
+  function refError(n, msg) {
+    const el = $('.ref-error', refSlot(n));
+    el.textContent = msg || '';
+    el.hidden = !msg;
+  }
+  function renderRefSlot(n) {
+    const slot = refSlot(n), f = refFiles[n];
+    $('.ref-drop', slot).hidden = !!f;
+    $('.ref-preview', slot).hidden = !f;
+    if (f) {
+      $('.ref-preview img', slot).src = f.url;
+      const size = f.size < 1048576 ? `${Math.max(1, Math.round(f.size / 1024))} KB` : `${(f.size / 1048576).toFixed(1)} MB`;
+      $('.ref-name', slot).textContent = `${f.name} · ${size}`;
+    } else {
+      $('.ref-preview img', slot).removeAttribute('src');
+    }
+  }
+  function clearRefFile(n) {
+    if (refFiles[n]) URL.revokeObjectURL(refFiles[n].url);
+    refFiles[n] = null;
+    refError(n, '');
+    renderRefSlot(n);
+  }
+  function setRefFile(n, file) {
+    refError(n, '');
+    const okType = REF_TYPES.includes(file.type) || (!file.type && REF_EXT.test(file.name));
+    if (!okType) { refError(n, 'Bu dosya türü desteklenmiyor. JPG, PNG veya WebP seç.'); return; }
+    if (file.size > REF_MAX) { refError(n, 'Dosya çok büyük. En fazla 20 MB olabilir.'); return; }
+    const url = URL.createObjectURL(file);
+    const probe = new Image();
+    probe.onload = () => {
+      if (refFiles[n]) URL.revokeObjectURL(refFiles[n].url);
+      refFiles[n] = { url, name: file.name, size: file.size };
+      renderRefSlot(n);
+    };
+    probe.onerror = () => { URL.revokeObjectURL(url); refError(n, 'Bu görsel açılamadı. Başka bir dosya dene.'); };
+    probe.src = url;
+  }
+  const slots = $('#refSlots');
+  slots.addEventListener('change', (e) => {
+    const input = e.target.closest('[data-ref-input]');
+    if (!input) return;
+    if (input.files[0]) setRefFile(+input.dataset.refInput, input.files[0]);
+    input.value = ''; // aynı dosya yeniden seçilebilsin
+  });
+  ['dragenter', 'dragover'].forEach((type) => slots.addEventListener(type, (e) => {
+    const slot = e.target.closest('.ref-slot');
+    if (slot) { e.preventDefault(); slot.classList.add('is-drag'); }
+  }));
+  slots.addEventListener('dragleave', (e) => {
+    const slot = e.target.closest('.ref-slot');
+    if (slot && !slot.contains(e.relatedTarget)) slot.classList.remove('is-drag');
+  });
+  slots.addEventListener('drop', (e) => {
+    const slot = e.target.closest('.ref-slot');
+    if (!slot) return;
+    e.preventDefault();
+    slot.classList.remove('is-drag');
+    const file = e.dataTransfer && e.dataTransfer.files[0];
+    if (file) setRefFile(+slot.dataset.slot, file);
+  });
+  [1, 2].forEach(renderRefSlot);
+
   function syncControls() {
     $$('[data-group]').forEach((b) => {
       const on = bs[b.dataset.group] === b.dataset.val;
@@ -620,7 +749,14 @@
       const k = el.dataset.field;
       if (el.type === 'checkbox') el.checked = !!bs[k]; else el.value = bs[k] || '';
     });
-    $('#imageContextField').hidden = !bs.refImage;
+    $$('[data-ref-mode]').forEach((b) => {
+      const on = b.dataset.refMode === bs.refMode;
+      b.classList.toggle('is-active', on);
+      b.setAttribute('aria-pressed', on);
+    });
+    $('#refSlots').hidden = bs.refMode === 'none';
+    $('#refNote').hidden = bs.refMode === 'none';
+    refSlot(2).hidden = bs.refMode !== 'both';
     renderMoves();
   }
 
@@ -631,9 +767,9 @@
   const sentence = (s) => { const t = String(s || '').trim(); if (!t) return ''; return /[.!?…]$/.test(t) ? cap(t) : cap(t) + '.'; };
 
   const LBL = {
-    en: { camera: 'Camera movement', shot: 'Shot', ref: 'Reference image', scene: 'Scene', look: 'Look', notes: 'Additional notes', avoid: 'Avoid',
+    en: { camera: 'Camera movement', shot: 'Shot', ref: 'Reference image', refs: 'Reference images', scene: 'Scene', look: 'Look', notes: 'Additional notes', avoid: 'Avoid',
       speed: 'Speed', light: 'Lighting', mood: 'Mood', style: 'Style', subject: 'Subject', location: 'Location', action: 'Action' },
-    tr: { camera: 'Kamera hareketi', shot: 'Kadraj', ref: 'Referans görsel', scene: 'Sahne', look: 'Görünüm', notes: 'Ek notlar', avoid: 'Kaçınılacaklar',
+    tr: { camera: 'Kamera hareketi', shot: 'Kadraj', ref: 'Referans görsel', refs: 'Referans görseller', scene: 'Sahne', look: 'Görünüm', notes: 'Ek notlar', avoid: 'Kaçınılacaklar',
       speed: 'Hız', light: 'Işık', mood: 'Atmosfer', style: 'Stil', subject: 'Konu', location: 'Mekân', action: 'Aksiyon' }
   };
 
@@ -649,14 +785,24 @@
     const shotBody = [shotParts.length ? sentence(shotParts.join(', ')) : '', sentence(fmt)].filter(Boolean).join(' ');
     if (shotBody) sections.push({ key: 'shot', title: T.shot, body: shotBody });
 
-    if (s.refImage) {
-      const ctx = s.imageContext.trim();
-      sections.push({ key: 'ref', title: T.ref, body: L === 'en'
-        ? `Use the uploaded image${ctx ? ` (${ctx})` : ''} as the first frame. Preserve the subject, framing, lighting, colors and lens feel from the image; apply only the camera movement and the described action.`
-        : `Yüklenen görseli${ctx ? ` (${ctx})` : ''} ilk kare olarak kullan. Görseldeki konu, kadraj, ışık, renkler ve lens hissi korunsun; yalnızca kamera hareketi ve tarif edilen aksiyon uygulansın.` });
+    if (s.refMode !== 'none') {
+      const ctx = s.imageContext.trim(), ctx2 = s.imageContext2.trim();
+      const both = s.refMode === 'both';
+      const lines = L === 'en'
+        ? [`IMAGE 1 = exact START FRAME${ctx ? ` (${ctx})` : ''}.`,
+           both && `IMAGE 2 = exact END FRAME${ctx2 ? ` (${ctx2})` : ''}.`,
+           both
+             ? 'Start exactly from IMAGE 1 and move smoothly to IMAGE 2. Preserve the location, framing, lighting and colors of the reference images. FINAL FRAME MUST MATCH IMAGE 2.'
+             : 'Preserve the subject, framing, lighting, colors and lens feel from IMAGE 1; apply only the camera movement and the described action.']
+        : [`IMAGE 1 = tam BAŞLANGIÇ KARESİ${ctx ? ` (${ctx})` : ''}.`,
+           both && `IMAGE 2 = tam BİTİŞ KARESİ${ctx2 ? ` (${ctx2})` : ''}.`,
+           both
+             ? 'Tam olarak IMAGE 1 ile başla ve akıcı biçimde IMAGE 2\'ye geç. Referans görsellerdeki mekân, kadraj, ışık ve renkler korunsun. SON KARE IMAGE 2 İLE EŞLEŞMELİ.'
+             : 'IMAGE 1\'deki konu, kadraj, ışık, renkler ve lens hissi korunsun; yalnızca kamera hareketi ve tarif edilen aksiyon uygulansın.'];
+      sections.push({ key: 'ref', title: both ? T.refs : T.ref, body: lines.filter(Boolean).join('\n') });
     }
 
-    const subject = s.subject.trim(), location = s.location.trim(), action = s.action.trim();
+    const subject = localized('subject', s.subject, L), location = localized('location', s.location, L), action = localized('action', s.action, L);
     let scene = '';
     if (L === 'en') {
       if (subject && location) scene = sentence(`${subject} in ${location}`);
@@ -699,13 +845,29 @@
     outText.textContent = text;
     const words = text.split(/\s+/).filter(Boolean).length;
     $('#outputMeta').textContent = `${words} kelime · ${text.length} karakter`;
-    const typedTr = ['subject', 'location', 'action', 'imageContext', 'extra'].some((k) => TR_CHARS.test(bs[k] || ''));
+
+    // Hazır ifadelerin karşılığını göster; serbest metnin çevrildiği izlenimini verme
+    $$('[data-phrase]').forEach((sel) => {
+      const field = sel.dataset.phrase, value = String(bs[field] || '').trim(), p = phraseFor(field, value);
+      sel.value = p ? p.tr : '';
+      const hint = $(`[data-phrase-hint="${field}"]`);
+      hint.hidden = !value;
+      hint.classList.toggle('is-match', !!p);
+      hint.textContent = p ? `İngilizce çıktı: ${p.en}` : 'Serbest metin: otomatik çevrilmez, prompta olduğu gibi yazılır.';
+    });
+    const freeTexts = [
+      ...['subject', 'location', 'action'].filter((k) => !phraseFor(k, bs[k])).map((k) => bs[k]),
+      bs.refMode !== 'none' ? bs.imageContext : '', bs.refMode === 'both' ? bs.imageContext2 : '', bs.extra
+    ].map((v) => String(v || '').trim()).filter(Boolean);
+    $('#copyTranslate').hidden = !freeTexts.length || view.lang !== 'en';
+    const typedTr = freeTexts.some((v) => TR_CHARS.test(v));
+
     const note = $('#outputNote');
     if (view.lang === 'tr') {
       note.textContent = 'Türkçe çıktı, promptu anlamak ve düzenlemek için. Video aracına İngilizce (EN) sürümünü yapıştırman önerilir.';
       note.classList.remove('is-warn');
     } else if (typedTr) {
-      note.textContent = 'Sahne alanlarına Türkçe yazdın; bu kısımlar İngilizce çıktıda Türkçe kalır. Çoğu araç anlar, ama İngilizce yazmak daha tutarlı sonuç verir.';
+      note.textContent = 'Serbest yazdığın Türkçe metin çevrilmedi, İngilizce çıktıda Türkçe kaldı. Hazır seçenekleri kullanabilir veya "AI ile çevirmek için kopyala" ile kendi AI aracında çevirebilirsin.';
       note.classList.add('is-warn');
     } else {
       note.textContent = 'İngilizce çıktı Kling, Runway, Higgsfield, Luma gibi araçlarda daha tutarlı sonuç verir.';
@@ -748,6 +910,10 @@
     }
     const g = t.closest('[data-group]');
     if (g) { const k = g.dataset.group; bs[k] = bs[k] === g.dataset.val ? '' : g.dataset.val; updateBuilder(); return; }
+    const rm = t.closest('[data-ref-mode]');
+    if (rm) { bs.refMode = rm.dataset.refMode; updateBuilder(); return; }
+    const rr = t.closest('[data-ref-remove]');
+    if (rr) { clearRefFile(+rr.dataset.refRemove); return; }
     const a = t.closest('[data-avoid]');
     if (a) { const id = a.dataset.avoid; bs.avoid = bs.avoid.includes(id) ? bs.avoid.filter((x) => x !== id) : [...bs.avoid, id]; updateBuilder(); return; }
     const pr = t.closest('[data-preset]');
@@ -756,9 +922,14 @@
   $('#builderForm').addEventListener('input', (e) => {
     const el = e.target.closest('[data-field]');
     if (!el) return;
-    bs[el.dataset.field] = el.type === 'checkbox' ? el.checked : el.value;
-    if (el.dataset.field === 'refImage') $('#imageContextField').hidden = !el.checked;
+    bs[el.dataset.field] = el.value;
     renderOutput();
+  });
+  $('#builderForm').addEventListener('change', (e) => {
+    const sel = e.target.closest('[data-phrase]');
+    if (!sel || !sel.value) return;
+    bs[sel.dataset.phrase] = sel.value;
+    updateBuilder();
   });
   $('#builderForm').addEventListener('submit', (e) => e.preventDefault());
   $('#moveSearch').addEventListener('input', (e) => { view.moveQuery = e.target.value; renderMoves(); });
@@ -779,7 +950,15 @@
     else toast('Kopyalanamadı. Metni seçip elle kopyalayabilirsin.');
   }
   $('#copyOutput').addEventListener('click', (e) => copyOutput(e.currentTarget));
-  $('#resetBuilder').addEventListener('click', () => { applyValues({}); toast('Seçimler sıfırlandı.'); });
+  $('#resetBuilder').addEventListener('click', () => { [1, 2].forEach(clearRefFile); applyValues({}); toast('Seçimler sıfırlandı.'); });
+  // Çeviri yapmaz: yalnızca kullanıcının kendi AI aracına yapıştıracağı talimatı panoya kopyalar
+  $('#copyTranslate').addEventListener('click', async (e) => {
+    const text = 'Aşağıdaki yapay zekâ video promptundaki Türkçe kısımları doğal İngilizceye çevir. '
+      + 'Bölüm başlıklarını, IMAGE 1 / IMAGE 2 ifadelerini, teknik kamera terimlerini ve İngilizce kısımları aynen koru. '
+      + 'Yeni bilgi ekleme, hiçbir şeyi çıkarma. Yalnızca sonucu yaz.\n\n---\n\n' + buildPrompt(bs, 'en', view.format);
+    if (await copyText(text)) { flashCopied(e.currentTarget); toast('Çeviri talimatı kopyalandı. ChatGPT, Gemini veya Claude\'a yapıştırabilirsin.'); }
+    else toast('Kopyalanamadı. Lütfen tekrar dene.');
+  });
   $('#saveOutput').addEventListener('click', () => {
     if (!demoUser) { openAuth('login', 'Oluşturduğun promptları kaydetmek için giriş yapman gerekecek. (Prototip)'); return; }
     const m = moveById[bs.movement];
