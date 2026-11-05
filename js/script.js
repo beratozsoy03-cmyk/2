@@ -85,7 +85,12 @@ if (promoBox && 'IntersectionObserver' in window
     showMuted(!muted);
   });
 
-  promoPlayer.pause = () => { modalOpen = true; sync(); };
+  // Başka bir video açılınca durur ve sesi kapanır; kapatılınca kendiliğinden sesli başlamaz
+  promoPlayer.pause = () => {
+    modalOpen = true;
+    if (!muted) { command('mute'); showMuted(true); }
+    sync();
+  };
   promoPlayer.resume = () => { modalOpen = false; sync(); };
 
   // Ağır oynatıcıyı sayfa yüklendikten sonra ve alana yaklaşınca yükler; ekrandan çıkınca duraklatır
@@ -97,6 +102,10 @@ if (promoBox && 'IntersectionObserver' in window
   };
   if (document.readyState === 'complete') start(); else window.addEventListener('load', start);
 }
+
+// Proje ve öğrenci videoları (js/media.js) açılıp kapanırken tanıtım videosu da durur / devam eder
+document.addEventListener('site:media-open', () => promoPlayer.pause());
+document.addEventListener('site:media-close', () => promoPlayer.resume());
 
 // Video modalı — yalnızca eğitim sayfasında var
 const modal = document.getElementById('video-modal');

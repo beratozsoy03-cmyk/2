@@ -97,6 +97,7 @@
       root.hidden = true;
       document.body.classList.remove('modal-open');
       if (mm.lastFocus) mm.lastFocus.focus();
+      document.dispatchEvent(new CustomEvent('site:media-close'));
     };
     close.addEventListener('click', shut);
     backdrop.addEventListener('click', shut);
@@ -124,6 +125,7 @@
       if (item.poster) node.poster = item.poster;
     }
     if (!node) return;
+    document.dispatchEvent(new CustomEvent('site:media-open'));
     m.frame.replaceChildren(node);
     m.lastFocus = opener || document.activeElement;
     m.root.hidden = false;
