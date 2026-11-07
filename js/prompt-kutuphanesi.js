@@ -23,6 +23,13 @@
   const dict = (entries) => Object.assign(Object.create(null), Object.fromEntries(entries));
   const catName = dict(LIB.categories.map((c) => [c.id, c.name]));
   const prompts = [...LIB.prompts].sort((a, b) => b.date.localeCompare(a.date));
+  // Müşterinin göndereceği konsept videoları: js/prompts-data.js > conceptMedia içinde id ile eşlenir.
+  // Eşlenmeyen kartlar temsilî önizlemeyle ve tüm prompt işlevleriyle çalışmaya devam eder.
+  const conceptMedia = LIB.conceptMedia || {};
+  prompts.forEach((p) => {
+    const m = p.demo && Object.prototype.hasOwnProperty.call(conceptMedia, p.id) ? conceptMedia[p.id] : null;
+    if (m && m.video) Object.assign(p, m);
+  });
   // Kayıtlar salt okunur: gerçek prompt metinleri sayfa içinde yanlışlıkla değişemez
   prompts.forEach((p) => Object.freeze(p));
   const byId = dict(prompts.map((p) => [p.id, p]));
@@ -256,6 +263,7 @@
         ${promptOriginHTML(p)}
         ${referenceBoxHTML(p)}
         <pre class="prompt-box is-clamped" tabindex="0">${esc(p.prompt)}</pre>
+        <button type="button" class="prompt-more" data-expand aria-expanded="false">Promptun devamını göster</button>
         <button class="btn btn-primary btn-block btn-copy btn-copy-lg" type="button" data-copy="${esc(p.id)}">${COPY_IC}<span class="label">Promptu Kopyala</span></button>
       </div>
       <div class="detail-actions">
@@ -268,6 +276,26 @@
         <ol>${p.steps.map((s) => `<li>${esc(s)}</li>`).join('')}</ol>
       </details>` : ''}
       ${p.instagram ? `<a class="link-arrow ig-link" href="${esc(p.instagram)}" target="_blank" rel="noopener noreferrer">Instagram'da izle <span class="arrow">→</span></a>` : ''}`;
+  }
+
+  // Kısa promptlarda "devamını göster" düğmeleri gereksizdir; uzun promptta metnin sürdüğü açıkça görünür
+  function syncClamps(root) {
+    $$('.prompt-panel', root).forEach((panel) => {
+      const box = $('.prompt-box', panel);
+      const fits = box.scrollHeight <= box.clientHeight + 4;
+      if (fits) box.classList.remove('is-clamped');
+      $$('[data-expand]', panel).forEach((b) => { b.hidden = fits; });
+    });
+  }
+  function setPromptExpanded(panel, open) {
+    const box = $('.prompt-box', panel);
+    box.classList.toggle('is-clamped', !open);
+    $$('[data-expand]', panel).forEach((b) => {
+      b.setAttribute('aria-expanded', String(open));
+      b.textContent = b.classList.contains('prompt-more')
+        ? (open ? 'Promptu daralt' : 'Promptun devamını göster')
+        : (open ? 'Daralt' : 'Tamamını göster');
+    });
   }
 
   // ---------- ÖNE ÇIKAN ----------
@@ -286,6 +314,7 @@
         ${relatedHTML(p)}
       </div>`;
     observeMedia(featuredEl);
+    syncClamps(featuredEl);
     $('#stickyCopyText').textContent = p.title;
   }
 
@@ -309,11 +338,13 @@
     </article>`;
   }
 
-  function filtered() {
+  // Kategori dışındaki filtreler (arama + araç) her iki yerde aynı kurala göre uygulanır:
+  // çip sayaçları ile listelenen kartlar bu sayede birbirini tutar.
+  function filtered({ ignoreCat = false } = {}) {
     const q = norm(state.q.trim());
     const terms = q.split(/\s+/).filter(Boolean);
     let list = prompts.filter((p) => {
-      if (state.cat && p.category !== state.cat) return false;
+      if (!ignoreCat && state.cat && p.category !== state.cat) return false;
       if (state.tool && toolFamily(p.tool) !== state.tool) return false;
       if (!terms.length) return true;
       const hay = norm([p.title, p.summary, p.tool, p.imageTool, catName[p.category], (p.tags || []).join(' '), p.prompt].join(' '));
@@ -325,10 +356,16 @@
   }
 
   function renderChips() {
-    const counts = {};
-    prompts.forEach((p) => { counts[p.category] = (counts[p.category] || 0) + 1; });
-    const items = [{ id: '', name: 'Tümü', n: prompts.length }, ...LIB.categories.map((c) => ({ ...c, n: counts[c.id] || 0 }))];
-    $('#categoryChips').innerHTML = items.map((c) => `<button type="button" class="chip ${state.cat === c.id ? 'is-active' : ''}" data-cat="${c.id}" aria-pressed="${state.cat === c.id}" ${c.n ? '' : 'disabled'}>${esc(c.name)} <span class="chip-n">${c.n}</span></button>`).join('');
+    // Sayaç: aktif arama ve araç filtresiyle bu kategoride görülebilecek toplam içerik (video + konsept)
+    const pool = filtered({ ignoreCat: true });
+    const tally = (list) => ({ n: list.length, video: list.filter((p) => !p.demo).length });
+    const items = [{ id: '', name: 'Tümü', ...tally(pool) },
+      ...LIB.categories.map((c) => ({ ...c, ...tally(pool.filter((p) => p.category === c.id)) }))];
+    $('#categoryChips').innerHTML = items.map((c) => {
+      const on = state.cat === c.id;
+      const detail = `${c.video} video, ${c.n - c.video} konsept`;
+      return `<button type="button" class="chip ${on ? 'is-active' : ''}" data-cat="${c.id}" aria-pressed="${on}" title="${detail}" aria-label="${esc(c.name)}: ${detail}" ${c.n || on ? '' : 'disabled'}>${esc(c.name)} <span class="chip-n">${c.n}</span></button>`;
+    }).join('');
   }
 
   // Ana ızgarada gerçek videolu içerikler; videosu olmayan konsept (demo) kartlar
@@ -346,11 +383,20 @@
     observeMedia($('#demoGrid'));
     $('#emptyState').hidden = list.length > 0;
     $('#realEmpty').hidden = !(real.length === 0 && demos.length > 0);
-    if (real.length === 0 && demos.length > 0) demoWrap.open = true; // yalnız konsept içeren filtrede bölümü aç
     const active = state.q || state.cat || state.tool;
+    // Filtre etkinken sayaçtaki içeriğin tamamı görünsün: konsept kartları kapalı bölümde kalmaz.
+    // Filtre kalkınca bölüm, kullanıcının filtreden önceki durumuna döner.
+    if (active && demos.length > 0) {
+      if (demoOpenBeforeFilter === null) demoOpenBeforeFilter = demoWrap.open;
+      demoWrap.open = true;
+    } else if (!active && demoOpenBeforeFilter !== null) {
+      demoWrap.open = demoOpenBeforeFilter;
+      demoOpenBeforeFilter = null;
+    }
     const totalReal = prompts.filter((p) => !p.demo).length;
     $('#resultCount').textContent = active ? `${real.length} video · ${demos.length} konsept` : `${totalReal} gerçek video · ${prompts.length - totalReal} konsept`;
   }
+  let demoOpenBeforeFilter = null;
 
   function renderLibrary() { renderChips(); renderGrid(); }
 
@@ -364,10 +410,10 @@
   searchInput.addEventListener('input', () => {
     $('#searchClear').hidden = !searchInput.value;
     clearTimeout(searchTimer);
-    searchTimer = setTimeout(() => { state.q = searchInput.value; renderGrid(); }, 120);
+    searchTimer = setTimeout(() => { state.q = searchInput.value; renderLibrary(); }, 120);
   });
   $('#searchClear').addEventListener('click', () => {
-    searchInput.value = ''; state.q = ''; $('#searchClear').hidden = true; renderGrid(); searchInput.focus();
+    searchInput.value = ''; state.q = ''; $('#searchClear').hidden = true; renderLibrary(); searchInput.focus();
   });
   $('#categoryChips').addEventListener('click', (e) => {
     const b = e.target.closest('[data-cat]');
@@ -375,7 +421,7 @@
     state.cat = b.dataset.cat;
     renderLibrary();
   });
-  $('#toolSelect').addEventListener('change', (e) => { state.tool = e.target.value; renderGrid(); });
+  $('#toolSelect').addEventListener('change', (e) => { state.tool = e.target.value; renderLibrary(); });
   $('#sortSelect').addEventListener('change', (e) => { state.sort = e.target.value; renderGrid(); });
   $('#resetFilters').addEventListener('click', () => {
     Object.assign(state, { q: '', cat: '', tool: '' });
@@ -406,6 +452,7 @@
     modal.hidden = false;
     lockScroll(true);
     observeMedia(modalBody);
+    syncClamps(modalBody);
     if (push) {
       const url = `?prompt=${encodeURIComponent(id)}`;
       if (modalPushed) history.replaceState({ prompt: id }, '', url);
@@ -451,9 +498,9 @@
     if (sv) { toggleSave(sv.dataset.save); return; }
     const ex = t.closest('[data-expand]');
     if (ex) {
-      const box = ex.closest('.prompt-panel').querySelector('.prompt-box');
-      const clamped = box.classList.toggle('is-clamped');
-      ex.textContent = clamped ? 'Tamamını göster' : 'Daralt';
+      const panel = ex.closest('.prompt-panel');
+      const open = $('.prompt-box', panel).classList.contains('is-clamped');
+      setPromptExpanded(panel, open);
       return;
     }
     if (t.closest('[data-close]')) {
@@ -893,7 +940,8 @@
     if (!p || !p.builder) return;
     applyValues(p.builder);
     if (!modal.hidden) closePromptModal();
-    $('#olusturucu').scrollIntoView({ behavior: 'smooth' });
+    if (stepper.active) stepper.finish({ scroll: false });
+    $('#olusturucu').scrollIntoView({ behavior: smoothOrAuto() });
     toast(`“${p.title}” oluşturucuya yüklendi. Şimdi değiştirebilirsin.`);
   }
 
@@ -901,7 +949,7 @@
   $('#builderForm').addEventListener('click', (e) => {
     const t = e.target;
     const mv = t.closest('[data-move]');
-    if (mv) { bs.movement = mv.dataset.move; updateBuilder(); return; }
+    if (mv) { bs.movement = mv.dataset.move; updateBuilder(); stepper.afterMove(); return; }
     const mg = t.closest('[data-move-group]');
     if (mg) {
       view.moveGroup = mg.dataset.moveGroup;
@@ -909,7 +957,7 @@
       renderMoves(); return;
     }
     const g = t.closest('[data-group]');
-    if (g) { const k = g.dataset.group; bs[k] = bs[k] === g.dataset.val ? '' : g.dataset.val; updateBuilder(); return; }
+    if (g) { const k = g.dataset.group; bs[k] = bs[k] === g.dataset.val ? '' : g.dataset.val; updateBuilder(); stepper.afterGroup(k); return; }
     const rm = t.closest('[data-ref-mode]');
     if (rm) { bs.refMode = rm.dataset.refMode; updateBuilder(); return; }
     const rr = t.closest('[data-ref-remove]');
@@ -917,7 +965,7 @@
     const a = t.closest('[data-avoid]');
     if (a) { const id = a.dataset.avoid; bs.avoid = bs.avoid.includes(id) ? bs.avoid.filter((x) => x !== id) : [...bs.avoid, id]; updateBuilder(); return; }
     const pr = t.closest('[data-preset]');
-    if (pr) { applyValues(PB.presets.find((p) => p.id === pr.dataset.preset).values); toast(`“${pr.textContent}” ayarları yüklendi.`); }
+    if (pr) { applyValues(PB.presets.find((p) => p.id === pr.dataset.preset).values); toast(`“${pr.textContent}” ayarları yüklendi.`); if (stepper.active) stepper.finish(); }
   });
   $('#builderForm').addEventListener('input', (e) => {
     const el = e.target.closest('[data-field]');
@@ -950,7 +998,7 @@
     else toast('Kopyalanamadı. Metni seçip elle kopyalayabilirsin.');
   }
   $('#copyOutput').addEventListener('click', (e) => copyOutput(e.currentTarget));
-  $('#resetBuilder').addEventListener('click', () => { [1, 2].forEach(clearRefFile); applyValues({}); toast('Seçimler sıfırlandı.'); });
+  $('#resetBuilder').addEventListener('click', () => { [1, 2].forEach(clearRefFile); applyValues({}); toast('Seçimler sıfırlandı.'); stepper.restart(); });
   // Çeviri yapmaz: yalnızca kullanıcının kendi AI aracına yapıştıracağı talimatı panoya kopyalar
   $('#copyTranslate').addEventListener('click', async (e) => {
     const text = 'Aşağıdaki yapay zekâ video promptundaki Türkçe kısımları doğal İngilizceye çevir. '
@@ -967,6 +1015,132 @@
     toast('Kaydedildi (demo — sayfa yenilenince silinir).');
   });
 
+  // ---------- MOBİL ADIM ADIM OLUŞTURUCU ----------
+  // Masaüstünde form olduğu gibi kalır. Adımlar yalnızca mevcut alanları gösterip gizler:
+  // seçimler ve prompt üretimi aynı "bs" durumundan gelir, adım değişince hiçbir seçim kaybolmaz.
+  function smoothOrAuto() { return window.matchMedia('(prefers-reduced-motion: reduce)').matches ? 'auto' : 'smooth'; }
+  const stepper = (() => {
+    const STEPS = [
+      { id: 'camera', title: 'Kamera hareketi', hint: 'Bir hareket seç; sonraki adıma otomatik geçilir.' },
+      { id: 'framing', title: 'Kadraj', hint: 'Her başlıktan en fazla bir seçim. Hepsi isteğe bağlı.', groups: ['shot', 'angle', 'lens'] },
+      { id: 'look', title: 'Işık ve stil', hint: 'Her başlıktan en fazla bir seçim. Hepsi isteğe bağlı.', groups: ['light', 'mood', 'style'] },
+      { id: 'format', title: 'Hız ve format', hint: 'Oran ve süre hazır seçili; istersen değiştir.', groups: ['speed', 'ratio', 'duration'] },
+      { id: 'scene', title: 'Sahne ve görsel', hint: 'İsteğe bağlı. Bitince Devam düğmesine dokun.' },
+      { id: 'extra', title: 'Ek talimatlar', hint: 'İsteğe bağlı. Birden fazla seçim yapabilirsin.' },
+      { id: 'output', title: 'Promptun hazır', hint: 'Kopyala veya önceki adımlara dönüp değiştir.' }
+    ];
+    const LAST = STEPS.length - 1;
+    const AUTO_DELAY = 280;
+    const mq = window.matchMedia('(max-width: 820px)');
+    const root = $('.builder');
+    const head = $('#stepperHead');
+    const nav = $('#stepperNav');
+    const panels = dict(STEPS.map((s) => [s.id, s.id === 'output' ? $('#builderOutput') : $(`#builderForm [data-step="${s.id}"]`)]));
+    const presets = $('#builderForm .presets');
+    const done = new Set();
+    let current = 0;
+    let reached = 0;
+    let timer = 0;
+
+    $('#stepperDots').innerHTML = STEPS.map((s, i) => `<li><button type="button" class="stepper-dot" data-step-go="${i}" aria-label="Adım ${i + 1}: ${esc(s.title)}">${i + 1}</button></li>`).join('');
+
+    function scrollToTarget(el) {
+      const headerH = $('.site-header').offsetHeight;
+      const stickyH = el === root ? 0 : head.offsetHeight;
+      window.scrollTo({ top: el.getBoundingClientRect().top + window.scrollY - headerH - stickyH - 8, behavior: smoothOrAuto() });
+    }
+
+    // Sabit başlık, menünün gerçek yüksekliğinin hemen altında durur
+    function pinHead() { head.style.top = `${$('.site-header').offsetHeight}px`; }
+
+    function render({ scroll = true, focus = true } = {}) {
+      const s = STEPS[current];
+      STEPS.forEach((x) => panels[x.id].classList.toggle('is-current', x.id === s.id));
+      root.classList.toggle('is-final', current === LAST);
+      presets.hidden = current !== 0;
+      $('#stepperCount').textContent = `${current + 1}/${STEPS.length}`;
+      $('#stepperCount').setAttribute('aria-label', `Adım ${current + 1} / ${STEPS.length}`);
+      $('#stepperTitle').textContent = s.title;
+      $('#stepperHint').textContent = s.hint;
+      $('#stepperJump').hidden = current === LAST;
+      $('#stepperBar').style.width = `${(current / LAST) * 100}%`;
+      $$('[data-step-go]').forEach((b, i) => {
+        const isDone = done.has(i) && i !== current;
+        b.classList.toggle('is-current', i === current);
+        b.classList.toggle('is-done', isDone);
+        b.textContent = isDone ? '✓' : String(i + 1);
+        b.disabled = i > reached;
+        if (i === current) b.setAttribute('aria-current', 'step'); else b.removeAttribute('aria-current');
+      });
+      $('#stepperBack').disabled = current === 0;
+      const next = $('#stepperNext');
+      next.hidden = current === LAST;
+      next.textContent = current === LAST - 1 ? 'Promptu Oluştur' : 'Devam';
+      nav.classList.toggle('is-last', current === LAST);
+      if (scroll) scrollToTarget(root);
+      if (focus) $('#stepperTitle').focus({ preventScroll: true });
+    }
+
+    function go(i, opts) {
+      clearTimeout(timer);
+      if (i > current) for (let k = current; k < i; k += 1) done.add(k);
+      current = Math.max(0, Math.min(LAST, i));
+      reached = Math.max(reached, current);
+      render(opts);
+    }
+
+    const api = {
+      active: false,
+      afterMove() {
+        if (!api.active || STEPS[current].id !== 'camera') return;
+        clearTimeout(timer);
+        timer = setTimeout(() => go(current + 1), AUTO_DELAY);
+      },
+      afterGroup(key) {
+        if (!api.active) return;
+        const { groups } = STEPS[current];
+        clearTimeout(timer);
+        // Seçim kaldırıldıysa kullanıcıyı başka yere götürme
+        if (!groups || !groups.includes(key) || !bs[key]) return;
+        const nextEmpty = [...groups.slice(groups.indexOf(key) + 1), ...groups.slice(0, groups.indexOf(key))].find((g) => !bs[g]);
+        if (!nextEmpty) { timer = setTimeout(() => go(current + 1), AUTO_DELAY); return; }
+        const target = $(`#lbl-${nextEmpty}`).closest('.opt-group');
+        timer = setTimeout(() => scrollToTarget(target), AUTO_DELAY);
+      },
+      finish(opts) { reached = LAST; go(LAST, opts); },
+      restart() {
+        if (!api.active) return;
+        done.clear(); reached = 0; go(0);
+      },
+      sync() {
+        clearTimeout(timer);
+        api.active = mq.matches;
+        root.classList.toggle('is-stepper', api.active);
+        head.hidden = !api.active;
+        nav.hidden = !api.active;
+        $('#stepperHint').hidden = !api.active;
+        if (api.active) { pinHead(); render({ scroll: false, focus: false }); }
+        else {
+          STEPS.forEach((x) => panels[x.id].classList.remove('is-current'));
+          root.classList.remove('is-final');
+          presets.hidden = false;
+        }
+      }
+    };
+
+    $('#stepperNext').addEventListener('click', () => go(current + 1));
+    $('#stepperBack').addEventListener('click', () => go(current - 1));
+    $('#stepperJump').addEventListener('click', () => api.finish());
+    $('#stepperDots').addEventListener('click', (e) => {
+      const b = e.target.closest('[data-step-go]');
+      if (b && !b.disabled) go(+b.dataset.stepGo);
+    });
+    mq.addEventListener('change', () => { api.sync(); });
+    window.addEventListener('resize', () => { if (api.active) pinHead(); });
+    return api;
+  })();
+  stepper.sync();
+
   // ---------- MOBİL HIZLI KOPYALAMA ÇUBUĞU ----------
   const sticky = $('#stickyCopy');
   const stickyBtn = $('#stickyCopyBtn');
@@ -978,7 +1152,8 @@
     if (isMobile() && modal.hidden && authModal.hidden && mobileMenu.hidden) {
       const featCopy = $('#featured [data-copy]');
       if (inView($('#one-cikan'), 120) && !inView(featCopy)) mode = 'featured';
-      else if (inView($('.builder-form'), 200) && !inView($('#copyOutput')) && !inView(outText)) mode = 'builder';
+      // Adım adım akışta kopyalama son adımdadır; alttaki Geri/Devam çubuğuyla çakışmasın
+      else if (!stepper.active && inView($('.builder-form'), 200) && !inView($('#copyOutput')) && !inView(outText)) mode = 'builder';
     }
     if (mode !== stickyMode) {
       stickyMode = mode;

@@ -165,6 +165,17 @@
       </div>
 
       <div class="builder">
+        <!-- Yalnızca mobilde görünür: adım göstergesi (js/prompt-kutuphanesi.js > stepper) -->
+        <div class="stepper-head" id="stepperHead" hidden>
+          <div class="stepper-top">
+            <h3 class="stepper-title"><span class="stepper-count" id="stepperCount" aria-live="polite"></span> <span id="stepperTitle" tabindex="-1"></span></h3>
+            <button type="button" class="link-btn" id="stepperJump">Promptu gör</button>
+          </div>
+          <div class="stepper-track" aria-hidden="true"><span class="stepper-bar" id="stepperBar"></span></div>
+          <ol class="stepper-dots" id="stepperDots" aria-label="Oluşturucu adımları"></ol>
+        </div>
+        <p class="stepper-hint" id="stepperHint" hidden></p>
+
         <form class="builder-form" id="builderForm" autocomplete="off" novalidate>
 
           <div class="presets">
@@ -173,7 +184,7 @@
           </div>
 
           <!-- 1. Kamera hareketi -->
-          <fieldset class="step">
+          <fieldset class="step" data-step="camera">
             <legend><span class="step-num">1</span> Kamera hareketi</legend>
             <div class="move-tools">
               <label class="search search-sm">
@@ -189,7 +200,7 @@
           </fieldset>
 
           <!-- 2. Sahne -->
-          <fieldset class="step">
+          <fieldset class="step" data-step="scene">
             <legend><span class="step-num">2</span> Sahne</legend>
             <p class="step-hint">Türkçe yazabilirsin. Hazır seçenekler İngilizce prompta otomatik dönüşür; serbest yazılan metin çevrilmez, olduğu gibi kalır.</p>
             <div class="field-grid">
@@ -226,23 +237,23 @@
           </fieldset>
 
           <!-- 3-5. Seçenek grupları (JS ile doldurulur) -->
-          <fieldset class="step">
+          <fieldset class="step" data-step="framing">
             <legend><span class="step-num">3</span> Kadraj</legend>
             <div data-groups="shot,angle,lens"></div>
           </fieldset>
 
-          <fieldset class="step">
+          <fieldset class="step" data-step="look">
             <legend><span class="step-num">4</span> Işık ve stil</legend>
             <div data-groups="light,mood,style"></div>
           </fieldset>
 
-          <fieldset class="step">
+          <fieldset class="step" data-step="format">
             <legend><span class="step-num">5</span> Hız ve format</legend>
             <div data-groups="speed,ratio,duration"></div>
           </fieldset>
 
           <!-- 6. Ek -->
-          <fieldset class="step">
+          <fieldset class="step" data-step="extra">
             <legend><span class="step-num">6</span> Ek talimatlar</legend>
             <div class="field">
               <label for="fExtra">Eklemek istediğin her şey <small>(isteğe bağlı)</small></label>
@@ -280,6 +291,11 @@
             <button class="link-btn" type="button" id="saveOutput">☆ Bu promptu kaydet</button>
           </div>
         </aside>
+
+        <div class="stepper-nav" id="stepperNav" hidden>
+          <button type="button" class="btn btn-ghost" id="stepperBack">Geri</button>
+          <button type="button" class="btn btn-primary" id="stepperNext">Devam</button>
+        </div>
       </div>
     </div>
   </section>

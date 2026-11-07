@@ -41,7 +41,12 @@
    preview   : yalnızca demo içerik için CSS önizleme sahnesi { scene, motion }
    ============================================================ */
 window.PROMPT_LIBRARY = {
-
+  // KONSEPT ÖRNEK VİDEOLARI: müşteri gönderdikçe buraya prompt id'siyle eklenir; kart kendiliğinden videoya geçer.
+  // Listede olmayan kartlar temsilî önizlemeyle çalışır. Sahte veya alakasız video eklemeyin.
+  // Örnek: 'parfum-orbit-01': { video: 'assets/video/promptlar/parfum-orbit-01.mp4',
+  //   videoSmall: 'assets/video/promptlar/parfum-orbit-01-kart.mp4', poster: 'assets/img/promptlar/parfum-orbit-01.jpg',
+  //   ratio: '9:16', duration: 8 },
+  conceptMedia: {},
   categories: [
     { id: 'mimari',    name: 'Mimari & Gayrimenkul' },
     { id: 'otomotiv',  name: 'Otomotiv' },

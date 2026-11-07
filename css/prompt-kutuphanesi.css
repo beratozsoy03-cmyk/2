@@ -454,7 +454,8 @@ body.has-sticky .toast { bottom: calc(86px + env(safe-area-inset-bottom)); }
   .feature .media-note { display: none; }
   .prompt-panel .btn-copy-lg { order: -1; }
   .prompt-panel-head { order: 0; }
-  .detail-actions { display: grid; grid-template-columns: 1fr 1fr; }
+  .detail-actions { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .detail-actions .btn { white-space: normal; min-width: 0; }
   .detail-actions .btn-save { grid-column: 1 / -1; }
   .detail-actions:not(:has([data-edit])) .btn-save { grid-column: auto; }
   .related-list { grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 10px; }
@@ -563,3 +564,47 @@ body.has-sticky .toast { bottom: calc(86px + env(safe-area-inset-bottom)); }
 @media (max-width: 560px) {
   .ref-slots { grid-template-columns: 1fr; }
 }
+
+/* ============ PROMPT DEVAMI ============ */
+.prompt-more { display: block; width: 100%; margin-top: 8px; padding: 10px 12px; font-size: 13.5px; font-weight: 700; color: #fff; text-align: center; border: 1px solid var(--border-strong); border-radius: var(--radius-sm, 10px); background: rgba(255,255,255,0.04); }
+.prompt-more:hover { background: rgba(255,255,255,0.08); }
+.prompt-more[hidden], .link-btn[data-expand][hidden] { display: none; }
+
+/* ============ MOBİL ADIM ADIM OLUŞTURUCU ============ */
+.stepper-head[hidden], .stepper-nav[hidden] { display: none; }
+.builder.is-stepper { display: block; }
+.builder.is-stepper .step { display: none; margin: 0; }
+.builder.is-stepper .step.is-current { display: block; }
+.builder.is-stepper .step > legend { position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; border: 0; }
+.builder.is-stepper .step > legend + * { clear: none; }
+.builder.is-stepper .output { display: none; }
+.builder.is-stepper .output.is-current { display: block; }
+.builder.is-stepper.is-final .builder-form { display: none; }
+.builder.is-stepper .presets[hidden] { display: none; }
+.builder.is-stepper .move-grid { max-height: none; overflow: visible; }
+.builder.is-stepper .opt-group { scroll-margin-top: 200px; }
+
+.stepper-head { position: sticky; top: var(--header-h); z-index: 30; margin: 0 -16px 8px; padding: 8px 16px 10px; background: rgba(10,10,11,0.94); backdrop-filter: blur(10px); border-bottom: 1px solid var(--border); }
+.stepper-top { display: flex; justify-content: space-between; align-items: center; gap: 12px; }
+.stepper-count { display: inline-block; margin-right: 6px; padding: 1px 7px; font-size: 12px; font-weight: 800; color: #0a0a0b; background: #fff; border-radius: 999px; vertical-align: 1px; }
+.stepper-top .link-btn[hidden] { display: none; }
+.stepper-track { height: 3px; margin-top: 7px; border-radius: 3px; background: rgba(255,255,255,0.1); overflow: hidden; }
+.stepper-bar { display: block; height: 100%; width: 0; border-radius: 3px; background: linear-gradient(90deg, var(--accent-1), var(--accent-3)); transition: width .2s ease; }
+.stepper-dots { display: flex; justify-content: space-between; gap: 4px; margin: 7px 0 0; padding: 0; list-style: none; }
+.stepper-dot { width: 30px; height: 30px; border-radius: 50%; font-size: 12.5px; font-weight: 700; color: var(--text-dim); border: 1px solid var(--border-strong); background: transparent; }
+.stepper-dot:disabled { opacity: .4; cursor: default; }
+.stepper-dot.is-done { color: #0a0a0b; background: #fff; border-color: #fff; }
+.stepper-dot.is-current { color: #fff; border-color: transparent; background: linear-gradient(135deg, var(--accent-1), var(--accent-3)); }
+.stepper-title { min-width: 0; font-size: 16px; font-weight: 700; line-height: 1.25; }
+#stepperTitle { outline: none; }
+.stepper-hint { margin: 0 0 10px; font-size: 13px; color: var(--text-dimmer); }
+.stepper-hint[hidden] { display: none; }
+
+.stepper-nav { position: sticky; bottom: 0; z-index: 30; display: grid; grid-template-columns: 1fr 2fr; gap: 10px; margin: 14px -16px 0; padding: 10px 16px calc(10px + env(safe-area-inset-bottom)); background: rgba(10,10,11,0.94); backdrop-filter: blur(10px); border-top: 1px solid var(--border); }
+.stepper-nav .btn { width: 100%; justify-content: center; min-height: 48px; }
+.stepper-nav .btn[hidden] { display: none; }
+.stepper-nav .btn:disabled { opacity: .4; }
+.stepper-nav.is-last { grid-template-columns: 1fr; }
+@media (prefers-reduced-motion: reduce) { .stepper-bar { transition: none; } }
+.media-badges { flex-wrap: wrap; max-width: 100%; }
+.builder.is-stepper .opt-group .chips { flex-wrap: wrap; overflow: visible; }

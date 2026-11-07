@@ -168,7 +168,7 @@
 
   const playable = (i) => i && (i.youtube || safeVideoSrc(i.video)) && (i.poster || safeVideoSrc(i.video));
 
-  // --- Örnek Projeler: asimetrik masonry ---
+  // --- Örnek Projeler: boşluksuz satır ızgarası (24 sütun) ---
   function renderProjects(items) {
     const wrap = document.querySelector('[data-projects]');
     const list = (items || []).filter(playable);
@@ -191,6 +191,75 @@
     let expanded = false;
     let moreWrap = null;
     let moreBtn = null;
+
+    // Kartları satırlara yerleştirir: dikey kartlar yan yana, yatay kartlar geniş; eksik kalan satır ortalanır.
+    // Üç yatay + iki dikey kart yan yana gelince mozaik oluşur (geniş yatay, altında iki yatay, yanında iki dikey).
+    const wideMq = window.matchMedia('(min-width: 768px)');
+    const desktopMq = window.matchMedia('(min-width: 1025px)');
+    const applyLayout = () => {
+      const visible = cells.filter((c) => !c.hidden);
+      const wide = wideMq.matches;
+      const isV = (c) => c.dataset.orient === 'dikey';
+      let row = 1;
+      let cols = 24;
+      const put = (c, start, span, opts = {}) => {
+        c.style.gridColumn = `${start} / span ${span}`;
+        c.style.gridRow = `${row} / span ${opts.rows || 1}`;
+        c.classList.toggle('is-fill', !!opts.fill);
+        c.classList.toggle('is-compact', !!opts.compact);
+      };
+      const putRow = (group, span) => {
+        const first = (cols - group.length * span) / 2 + 1;
+        group.forEach((c, i) => put(c, first + i * span, span));
+        row += 1;
+      };
+      const putAll = (group, perRow, span) => {
+        for (let i = 0; i < group.length; i += perRow) putRow(group.slice(i, i + perRow), span);
+      };
+      // Filtre seçiliyken kartlar tek tiptir
+      wrap.style.gridTemplateColumns = '';
+      if (visible.length && visible.every(isV)) {
+        const n = visible.length;
+        if (!wide) { putAll(visible, 2, 12); return; }
+        // Eşit bölünebilen sayıda kart eşit satırlara dizilir; bölünmüyorsa son satır ortalanır
+        const even = (desktopMq.matches ? [6, 5, 4] : [3, 5, 4]).find((p) => n % p === 0);
+        if (even === 5) { cols = 5; wrap.style.gridTemplateColumns = 'repeat(5, minmax(0, 1fr))'; putAll(visible, 5, 1); }
+        else if (even) putAll(visible, even, 24 / even);
+        else putAll(visible, 4, 6);
+        return;
+      }
+      if (visible.length && !visible.some(isV)) {
+        if (!wide) putAll(visible, 1, 24);
+        else if (visible.length % 3 === 0) putAll(visible, 3, 8);
+        else putAll(visible, 2, 12);
+        return;
+      }
+      for (let i = 0; i < visible.length;) {
+        const r = visible.slice(i);
+        if (wide && r.length >= 5 && r.slice(0, 3).every((c) => !isV(c)) && r.slice(3, 5).every(isV)) {
+          put(r[0], 1, 12);
+          row += 1;
+          put(r[1], 1, 6, { compact: true });
+          put(r[2], 7, 6, { compact: true });
+          row -= 1;
+          put(r[3], 13, 6, { rows: 2, fill: true });
+          put(r[4], 19, 6, { rows: 2, fill: true });
+          row += 2;
+          i += 5;
+          continue;
+        }
+        const vertical = isV(r[0]);
+        const perRow = vertical ? (wide ? 4 : 2) : (wide ? 2 : 1);
+        let n = 1;
+        while (n < perRow && n < r.length && isV(r[n]) === vertical) n += 1;
+        // Tek kalan yatay kart satırı tek başına doldurur
+        putRow(r.slice(0, n), vertical ? (wide ? 6 : 12) : (wide && n > 1 ? 12 : 24));
+        i += n;
+      }
+    };
+    wideMq.addEventListener('change', applyLayout);
+    desktopMq.addEventListener('change', applyLayout);
+
     const applyVisibility = () => {
       cells.forEach((c, i) => {
         const matches = activeFilter === 'hepsi' || c.dataset.orient === activeFilter;
@@ -201,6 +270,7 @@
         moreBtn.textContent = expanded ? 'Daha Az Göster' : `Tümünü Gör (${cells.length})`;
         moreBtn.setAttribute('aria-expanded', String(expanded));
       }
+      applyLayout();
     };
     if (cells.length > PREVIEW_COUNT) {
       moreWrap = el('div', 'project-more');
@@ -274,7 +344,7 @@
     if (note) note.remove();
   }
 
-  // --- Instagram: kaydırmalı, sabit kartlı galeri (ortadaki kartın önizlemesi oynar) ---
+  // --- Instagram: tam genişlikte dikey video karuseli (görünen kartların önizlemesi oynar) ---
   function renderInstagram(items) {
     const wrap = document.querySelector('[data-instagram]');
     const list = (items || []).filter((i) => i && /^https:\/\/www\.instagram\.com\//.test(i.url || '') && (i.poster || safeVideoSrc(i.video)));
@@ -287,37 +357,47 @@
       a.href = it.url; a.target = '_blank'; a.rel = 'noopener noreferrer';
       a.setAttribute('aria-label', "Instagram'da aç" + (it.title ? ': ' + it.title : ''));
       let v = null;
-      if (it.poster) { const img = el('img'); img.src = it.poster; img.alt = ''; img.loading = 'lazy'; a.appendChild(img); }
+      if (it.poster) { const img = el('img'); img.dataset.src = it.poster; img.alt = ''; a.appendChild(img); }
       if (safeVideoSrc(it.video)) {
         v = el('video'); v.src = it.video; v.muted = true; v.loop = true; v.playsInline = true;
         v.preload = it.poster ? 'none' : 'metadata';
         v.setAttribute('aria-hidden', 'true');
         a.appendChild(v);
       }
-      a.appendChild(el('span', 'ig-badge', 'Instagram'));
       if (it.title) a.appendChild(el('span', 'card-meta', it.title));
       track.appendChild(a);
       return { a, v };
     });
     wrap.appendChild(track);
-    if (cards.length > 1) addScrollButtons(wrap, track, () => (cards[0].a.offsetWidth + 16) * 2);
+    if (cards.length > 1) addScrollButtons(wrap, track, () => (cards[0].a.offsetWidth + 10) * 3);
+    const arrows = [...wrap.querySelectorAll('.sc-btn')];
 
     // Önizleme yalnızca bölüm ekrana yaklaşınca iner ve oynar
     let inView = !('IntersectionObserver' in window);
     let raf = 0;
+    let postersLoaded = false;
     const update = () => {
       raf = 0;
+      // Kapaklar da bölüme yaklaşınca iner: ilk açılış yükü artmaz
+      if (inView && !postersLoaded) {
+        postersLoaded = true;
+        track.querySelectorAll('img[data-src]').forEach((img) => { img.src = img.dataset.src; });
+      }
       const mid = track.scrollLeft + track.clientWidth / 2;
-      let nearest = null, best = Infinity;
-      cards.forEach((c) => {
-        const d = (c.a.offsetLeft + c.a.offsetWidth / 2 - mid) / c.a.offsetWidth;
-        const abs = Math.abs(d);
-        if (abs < best) { best = abs; nearest = c; }
-      });
+      // Aynı anda en fazla 3 önizleme (mobilde 1): ekrandaki, merkeze en yakın videolu kartlar
+      const limit = window.innerWidth <= 640 ? 1 : 3;
+      const left = track.scrollLeft, right = left + track.clientWidth;
+      const active = cards.filter((c) => c.v && c.a.offsetLeft + c.a.offsetWidth > left && c.a.offsetLeft < right)
+        .sort((a, b) => Math.abs(a.a.offsetLeft + a.a.offsetWidth / 2 - mid) - Math.abs(b.a.offsetLeft + b.a.offsetWidth / 2 - mid))
+        .slice(0, limit);
       cards.forEach((c) => {
         if (!c.v) return;
-        if (inView && c === nearest && !reduceMotion) tryPlay(c.v); else c.v.pause();
+        if (inView && active.includes(c) && !reduceMotion) tryPlay(c.v); else c.v.pause();
       });
+      if (arrows.length === 2) {
+        arrows[0].disabled = left <= 1;
+        arrows[1].disabled = right >= track.scrollWidth - 1;
+      }
     };
     track.addEventListener('scroll', () => { if (!raf) raf = requestAnimationFrame(update); }, { passive: true });
     window.addEventListener('resize', update);
@@ -329,7 +409,7 @@
       new IntersectionObserver(([entry]) => {
         inView = entry.isIntersecting;
         update();
-      }, { rootMargin: '200px 0px' }).observe(track);
+      }, { rootMargin: '600px 0px' }).observe(track);
     }
   }
 
