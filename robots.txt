@@ -1,0 +1,5 @@
+User-agent: *
+Allow: /
+
+# YAYIN ÖNCESİ: alan adı belli olunca aşağıdaki satırı açın
+# Sitemap: https://ALANADI/sitemap.xml

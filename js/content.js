@@ -7,10 +7,6 @@
    ============================================================ */
 window.SITE_MEDIA = {
 
-  // Eğitim satın alma bağlantısı: gerçek https adresi gelince buraya yazılır (ör. https://...).
-  // Boş kaldığı sürece fiyat bölümündeki düğme pasif görünür.
-  purchaseUrl: '',
-
   // Hero ve seminer videosu: dosyayı aşağıdaki yola yüklemek yeterli.
   // Dosya yoksa poster görseli görünür. (srcMobile isteğe bağlıdır.)
   heroVideo:    { src: 'assets/video/hero.mp4',    srcMobile: 'assets/video/hero-mobil.mp4' },

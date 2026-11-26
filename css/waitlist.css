@@ -1,0 +1,38 @@
+/* Bekleme listesi, yasal sayfalar ve alt bilgi bağlantıları (style.css'in tasarım dilini kullanır) */
+.waitlist-card .price-left h3 { font-size: 28px; }
+.waitlist-card .checklist { margin-top: 22px; }
+.waitlist-form { display: flex; flex-direction: column; gap: 14px; }
+.waitlist-form .field { margin-bottom: 0; }
+.waitlist-form .field input { min-height: 48px; font-size: 16px; }
+.waitlist-form .field input[aria-invalid="true"] { border-color: var(--no); }
+.wl-hp { position: absolute; left: -9999px; width: 1px; height: 1px; overflow: hidden; }
+.check-row { display: flex; gap: 10px; align-items: flex-start; font-size: 13px; line-height: 1.5; color: var(--text-dim); cursor: pointer; }
+.check-row input { flex: 0 0 auto; width: 20px; height: 20px; margin-top: 1px; accent-color: var(--accent-2); }
+.check-row a { color: var(--text); text-decoration: underline; text-underline-offset: 2px; }
+.wl-status { min-height: 1.4em; margin: 0; font-size: 13.5px; line-height: 1.5; color: var(--text-dim); }
+.wl-status.is-error { color: var(--no); }
+.wl-status.is-info { color: var(--text); }
+.waitlist-form .btn[disabled] { opacity: .5; cursor: progress; }
+.wl-success { padding: 22px; border-radius: var(--radius-sm); background: rgba(55,201,120,0.1); border: 1px solid rgba(55,201,120,0.35); outline: none; }
+.wl-success strong { display: block; font-size: 18px; color: var(--ok); margin-bottom: 8px; }
+.wl-success p { margin: 0; font-size: 14.5px; color: var(--text); line-height: 1.6; }
+.wl-note { font-size: 12px; color: var(--text-dimmer); line-height: 1.5; margin: 0; }
+.wl-note a { text-decoration: underline; text-underline-offset: 2px; }
+.waitlist-compact { margin-top: 10px; }
+.footer-legal { display: flex; flex-wrap: wrap; gap: 6px 18px; justify-content: center; margin: 0 0 12px; font-size: 13px; }
+.footer-legal a { color: var(--text-dim); }
+.footer-legal a:hover { color: var(--text); }
+.legal-page { max-width: 780px; padding-top: 120px; padding-bottom: 80px; }
+.legal-page h1 { font-size: clamp(28px, 5vw, 40px); margin-bottom: 8px; }
+.legal-page h2 { font-size: 21px; margin: 38px 0 12px; }
+.legal-page p, .legal-page li { color: var(--text-dim); font-size: 15.5px; line-height: 1.75; }
+.legal-page ul { list-style: disc; padding-left: 22px; display: flex; flex-direction: column; gap: 6px; margin: 10px 0; }
+.legal-page a { color: var(--text); text-decoration: underline; text-underline-offset: 2px; }
+.legal-meta { font-size: 13.5px; color: var(--text-dimmer); margin-bottom: 28px; }
+.legal-todo { background: rgba(255,176,32,0.14); color: var(--draft); padding: 0 5px; border-radius: 4px; font-weight: 600; }
+.upcoming-card { cursor: pointer; }
+@media (max-width: 760px) {
+  .waitlist-card .price-left h3 { font-size: 23px; }
+}
+.waitlist-form.is-inactive .btn[disabled] { cursor: not-allowed; }
+.waitlist-form.is-inactive input:disabled { opacity: .55; }

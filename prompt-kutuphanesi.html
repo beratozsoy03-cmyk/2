@@ -4,15 +4,21 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
 <title>Prompt Kütüphanesi — Together Yazıbaşı</title>
-<meta name="robots" content="noindex, nofollow">
+<meta name="robots" content="index, follow, max-image-preview:large">
 <meta name="description" content="Muhammed Ali Yazıbaşı'nın yapay zekâ video promptları: videoyu izle, promptu tek tıkla kopyala ya da kendi promptunu oluştur.">
 <meta property="og:title" content="Prompt Kütüphanesi — Together Yazıbaşı">
 <meta property="og:description" content="Videoyu gördün. Promptu burada. Tek tıkla kopyala, kendi promptunu oluştur.">
 <meta property="og:type" content="website">
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<meta property="og:locale" content="tr_TR">
+<meta property="og:site_name" content="Together Yazıbaşı">
+<meta property="og:image" content="assets/img/og-image.jpg">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="stylesheet" href="css/fonts.css">
+<link rel="preload" href="assets/fonts/inter-latin.woff2" as="font" type="font/woff2" crossorigin>
 <link rel="stylesheet" href="css/style.css">
+<link rel="stylesheet" href="css/waitlist.css">
 <link rel="stylesheet" href="css/prompt-kutuphanesi.css">
 <link rel="icon" type="image/png" sizes="32x32" href="assets/img/logo/favicon-32.png">
 <link rel="apple-touch-icon" href="assets/img/logo/apple-touch-icon.png">
@@ -36,17 +42,7 @@
     </nav>
 
     <div class="pk-header-actions">
-      <button class="btn btn-ghost btn-sm" type="button" data-auth-open="login" data-auth-guest>Giriş Yap</button>
-      <div class="user-chip" data-auth-user hidden>
-        <button class="user-chip-btn" type="button" aria-haspopup="menu" aria-expanded="false" id="userMenuBtn">
-          <span class="avatar" aria-hidden="true">DK</span><span class="user-chip-name">Demo Kullanıcı</span>
-        </button>
-        <div class="user-menu" id="userMenu" role="menu" hidden>
-          <p class="user-menu-head"><strong>Demo Kullanıcı</strong><span>Prototip görünümü — gerçek hesap değil</span></p>
-          <a href="#hesabim" role="menuitem">Kaydettiklerim</a>
-          <button type="button" role="menuitem" data-auth-logout>Demo görünümünden çık</button>
-        </div>
-      </div>
+      <a class="btn btn-primary btn-sm" href="index.html#bekleme-listesi">Bekleme Listesi</a>
       <button class="menu-toggle" type="button" aria-label="Menüyü aç" aria-expanded="false" aria-controls="mobileMenu">
         <span></span><span></span><span></span>
       </button>
@@ -59,7 +55,7 @@
     <a href="#olusturucu">Prompt Oluşturucu</a>
     <a href="index.html">Eğitim</a>
     <a href="seminer.html">Ücretsiz Seminer</a>
-    <button class="btn btn-primary btn-block" type="button" data-auth-open="login" data-auth-guest>Giriş Yap</button>
+    <a class="btn btn-primary btn-block" href="index.html#bekleme-listesi">Eğitim Bekleme Listesi</a>
   </nav>
 </header>
 
@@ -69,7 +65,7 @@
   <section class="pk-feature" id="one-cikan">
     <div class="container">
       <div class="pk-intro">
-        <p class="eyebrow">PROMPT KÜTÜPHANESİ <span class="draft-badge">Prototip</span></p>
+        <p class="eyebrow">PROMPT KÜTÜPHANESİ</p>
         <h1>Videoyu gördün.<br><span class="grad">Promptu burada.</span></h1>
         <p class="pk-intro-desc">Paylaştığım AI videolarının promptlarını tek tıkla kopyala, nasıl yapıldığını gör ya da kendi promptunu oluştur.</p>
       </div>
@@ -136,16 +132,16 @@
     </div>
   </section>
 
-  <!-- ============ HESABIM (yalnızca demo görünümünde) ============ -->
+  <!-- ============ KAYDETTİKLERİM (hesapsız; yalnızca bu tarayıcıda saklanır) ============ -->
   <section class="pk-account" id="hesabim" hidden>
     <div class="container">
       <div class="account-card">
         <div class="account-head">
-          <span class="avatar avatar-lg" aria-hidden="true">DK</span>
+          <span class="avatar avatar-lg" aria-hidden="true">★</span>
           <div>
-            <p class="eyebrow">HESABIM <span class="draft-badge">Demo görünüm</span></p>
+            <p class="eyebrow">KAYDETTİKLERİM</p>
             <h2>Kaydettiğin promptlar</h2>
-            <p class="section-desc">Bu alan gerçek üyelik açıldığında kullanıcının kaydettiği ve oluşturduğu promptları gösterecek. Şu an hiçbir veri saklanmıyor; sayfa yenilenince sıfırlanır.</p>
+            <p class="section-desc">Hesap gerekmez: kaydettiklerin yalnızca bu cihazdaki tarayıcıda saklanır, başka bir cihazda görünmez. Tarayıcı verilerini silersen kayıtlar da silinir.</p>
           </div>
         </div>
         <div class="saved-list" id="savedList"></div>
@@ -325,6 +321,31 @@
     </div>
   </section>
 
+  <!-- ============ BEKLEME LİSTESİ ============ -->
+  <section id="bekleme-listesi" class="waitlist-compact">
+    <div class="container">
+      <div class="price-section waitlist-card">
+        <div class="price-grid">
+          <div class="price-left">
+            <span class="eyebrow-pill">ÇOK YAKINDA</span>
+            <h3>Eğitim satışa açıldığında ilk sen haberdar ol.</h3>
+            <p class="section-desc">Bu promptların arkasındaki yöntemi adım adım öğreten eğitim henüz satışa açık değil. E-posta adresini bırak; açıldığında sana haber verelim.</p>
+          </div>
+          <div class="price-right">
+            <form class="waitlist-form" data-waitlist data-source="kutuphane" data-consent-version="1" novalidate>
+              <div class="field"><label for="wl-email">E-posta adresin</label><input id="wl-email" type="email" name="email" inputmode="email" autocomplete="email" placeholder="ornek@email.com" maxlength="254" required></div>
+              <div class="wl-hp" aria-hidden="true"><label>Web sitesi <input type="text" name="website" tabindex="-1" autocomplete="off"></label></div>
+              <label class="check-row"><input type="checkbox" name="kvkk" required><span><a href="gizlilik.html#aydinlatma" target="_blank" rel="noopener">Aydınlatma Metni</a>'ni okudum; e-posta adresimin bekleme listesi amacıyla işlenmesini anladım.</span></label>
+              <label class="check-row"><input type="checkbox" name="ticari" required><span>Eğitimin satışa açılması ve eğitimle ilgili duyurular için e-posta ile ticari elektronik ileti almayı kabul ediyorum. Dilediğim zaman vazgeçebilirim.</span></label>
+              <button type="submit" class="btn btn-primary btn-block" data-wl-submit>Bekleme Listesine Katıl <span class="arrow">→</span></button>
+              <p class="wl-status" role="status" aria-live="polite" data-wl-status></p>
+            </form>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
 </main>
 
 <footer class="site-footer">
@@ -342,7 +363,7 @@
         <a href="https://www.youtube.com/@TogetherYazibasi" aria-label="YouTube" target="_blank" rel="noopener noreferrer"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M23 12s0-3.5-.45-5.15a2.9 2.9 0 0 0-2-2.05C18.9 4.3 12 4.3 12 4.3s-6.9 0-8.55.5a2.9 2.9 0 0 0-2 2.05C1 8.5 1 12 1 12s0 3.5.45 5.15a2.9 2.9 0 0 0 2 2.05c1.65.5 8.55.5 8.55.5s6.9 0 8.55-.5a2.9 2.9 0 0 0 2-2.05C23 15.5 23 12 23 12ZM9.75 15.5v-7l6 3.5-6 3.5Z"/></svg></a>
       </div>
     </div>
-    <div class="footer-bottom"><p>© 2026 Yazıbaşı. Tüm hakları saklıdır. · Bu sayfa bir prototiptir; örnek içerikler gerçek müşteri çalışması değildir.</p></div>
+    <div class="footer-bottom"><nav class="footer-legal" aria-label="Yasal bağlantılar"><a href="gizlilik.html#aydinlatma">KVKK Aydınlatma Metni</a><a href="gizlilik.html">Gizlilik ve Çerez Politikası</a></nav><p>© 2026 Yazıbaşı. Tüm hakları saklıdır.</p></div>
   </div>
 </footer>
 
@@ -355,65 +376,6 @@
   </div>
 </div>
 
-<!-- ============ GİRİŞ / KAYIT PROTOTİPİ ============ -->
-<div class="sheet auth" id="authModal" role="dialog" aria-modal="true" aria-labelledby="authTitle" hidden>
-  <div class="sheet-backdrop" data-close></div>
-  <div class="sheet-dialog auth-dialog">
-    <button class="sheet-close" type="button" aria-label="Kapat" data-close>✕</button>
-
-    <div class="auth-brand">
-      <img src="assets/img/logo/logo-isaret-beyaz.png" alt="" width="29" height="30">
-      <span class="draft-badge">Yalnızca tasarım prototipi</span>
-    </div>
-
-    <!-- Giriş -->
-    <div class="auth-view" data-view="login">
-      <h2 id="authTitle">Tekrar hoş geldin</h2>
-      <p class="auth-sub">Kaydettiğin promptlara ve oluşturduklarına eriş.</p>
-      <form class="auth-form" data-proto-form>
-        <div class="field"><label for="liEmail">E-posta</label><input id="liEmail" type="email" placeholder="ornek@email.com" autocomplete="off" disabled></div>
-        <div class="field">
-          <label for="liPass">Şifre <button type="button" class="link-btn" data-auth-go="forgot">Şifremi unuttum</button></label>
-          <input id="liPass" type="password" placeholder="••••••••" autocomplete="off" disabled>
-        </div>
-        <button class="btn btn-primary btn-block" type="submit" disabled>Giriş Yap</button>
-      </form>
-      <div class="auth-divider"><span>veya</span></div>
-      <button class="btn btn-ghost btn-block" type="button" disabled><span class="g-ic" aria-hidden="true">G</span> Google ile devam et</button>
-      <p class="auth-proto">Bu ekran yalnızca tasarım içindir: alanlar devre dışıdır, hiçbir bilgi alınmaz veya saklanmaz.</p>
-      <button class="btn btn-demo btn-block" type="button" data-auth-demo>Demo görünümünü aç <span class="arrow">→</span></button>
-      <p class="auth-switch">Hesabın yok mu? <button type="button" class="link-btn" data-auth-go="register">Kayıt ol</button></p>
-    </div>
-
-    <!-- Kayıt -->
-    <div class="auth-view" data-view="register" hidden>
-      <h2>Ücretsiz hesap oluştur</h2>
-      <p class="auth-sub">Promptları kaydet, kendi koleksiyonunu oluştur, yeni promptlardan ilk sen haberdar ol.</p>
-      <form class="auth-form" data-proto-form>
-        <div class="field"><label for="rgName">Ad Soyad</label><input id="rgName" type="text" placeholder="Adınız Soyadınız" autocomplete="off" disabled></div>
-        <div class="field"><label for="rgEmail">E-posta</label><input id="rgEmail" type="email" placeholder="ornek@email.com" autocomplete="off" disabled></div>
-        <div class="field"><label for="rgPass">Şifre</label><input id="rgPass" type="password" placeholder="En az 8 karakter" autocomplete="off" disabled></div>
-        <label class="check-row"><input type="checkbox" disabled> <span>Kullanım koşullarını ve KVKK aydınlatma metnini okudum.</span></label>
-        <button class="btn btn-primary btn-block" type="submit" disabled>Hesap Oluştur</button>
-      </form>
-      <p class="auth-proto">Kayıt sistemi henüz kurulmadı. Bu ekran yalnızca görünümü değerlendirmek içindir.</p>
-      <p class="auth-switch">Zaten hesabın var mı? <button type="button" class="link-btn" data-auth-go="login">Giriş yap</button></p>
-    </div>
-
-    <!-- Şifremi unuttum -->
-    <div class="auth-view" data-view="forgot" hidden>
-      <h2>Şifreni sıfırla</h2>
-      <p class="auth-sub">Hesabına bağlı e-posta adresini yaz; sıfırlama bağlantısı gönderelim.</p>
-      <form class="auth-form" data-proto-form>
-        <div class="field"><label for="fgEmail">E-posta</label><input id="fgEmail" type="email" placeholder="ornek@email.com" autocomplete="off" disabled></div>
-        <button class="btn btn-primary btn-block" type="submit" disabled>Sıfırlama Bağlantısı Gönder</button>
-      </form>
-      <p class="auth-proto">Prototip: e-posta gönderilmez.</p>
-      <p class="auth-switch"><button type="button" class="link-btn" data-auth-go="login">← Girişe dön</button></p>
-    </div>
-  </div>
-</div>
-
 <!-- Mobil: hızlı kopyalama çubuğu -->
 <div class="sticky-copy" id="stickyCopy" hidden>
   <span class="sticky-copy-text" id="stickyCopyText"></span>
@@ -422,6 +384,7 @@
 
 <div class="toast" id="toast" role="status" aria-live="polite" hidden></div>
 
+<script src="js/waitlist.js" defer></script>
 <script src="js/prompts-data.js"></script>
 <script src="js/prompt-builder-data.js"></script>
 <script src="js/prompt-kutuphanesi.js"></script>

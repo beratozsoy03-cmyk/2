@@ -1,0 +1,6 @@
+.gitignore
+.vercelignore
+WhatsApp Image*
+assets/video/README.md
+*.log
+.env*

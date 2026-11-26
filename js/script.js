@@ -162,15 +162,6 @@ document.querySelectorAll('.faq-q').forEach((btn) => {
   });
 });
 
-// Seminer kayıt formu (demo) — yalnızca seminer sayfasında var
-const demoForm = document.getElementById('demoForm');
-if (demoForm) {
-  demoForm.addEventListener('submit', function (e) {
-    e.preventDefault();
-    document.getElementById('formSuccess').classList.add('show');
-    this.reset();
-  });
-}
 
 // Müfredat bağlantıyla gelindiğinde kapalı kalmasın
 const curriculum = document.querySelector('[data-curriculum]');

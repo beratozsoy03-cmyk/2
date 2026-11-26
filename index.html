@@ -3,11 +3,23 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Yazıbaşı — Video Editörlüğünün Yeni Dönemi</title>
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<title>Together Yazıbaşı — AI Video Prodüksiyon Eğitimi | Bekleme Listesi</title>
+<meta name="description" content="Muhammed Ali Yazıbaşı'nın yapay zekâ ile video prodüksiyon eğitimi çok yakında. Bekleme listesine katıl, eğitim satışa açıldığında ilk sen haberdar ol.">
+<meta name="robots" content="index, follow, max-image-preview:large">
+<!-- CANONICAL_URL: alan adı belli olunca https://ALANADI/ ile değiştirilecek (bkz. YAYIN-KONTROL-LISTESI.md) -->
+<meta property="og:type" content="website">
+<meta property="og:locale" content="tr_TR">
+<meta property="og:site_name" content="Together Yazıbaşı">
+<meta property="og:title" content="Together Yazıbaşı — AI Video Prodüksiyon Eğitimi">
+<meta property="og:description" content="Yapay zekâ ile video prodüksiyon eğitimi çok yakında. Bekleme listesine katıl, satışa açıldığında ilk sen haberdar ol.">
+<meta property="og:image" content="assets/img/og-image.jpg">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="stylesheet" href="css/fonts.css">
+<link rel="preload" href="assets/fonts/inter-latin.woff2" as="font" type="font/woff2" crossorigin>
 <link rel="stylesheet" href="css/style.css">
+<link rel="stylesheet" href="css/waitlist.css">
 <link rel="icon" type="image/png" sizes="32x32" href="assets/img/logo/favicon-32.png">
 <link rel="apple-touch-icon" href="assets/img/logo/apple-touch-icon.png">
 <meta name="theme-color" content="#0a0a0b">
@@ -21,14 +33,13 @@
       <a href="#hero">Ana Sayfa</a>
       <a href="#ornek-projeler">Örnek Projeler</a>
       <a href="#egitmen">Eğitmen</a>
-      <a href="#fiyat">Fiyat</a>
       <a href="#mufredat">Müfredat</a>
       <a href="#sss">SSS</a>
       <a href="prompt-kutuphanesi.html">Prompt Kütüphanesi</a>
       <a href="seminer.html">Seminer</a>
     </nav>
     <div class="header-actions">
-      <a href="#fiyat" class="btn btn-primary btn-sm">Eğitime Katıl <span class="arrow">→</span></a>
+      <a href="#bekleme-listesi" class="btn btn-primary btn-sm">Bekleme Listesi <span class="arrow">→</span></a>
       <button class="menu-toggle" type="button" aria-label="Menüyü aç" aria-expanded="false" aria-controls="mainNav">
         <span></span><span></span><span></span>
       </button>
@@ -49,9 +60,9 @@
         <p class="eyebrow">AI <span class="dot">×</span> VIDEO <span class="dot">×</span> STORYTELLING</p>
         <h1>Video Editörlüğünün<br>Yeni Dönemi</h1>
         <p class="hero-promise"><strong>5 yıldır bizzat yürüttüğüm video prodüksiyon sürecimi</strong>, son 1,5 yıldır yapay zekâyla yeniden kurguladım. Bu eğitimde aynı süreci — fikirden post-prodüksiyona — sana da öğretiyorum.</p>
-        <p class="hero-offer"><strong>₺4.800</strong> · Peşin fiyatına 3 taksit · Ömür boyu erişim</p>
+        <p class="hero-offer"><strong>Çok yakında.</strong> Eğitim henüz satışa açık değil. Bekleme listesine katıl, açıldığında ilk sen haberdar ol.</p>
         <div class="hero-actions">
-          <a href="#fiyat" class="btn btn-primary">Eğitime Katıl <span class="arrow">→</span></a>
+          <a href="#bekleme-listesi" class="btn btn-primary">Bekleme Listesine Katıl <span class="arrow">→</span></a>
           <a href="#tanitim" class="btn btn-ghost"><span class="play-ic">▶</span> Tanıtım Videosunu İzle</a>
         </div>
         <div class="hero-stats">
@@ -129,7 +140,7 @@
           <p>Son 1,5 yıldır ise üretim sürecimin merkezinde AI Video Production yer alıyor. Yapay zekâyı yalnızca içerik üretmek için değil; fikir geliştirmeden pre-prodüksiyona, görsel üretimden video üretimine, VFX'ten post-prodüksiyona kadar gerçek projelerin içerisine entegre ederek kullanıyorum.</p>
           <p>Bugüne kadar 10+ farklı sektörde çok sayıda marka ve projeyle çalıştım, AI destekli prodüksiyon süreçleri geliştirdim ve 50+ kişiye birebir mentörlük sağladım.</p>
         </div>
-        <a href="#fiyat" class="btn btn-primary">Eğitime Katıl <span class="arrow">→</span></a>
+        <a href="#bekleme-listesi" class="btn btn-primary">Bekleme Listesine Katıl <span class="arrow">→</span></a>
       </div>
     </div>
   </section>
@@ -147,33 +158,38 @@
     </div>
   </section>
 
-  <!-- FİYAT -->
-  <section id="fiyat">
+  <!-- BEKLEME LİSTESİ — form api/waitlist.js (Vercel Function) üzerinden site sahibine e-posta bildirimi gönderir -->
+  <section id="bekleme-listesi">
     <div class="container">
-      <div class="price-section">
+      <div class="price-section waitlist-card">
         <div class="price-grid">
           <div class="price-left">
-            <span class="eyebrow-pill">TEK ÖDEME</span>
-            <h3>Yatırımını Kariyerine Dönüştür.</h3>
-            <p class="section-desc">Eğitimin tamamına, güncellemelere ve özel topluluğa tek seferlik ödeme ile ömür boyu eriş.</p>
-            <p class="price">₺4.800</p>
-            <p class="price-note">Peşin fiyatına 3 taksit imkânı</p>
+            <span class="eyebrow-pill">ÇOK YAKINDA</span>
+            <h3>Eğitim satışa açıldığında ilk sen haberdar ol.</h3>
+            <p class="section-desc">Eğitim henüz satışa açık değil. E-posta adresini bırak; satışa açıldığında sana haber verelim.</p>
+            <ul class="checklist">
+              <li><span class="check">✓</span> Satış açıldığında e-posta ile bilgilendirilirsin</li>
+              <li><span class="check">✓</span> Bu aşamada ödeme veya kart bilgisi istenmez</li>
+              <li><span class="check">✓</span> İstediğin zaman listeden çıkabilirsin</li>
+            </ul>
           </div>
           <div class="price-right">
-            <ul class="checklist">
-              <li><span class="check">✓</span> Tüm Eğitim İçeriklerine ömür boyu erişim</li>
-              <li><span class="check">✓</span> Güncellemeler dahil</li>
-              <li><span class="check">✓</span> Özel topluluk desteği</li>
-            </ul>
-            <!-- Satın alma bağlantısı js/content.js > purchaseUrl alanından gelir; boşken düğme pasif kalır -->
-            <a class="btn btn-block" data-purchase-link aria-disabled="true">Kayıt Bağlantısı Yakında</a>
+            <form class="waitlist-form" data-waitlist data-source="egitim" data-consent-version="1" novalidate>
+              <div class="field"><label for="wl-email">E-posta adresin</label><input id="wl-email" type="email" name="email" inputmode="email" autocomplete="email" placeholder="ornek@email.com" maxlength="254" required></div>
+              <div class="wl-hp" aria-hidden="true"><label>Web sitesi <input type="text" name="website" tabindex="-1" autocomplete="off"></label></div>
+              <label class="check-row"><input type="checkbox" name="kvkk" required><span><a href="gizlilik.html#aydinlatma" target="_blank" rel="noopener">Aydınlatma Metni</a>'ni okudum; e-posta adresimin bekleme listesi amacıyla işlenmesini anladım.</span></label>
+              <label class="check-row"><input type="checkbox" name="ticari" required><span>Eğitimin satışa açılması ve eğitimle ilgili duyurular için e-posta ile ticari elektronik ileti almayı kabul ediyorum. Dilediğim zaman vazgeçebilirim.</span></label>
+              <button type="submit" class="btn btn-primary btn-block" data-wl-submit>Bekleme Listesine Katıl <span class="arrow">→</span></button>
+              <p class="wl-status" role="status" aria-live="polite" data-wl-status></p>
+            </form>
           </div>
         </div>
       </div>
     </div>
   </section>
 
-  <!-- Eski "#egitim-icerigi" anchor'ı için uyumluluk köprüsü -->
+  <!-- Eski "#fiyat" ve "#egitim-icerigi" anchor'ları için uyumluluk köprüleri -->
+  <span id="fiyat" aria-hidden="true" style="display:block; scroll-margin-top:84px;"></span>
   <span id="egitim-icerigi" aria-hidden="true" style="display:block; scroll-margin-top:84px;"></span>
 
   <!-- MÜFREDAT -->
@@ -185,7 +201,7 @@
         <span class="plus" aria-hidden="true">+</span>
       </summary>
       <ol class="roadmap">
-        <li><span class="num-badge">01</span><span class="rm-title">Bu Derslerden Sonra Neler Yapabileceksin? <span class="badge-free">Ücretsiz</span></span></li>
+        <li><span class="num-badge">01</span><span class="rm-title">Bu Derslerden Sonra Neler Yapabileceksin?</span></li>
         <li><span class="num-badge">02</span><span class="rm-title">AI Mantığı</span></li>
         <li><span class="num-badge">03</span><span class="rm-title">Prompt Mantığı</span></li>
         <li><span class="num-badge">04</span><span class="rm-title">Higgsfield Giriş ve Kullanım</span></li>
@@ -238,17 +254,17 @@
     <div class="container">
       <div class="section-head">
         <h2>Yakında Gelecek İçerikler</h2>
-        <a href="#" class="link-arrow">Gelişmelerden Haberdar Ol <span class="arrow">→</span></a>
+        <a href="#bekleme-listesi" class="link-arrow">Gelişmelerden Haberdar Ol <span class="arrow">→</span></a>
       </div>
       <div class="upcoming-grid">
-        <a href="#" class="upcoming-card">
+        <a href="#bekleme-listesi" class="upcoming-card">
           <span class="upcoming-media upcoming-media-1"><img src="assets/img/yakinda/ai-influencer-ugc-480.webp" srcset="assets/img/yakinda/ai-influencer-ugc-480.webp 480w, assets/img/yakinda/ai-influencer-ugc-960.webp 960w" sizes="(max-width: 640px) 96px, (max-width: 1024px) 45vw, 170px" width="960" height="724" alt="Telefonuyla selfie videosu çeken, elinde serum şişesi tutan genç kadın" loading="lazy"></span>
           <span class="upcoming-text">
             <strong>AI Influencer Marketing</strong>
             <span>UGC Video Oluşturma</span>
           </span>
         </a>
-        <a href="#" class="upcoming-card">
+        <a href="#bekleme-listesi" class="upcoming-card">
           <span class="upcoming-media upcoming-media-2"><img src="assets/img/yakinda/kendi-avatarin-480.webp" srcset="assets/img/yakinda/kendi-avatarin-480.webp 480w, assets/img/yakinda/kendi-avatarin-960.webp 960w" sizes="(max-width: 640px) 96px, (max-width: 1024px) 45vw, 170px" width="960" height="724" alt="Yan profilden görünen bir adam ve arkasında kırmızı holografik dijital ikizi" loading="lazy"></span>
           <span class="upcoming-text">
             <strong>Kendi Avatarını Oluşturma</strong>
@@ -265,20 +281,24 @@
       <div class="section-head"><h2>Sıkça Sorulan Sorular</h2></div>
       <div class="faq-list">
         <div class="faq-item">
-          <button class="faq-q">Eğitime nasıl erişirim? <span class="plus">+</span></button>
-          <div class="faq-a"><p>Ödeme tamamlandıktan sonra eğitim platformuna erişim bilgilerin iletilir. Tüm içeriklere ömür boyu erişimin olur.</p></div>
+          <button class="faq-q">Eğitime şimdi katılabilir miyim? <span class="plus">+</span></button>
+          <div class="faq-a"><p>Eğitim henüz satışa açık değil. Bekleme listesine e-posta adresini bırakırsan, satışa açıldığında sana haber veririz. Bu aşamada ödeme alınmaz ve eğitime erişim verilmez.</p></div>
         </div>
         <div class="faq-item">
-          <button class="faq-q">Taksit imkânı var mı? <span class="plus">+</span></button>
-          <div class="faq-a"><p>Evet, ₺4.800 tutarındaki eğitime peşin fiyatına 3 taksit imkânı sunuluyor.</p></div>
+          <button class="faq-q">Eğitim ne zaman satışa açılacak? <span class="plus">+</span></button>
+          <div class="faq-a"><p>Kesin tarih henüz belli değil. Tarih netleştiğinde bekleme listesindeki herkese e-posta ile duyurulacak.</p></div>
         </div>
         <div class="faq-item">
-          <button class="faq-q">Fiyata neler dahil? <span class="plus">+</span></button>
-          <div class="faq-a"><p>Tüm eğitim içeriklerine ömür boyu erişim, gelecekte eklenecek güncellemeler ve özel topluluk desteği fiyata dahildir.</p></div>
+          <button class="faq-q">Bekleme listesine katılmak ücretli mi, bir taahhüt oluşturur mu? <span class="plus">+</span></button>
+          <div class="faq-a"><p>Hayır. Listeye katılmak ücretsizdir, satın alma yükümlülüğü doğurmaz ve kart bilgisi istenmez. Dilediğin zaman listeden çıkabilirsin; yöntemi <a href="gizlilik.html#aydinlatma">Aydınlatma Metni</a>'nde yazıyor.</p></div>
+        </div>
+        <div class="faq-item">
+          <button class="faq-q">E-posta adresim ne için kullanılacak? <span class="plus">+</span></button>
+          <div class="faq-a"><p>Yalnızca eğitimin satışa açılması ve eğitimle ilgili duyuruları iletmek için. Ayrıntılar için <a href="gizlilik.html#aydinlatma">Aydınlatma Metni</a>'ne bakabilirsin.</p></div>
         </div>
         <div class="faq-item">
           <button class="faq-q">Bu eğitim kimler için uygun? <span class="plus">+</span></button>
-          <div class="faq-a"><p>Video editörlüğüne yapay zekâyı entegre etmek isteyen kurgu/prodüksiyon çalışanları, içerik üreticileri ve ajans çalışanları için tasarlanmıştır. <em>(Bu cevap taslaktır, eğitmen tarafından onaylanmalıdır.)</em></p></div>
+          <div class="faq-a"><p>Video editörlüğüne yapay zekâyı entegre etmek isteyen kurgu/prodüksiyon çalışanları, içerik üreticileri ve ajans çalışanları için tasarlanmıştır.</p></div>
         </div>
         <div class="faq-item">
           <button class="faq-q">Hangi araçları öğreneceğim? <span class="plus">+</span></button>
@@ -294,8 +314,8 @@
       <div class="cta-banner">
         <div class="cta-banner-text">
           <h2>Sıradaki proje senin ellerinde.</h2>
-          <p>Video editörlüğünün geleceğine bugün katıl.</p>
-          <a href="#fiyat" class="btn btn-primary">Eğitime Katıl <span class="arrow">→</span></a>
+          <p>Eğitim satışa açıldığında ilk haberi alanlardan ol.</p>
+          <a href="#bekleme-listesi" class="btn btn-primary">Bekleme Listesine Katıl <span class="arrow">→</span></a>
         </div>
       </div>
     </div>
@@ -320,7 +340,10 @@
         <a href="https://www.youtube.com/@TogetherYazibasi" aria-label="YouTube" target="_blank" rel="noopener noreferrer"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M23 12s0-3.5-.45-5.15a2.9 2.9 0 0 0-2-2.05C18.9 4.3 12 4.3 12 4.3s-6.9 0-8.55.5a2.9 2.9 0 0 0-2 2.05C1 8.5 1 12 1 12s0 3.5.45 5.15a2.9 2.9 0 0 0 2 2.05c1.65.5 8.55.5 8.55.5s6.9 0 8.55-.5a2.9 2.9 0 0 0 2-2.05C23 15.5 23 12 23 12ZM9.75 15.5v-7l6 3.5-6 3.5Z"/></svg></a>
       </div>
     </div>
-    <div class="footer-bottom"><p>© 2024 Yazıbaşı. Tüm hakları saklıdır.</p></div>
+    <div class="footer-bottom">
+      <nav class="footer-legal" aria-label="Yasal bağlantılar"><a href="gizlilik.html#aydinlatma">KVKK Aydınlatma Metni</a><a href="gizlilik.html">Gizlilik ve Çerez Politikası</a></nav>
+      <p>© 2026 Yazıbaşı. Tüm hakları saklıdır.</p>
+    </div>
   </div>
 </footer>
 
@@ -332,6 +355,7 @@
   </div>
 </div>
 
+<script src="js/waitlist.js" defer></script>
 <script src="js/content.js"></script>
 <script src="js/script.js"></script>
 <script src="js/media.js"></script>

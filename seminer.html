@@ -3,11 +3,12 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Yazıbaşı — Ücretsiz Seminer</title>
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<title>Seminer Duyurusu — Together Yazıbaşı</title>
+<meta name="description" content="Muhammed Ali Yazıbaşı ile yapay zekâ video prodüksiyonu semineri. Tarih belli olunca haber almak için e-posta adresini bırak.">
+<meta name="robots" content="noindex, follow">
+<link rel="stylesheet" href="css/fonts.css">
 <link rel="stylesheet" href="css/style.css">
+<link rel="stylesheet" href="css/waitlist.css">
 <link rel="icon" type="image/png" sizes="32x32" href="assets/img/logo/favicon-32.png">
 <link rel="apple-touch-icon" href="assets/img/logo/apple-touch-icon.png">
 <meta name="theme-color" content="#0a0a0b">
@@ -17,7 +18,7 @@
 <header class="site-header">
   <div class="container header-inner">
     <a href="index.html" class="logo"><img class="logo-img" src="assets/img/logo/logo-isaret-beyaz.png" alt="" width="29" height="30"><span>YAZIBAŞI</span></a>
-    <a href="#form" class="btn btn-primary">Kayıt Ol</a>
+    <a href="#form" class="btn btn-primary">Haber Ver</a>
   </div>
 </header>
 
@@ -34,10 +35,10 @@
         <div class="stage-inner">
           <div class="stage-body">
         <span class="date-chip">📅 Tarih &amp; saat: <strong style="color:var(--draft)">yakında duyurulacak</strong></span>
-        <p class="eyebrow">ÜCRETSİZ SEMİNER <span class="draft-badge">Ücret: belirlenecek</span></p>
-        <h1>Yapay zekâyla video prodüksiyonunda nasıl öne geçilir? <span class="draft-badge" style="vertical-align:middle;">Örnek başlık — taslak</span></h1>
+        <p class="eyebrow">SEMİNER DUYURUSU</p>
+        <h1>Yapay zekâyla video prodüksiyonunda nasıl öne geçilir?</h1>
         <p class="section-desc">Muhammed Ali Yazıbaşı ile canlı bir oturumda, AI video üretiminin kurgu sürecine nasıl entegre edildiğini gerçek örnekler üzerinden göreceksin.</p>
-            <a href="#form" class="btn btn-primary">Kayıt Ol <span class="arrow">→</span></a>
+            <a href="#form" class="btn btn-primary">Tarih Belli Olunca Haber Ver <span class="arrow">→</span></a>
           </div>
         </div>
         <button class="stage-toggle" type="button" aria-label="Videoyu duraklat" hidden>❚❚</button>
@@ -45,7 +46,7 @@
 
       <div class="hero-grid seminar-grid">
         <div class="hero-content">
-        <p class="eyebrow" style="margin-top:8px;">BU SEMİNERDE ANLATILACAK KONULAR <span class="draft-badge">Örnek — onaylanmalı</span></p>
+        <p class="eyebrow" style="margin-top:8px;">BU SEMİNERDE ANLATILACAK KONULAR</p>
         <div class="topic-list">
           <div class="topic-card"><span class="topic-num">01</span><div><h4>AI video üretiminde en çok yapılan hata</h4><p>Neden çoğu kişi yapay zekâyı kurguya yanlış entegre ediyor.</p></div></div>
           <div class="topic-card"><span class="topic-num">02</span><div><h4>Tek bir workflow, onlarca kullanım alanı</h4><p>O gece denemeye başlayabileceğin, uçtan uca bir AI video üretim akışı.</p></div></div>
@@ -55,22 +56,21 @@
 
       <div class="form-card" id="form">
         <div class="form-card-inner">
-          <h3>Ücretsiz Seminere Kaydol</h3>
-          <p class="sub">Formu doldur, kayıt bilgilerin not edilsin.</p>
+          <h3>Seminer duyurusu için haber ver</h3>
+          <p class="sub">Seminerin tarihi, süresi ve platformu henüz belli değil. E-posta adresini bırak; bilgiler netleşince sana haber verelim.</p>
           <div class="meta-rows">
-            <div class="meta-row"><span class="label">Tarih / Saat</span><span class="value">Belirlenecek</span></div>
-            <div class="meta-row"><span class="label">Süre</span><span class="value">Belirlenecek</span></div>
-            <div class="meta-row"><span class="label">Ücret</span><span class="value">Belirlenecek</span></div>
-            <div class="meta-row"><span class="label">Platform</span><span class="value">Belirlenecek</span></div>
+            <div class="meta-row"><span class="label">Tarih / Saat</span><span class="value">Yakında duyurulacak</span></div>
+            <div class="meta-row"><span class="label">Süre</span><span class="value">Yakında duyurulacak</span></div>
+            <div class="meta-row"><span class="label">Platform</span><span class="value">Yakında duyurulacak</span></div>
           </div>
-          <form id="demoForm">
-            <div class="field"><label for="adsoyad">Adınız Soyadınız *</label><input id="adsoyad" type="text" placeholder="Adınız Soyadınız" required></div>
-            <div class="field"><label for="telefon">Telefon Numarası *</label><input id="telefon" type="tel" placeholder="+90 (5XX) XXX XX XX" required></div>
-            <div class="field"><label for="email">E-posta *</label><input id="email" type="email" placeholder="ornek@email.com" required></div>
-            <button type="submit" class="btn btn-primary btn-block">Kayıt Ol (Demo) <span class="arrow">→</span></button>
+          <form class="waitlist-form" data-waitlist data-source="seminer" data-consent-version="1" novalidate>
+            <div class="field"><label for="wl-email">E-posta adresin</label><input id="wl-email" type="email" name="email" inputmode="email" autocomplete="email" placeholder="ornek@email.com" maxlength="254" required></div>
+            <div class="wl-hp" aria-hidden="true"><label>Web sitesi <input type="text" name="website" tabindex="-1" autocomplete="off"></label></div>
+            <label class="check-row"><input type="checkbox" name="kvkk" required><span><a href="gizlilik.html#aydinlatma" target="_blank" rel="noopener">Aydınlatma Metni</a>'ni okudum; e-posta adresimin bu amaçla işlenmesini anladım.</span></label>
+            <label class="check-row"><input type="checkbox" name="ticari" required><span>Seminer ve eğitimle ilgili duyurular için e-posta ile ticari elektronik ileti almayı kabul ediyorum. Dilediğim zaman vazgeçebilirim.</span></label>
+            <button type="submit" class="btn btn-primary btn-block" data-wl-submit>Haber Ver <span class="arrow">→</span></button>
+            <p class="wl-status" role="status" aria-live="polite" data-wl-status></p>
           </form>
-          <div class="form-success" id="formSuccess">✓ Demo kayıt alındı. Gerçek bir veri gönderilmedi — bu yalnızca görsel bir demodur.</div>
-          <p class="form-note">Bilgilerin üçüncü kişilerle paylaşılmaz. (Form şu an yalnızca demo amaçlıdır.)</p>
         </div>
       </div>
       </div>
@@ -84,7 +84,7 @@
       <h2 style="text-align:center; margin-bottom:36px;">Seminere gelenler, gelmeyenler.</h2>
       <div class="compare-grid">
         <div class="compare-card yes">
-          <h4>Gelenler</h4>
+          <h4>Katılanlar</h4>
           <ul>
             <li>AI video üretiminde nereden başlayacağını netleştirir.</li>
             <li>O gece deneyebileceği somut bir workflow öğrenir.</li>
@@ -92,7 +92,7 @@
           </ul>
         </div>
         <div class="compare-card no">
-          <h4>Gelmeyenler</h4>
+          <h4>Katılmayanlar</h4>
           <ul>
             <li>"Bir gün öğrenirim" demeye devam eder.</li>
             <li>Hangi araçla başlayacağını araştırarak zaman kaybeder.</li>
@@ -106,7 +106,7 @@
   <!-- KİMLER İÇİN -->
   <section>
     <div class="container">
-      <div class="section-head" style="margin-bottom:32px;"><h2>Bu Seminer Kimler İçin Uygun? <span class="draft-badge">Örnek hedef kitle — onaylanmalı</span></h2></div>
+      <div class="section-head" style="margin-bottom:32px;"><h2>Bu Seminer Kimler İçin Uygun?</h2></div>
       <div class="audience-grid">
         <div class="audience-card"><span class="ico"></span><p>Video editörleri</p></div>
         <div class="audience-card"><span class="ico"></span><p>İçerik üreticileri</p></div>
@@ -138,24 +138,24 @@
       <div class="section-head"><h2>Sıkça Sorulan Sorular</h2></div>
       <div class="faq-list">
         <div class="faq-item">
-          <button class="faq-q">Seminer ücretsiz mi? <span class="plus">+</span></button>
-          <div class="faq-a"><p><span class="draft-badge">Taslak</span> Bu bilgi henüz kesinleşmedi. Ücret/ücretsiz durumu onaylandığında burada netleştirilecek.</p></div>
+          <button class="faq-q">Seminer ücretli mi? <span class="plus">+</span></button>
+          <div class="faq-a"><p>Ücret bilgisi henüz kesinleşmedi. Netleştiğinde seminer duyurusuyla birlikte paylaşılacak.</p></div>
         </div>
         <div class="faq-item">
           <button class="faq-q">Seminer ne zaman yapılacak? <span class="plus">+</span></button>
-          <div class="faq-a"><p><span class="draft-badge">Taslak</span> Tarih ve saat henüz belirlenmedi. Kayıt olanlara duyurulacaktır.</p></div>
+          <div class="faq-a"><p>Tarih ve saat henüz belirlenmedi. E-posta bırakanlara duyurulacaktır.</p></div>
         </div>
         <div class="faq-item">
           <button class="faq-q">Hangi platformda yapılacak? <span class="plus">+</span></button>
-          <div class="faq-a"><p><span class="draft-badge">Taslak</span> Platform (Zoom, Instagram Live, YouTube vb.) henüz belirlenmedi.</p></div>
+          <div class="faq-a"><p>Platform henüz belirlenmedi. Netleştiğinde e-posta ile duyurulacaktır.</p></div>
         </div>
         <div class="faq-item">
           <button class="faq-q">Kontenjan sınırlı mı? <span class="plus">+</span></button>
-          <div class="faq-a"><p><span class="draft-badge">Taslak</span> Kontenjan uygulanıp uygulanmayacağı henüz netleşmedi.</p></div>
+          <div class="faq-a"><p>Kontenjan bilgisi henüz netleşmedi.</p></div>
         </div>
         <div class="faq-item">
-          <button class="faq-q">Katılmak için ne yapmam gerekiyor? <span class="plus">+</span></button>
-          <div class="faq-a"><p>Yukarıdaki formu doldurman yeterli. Seminer detayları, kayıt sırasında bıraktığın iletişim bilgisi üzerinden paylaşılacaktır.</p></div>
+          <button class="faq-q">Haber almak için ne yapmam gerekiyor? <span class="plus">+</span></button>
+          <div class="faq-a"><p>Yukarıdaki forma e-posta adresini bırakman yeterli. Seminer detayları netleşince bu adrese iletilecektir.</p></div>
         </div>
       </div>
     </div>
@@ -167,8 +167,8 @@
       <div class="cta-banner">
         <div class="cta-banner-text">
           <h2>Hayatını değil, iş akışını<br>yapay zekâyla yeniden kur.</h2>
-          <p>Ücretsiz seminer için yerini şimdi ayırt.</p>
-          <a href="#form" class="btn btn-primary">Yerimi Ayırt <span class="arrow">→</span></a>
+          <p>Seminer duyurusunu ilk sen al.</p>
+          <a href="#form" class="btn btn-primary">Haber Ver <span class="arrow">→</span></a>
         </div>
       </div>
     </div>
@@ -177,9 +177,11 @@
 </main>
 
 <footer class="site-footer footer-center">
-  <div class="container"><p>© 2024 Yazıbaşı. Tüm hakları saklıdır.</p></div>
+  <div class="container"><nav class="footer-legal" aria-label="Yasal bağlantılar"><a href="index.html">Ana Sayfa</a><a href="gizlilik.html#aydinlatma">KVKK Aydınlatma Metni</a><a href="gizlilik.html">Gizlilik ve Çerez Politikası</a></nav>
+    <p>© 2026 Yazıbaşı. Tüm hakları saklıdır.</p></div>
 </footer>
 
+<script src="js/waitlist.js" defer></script>
 <script src="js/content.js"></script>
 <script src="js/script.js"></script>
 <script src="js/media.js"></script>

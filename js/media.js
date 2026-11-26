@@ -413,20 +413,6 @@
     }
   }
 
-  // --- Satın alma düğmesi: yalnızca gerçek bir https bağlantısı girildiyse etkinleşir ---
-  function applyPurchaseLink(url) {
-    const link = document.querySelector('[data-purchase-link]');
-    if (!link || !/^https:\/\/\S+$/.test(url || '')) return;
-    link.href = url;
-    link.target = '_blank';
-    link.rel = 'noopener noreferrer';
-    link.removeAttribute('aria-disabled');
-    link.classList.add('btn-primary');
-    link.textContent = 'Eğitime Katıl ';
-    link.appendChild(el('span', 'arrow', '→'));
-  }
-
-  applyPurchaseLink(MEDIA.purchaseUrl);
   renderProjects(MEDIA.projects);
   renderStudents(MEDIA.students);
   renderInstagram(MEDIA.instagram);

@@ -465,7 +465,7 @@
     if (modal.hidden) return;
     modal.hidden = true;
     modalBody.innerHTML = '';
-    if ($('#authModal').hidden) lockScroll(false);
+    lockScroll(false);
     if (!fromPop && modalPushed) { modalPushed = false; history.back(); }
     modalPushed = false;
     if (lastFocus && document.contains(lastFocus)) lastFocus.focus();
@@ -505,26 +505,34 @@
     }
     if (t.closest('[data-close]')) {
       const sheet = t.closest('.sheet');
-      if (sheet === modal) closePromptModal(); else closeAuth();
+      if (sheet === modal) closePromptModal();
     }
   });
 
   document.addEventListener('keydown', (e) => {
     if (e.key !== 'Escape') return;
-    if (!$('#authModal').hidden) closeAuth();
-    else if (!modal.hidden) closePromptModal();
+    if (!modal.hidden) closePromptModal();
     else if (!$('#mobileMenu').hidden) toggleMenu(false);
-    else if (!$('#userMenu').hidden) toggleUserMenu(false);
   });
 
-  // ---------- KAYDETME (yalnızca demo görünümde, bellekte) ----------
+  // ---------- KAYDETME (hesapsız; yalnızca bu tarayıcının localStorage alanında) ----------
+  const STORE_KEY = 'yb-prompt-kayitlari';
   const savedIds = new Set();
   const savedBuilt = [];
-  let demoUser = false;
+  try {
+    const raw = JSON.parse(localStorage.getItem(STORE_KEY) || '{}') || {};
+    (Array.isArray(raw.ids) ? raw.ids : []).forEach((id) => { if (typeof id === 'string' && byId[id]) savedIds.add(id); });
+    (Array.isArray(raw.built) ? raw.built : []).slice(0, 50).forEach((b) => {
+      if (b && typeof b.title === 'string' && typeof b.text === 'string') savedBuilt.push({ title: b.title.slice(0, 200), text: b.text.slice(0, 8000) });
+    });
+  } catch (err) { /* depolama kapalı ya da bozuk: boş başla */ }
+  function persistSaved() {
+    try { localStorage.setItem(STORE_KEY, JSON.stringify({ ids: [...savedIds], built: savedBuilt })); } catch (err) { /* depolama kapalı */ }
+  }
 
   function toggleSave(id) {
-    if (!demoUser) { openAuth('login', 'Promptları kaydetmek için giriş yapman gerekecek. (Prototip)'); return; }
     if (savedIds.has(id)) savedIds.delete(id); else savedIds.add(id);
+    persistSaved();
     $$(`[data-save="${CSS.escape(id)}"]`).forEach((b) => {
       const on = savedIds.has(id);
       b.classList.toggle('is-saved', on);
@@ -532,82 +540,26 @@
       b.textContent = b.classList.contains('icon-btn') ? (on ? '★' : '☆') : (on ? '★ Kaydedildi' : '☆ Kaydet');
     });
     renderSaved();
-    toast(savedIds.has(id) ? 'Kaydedildi (demo — sayfa yenilenince silinir).' : 'Kayıtlardan çıkarıldı.');
+    toast(savedIds.has(id) ? 'Kaydedildi. Bu tarayıcıda saklanır.' : 'Kayıtlardan çıkarıldı.');
   }
 
   function renderSaved() {
     const el = $('#savedList');
     const items = [...savedIds].map((id) => byId[id]).filter(Boolean);
-    if (!items.length && !savedBuilt.length) {
-      el.innerHTML = '<p class="saved-empty">Henüz kayıt yok. Kartlardaki ☆ simgesiyle ya da oluşturucudaki “Bu promptu kaydet” ile ekleyebilirsin.</p>';
-      return;
-    }
+    $('#hesabim').hidden = !(items.length || savedBuilt.length);
+    if (!items.length && !savedBuilt.length) { el.innerHTML = ''; return; }
     el.innerHTML = items.map((p) => `<div class="saved-item"><span class="saved-kind">Kütüphane</span><strong>${esc(p.title)}</strong>
         <span class="saved-actions"><button class="link-btn" type="button" data-open="${esc(p.id)}">Aç</button><button class="link-btn" type="button" data-copy="${esc(p.id)}"><span class="label">Kopyala</span></button></span></div>`).join('')
       + savedBuilt.map((b, i) => `<div class="saved-item"><span class="saved-kind">Oluşturduğum</span><strong>${esc(b.title)}</strong>
-        <span class="saved-actions"><button class="link-btn" type="button" data-copy-built="${i}"><span class="label">Kopyala</span></button></span></div>`).join('');
+        <span class="saved-actions"><button class="link-btn" type="button" data-copy-built="${i}"><span class="label">Kopyala</span></button><button class="link-btn" type="button" data-del-built="${i}">Sil</button></span></div>`).join('');
   }
   $('#savedList').addEventListener('click', async (e) => {
+    const del = e.target.closest('[data-del-built]');
+    if (del) { savedBuilt.splice(+del.dataset.delBuilt, 1); persistSaved(); renderSaved(); return; }
     const b = e.target.closest('[data-copy-built]');
     if (!b) return;
     if (await copyText(savedBuilt[+b.dataset.copyBuilt].text)) { flashCopied(b); toast('Prompt kopyalandı.'); }
   });
-
-  // ---------- GİRİŞ / KAYIT PROTOTİPİ ----------
-  const authModal = $('#authModal');
-  let authNote = null;
-
-  function openAuth(view = 'login', note = '') {
-    toggleMenu(false);
-    if (authModal.hidden) lastFocus = document.activeElement;
-    goAuth(view);
-    authNote?.remove();
-    authNote = null;
-    if (note) {
-      authNote = document.createElement('p');
-      authNote.className = 'auth-note';
-      authNote.textContent = note;
-      $('.auth-brand', authModal).after(authNote);
-    }
-    authModal.hidden = false;
-    lockScroll(true);
-    $('.sheet-close', authModal).focus();
-  }
-  function goAuth(view) { $$('.auth-view', authModal).forEach((v) => { v.hidden = v.dataset.view !== view; }); }
-  function closeAuth() {
-    if (authModal.hidden) return;
-    authModal.hidden = true;
-    if (modal.hidden) lockScroll(false);
-    if (lastFocus && document.contains(lastFocus)) lastFocus.focus();
-  }
-  function setDemoUser(on) {
-    demoUser = on;
-    $$('[data-auth-guest]').forEach((el) => { el.hidden = on; });
-    $$('[data-auth-user]').forEach((el) => { el.hidden = !on; });
-    $('#hesabim').hidden = !on;
-    if (!on) { savedIds.clear(); savedBuilt.length = 0; renderLibrary(); if (featuredId) renderFeatured(byId[featuredId], { shared: featuredShared }); }
-    renderSaved();
-  }
-
-  $$('[data-auth-open]').forEach((b) => b.addEventListener('click', () => openAuth(b.dataset.authOpen)));
-  $$('[data-auth-go]').forEach((b) => b.addEventListener('click', () => goAuth(b.dataset.authGo)));
-  $$('[data-proto-form]').forEach((f) => f.addEventListener('submit', (e) => e.preventDefault()));
-  $('[data-auth-demo]').addEventListener('click', () => {
-    setDemoUser(true);
-    closeAuth();
-    toast('Demo görünümü açıldı. Gerçek bir oturum açılmadı.');
-  });
-  $('[data-auth-logout]').addEventListener('click', () => { toggleUserMenu(false); setDemoUser(false); toast('Demo görünümünden çıkıldı.'); });
-
-  const userBtn = $('#userMenuBtn');
-  function toggleUserMenu(force) {
-    const open = force ?? $('#userMenu').hidden;
-    $('#userMenu').hidden = !open;
-    userBtn.setAttribute('aria-expanded', open);
-  }
-  userBtn.addEventListener('click', (e) => { e.stopPropagation(); toggleUserMenu(); });
-  document.addEventListener('click', (e) => { if (!e.target.closest('.user-chip')) toggleUserMenu(false); });
-  $('#userMenu').addEventListener('click', (e) => { if (e.target.closest('a')) toggleUserMenu(false); });
 
   // ---------- MOBİL MENÜ ----------
   const menuBtn = $('.menu-toggle');
@@ -1008,11 +960,10 @@
     else toast('Kopyalanamadı. Lütfen tekrar dene.');
   });
   $('#saveOutput').addEventListener('click', () => {
-    if (!demoUser) { openAuth('login', 'Oluşturduğun promptları kaydetmek için giriş yapman gerekecek. (Prototip)'); return; }
     const m = moveById[bs.movement];
     savedBuilt.push({ title: `${m.tr.name}${bs.subject ? ' — ' + bs.subject : ''}`, text: buildPrompt() });
     renderSaved();
-    toast('Kaydedildi (demo — sayfa yenilenince silinir).');
+    toast('Kaydedildi. Bu tarayıcıda saklanır.');
   });
 
   // ---------- MOBİL ADIM ADIM OLUŞTURUCU ----------
@@ -1149,7 +1100,7 @@
 
   function updateSticky() {
     let mode = null;
-    if (isMobile() && modal.hidden && authModal.hidden && mobileMenu.hidden) {
+    if (isMobile() && modal.hidden && mobileMenu.hidden) {
       const featCopy = $('#featured [data-copy]');
       if (inView($('#one-cikan'), 120) && !inView(featCopy)) mode = 'featured';
       // Adım adım akışta kopyalama son adımdadır; alttaki Geri/Devam çubuğuyla çakışmasın
